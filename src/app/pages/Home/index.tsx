@@ -15,6 +15,7 @@ import {
 import Avatar from 'app/components/Avatar';
 import Dashboard from './Dashboard';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import BibleReader from './BibleReader';
 
 const navigation = [
   { name: 'Home', href: '#', icon: HomeIcon, current: true },
@@ -44,6 +45,8 @@ function classNames(...classes) {
 
 export function Home() {
   const user = useAppStore().user;
+  const bibleBooks = useAppStore().bibleBooks;
+  const bibleTranslations = useAppStore().bibleTranslations;
   return (
     <BrowserRouter>
       {/*
@@ -290,24 +293,49 @@ export function Home() {
                     </a>
                   ))}
                 </div>
-                <div className="pt-10">
+                <div className="pb-4 pt-8 space-y-1">
                   <p
                     className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider"
-                    id="communities-headline"
+                    id="bibletranslations-headline"
                   >
-                    My communities
+                    Bijbelvertalingen
                   </p>
                   <div
                     className="mt-3 space-y-2"
-                    aria-labelledby="communities-headline"
+                    aria-labelledby="bibletranslations-headline"
                   >
-                    {communities.map(community => (
+                    {bibleTranslations.map(bibleTranslation => (
                       <a
-                        key={community.name}
-                        href={community.href}
+                        key={bibleTranslation.name}
+                        href="#"
                         className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50"
                       >
-                        <span className="truncate">{community.name}</span>
+                        <span className="truncate">
+                          {bibleTranslation.name} (
+                          {bibleTranslation.abbreviation})
+                        </span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+                <div className="pb-4 pt-8 space-y-1">
+                  <p
+                    className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider"
+                    id="biblebooks-headline"
+                  >
+                    Bijbelboeken
+                  </p>
+                  <div
+                    className="mt-3 space-y-2"
+                    aria-labelledby="biblebooks-headline"
+                  >
+                    {bibleBooks.map(bibleBook => (
+                      <a
+                        key={bibleBook.name}
+                        href="#"
+                        className="group flex items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-md hover:text-gray-900 hover:bg-gray-50"
+                      >
+                        <span className="truncate">{bibleBook.name}</span>
                       </a>
                     ))}
                   </div>
@@ -316,7 +344,7 @@ export function Home() {
             </div>
             <Switch>
               <Route exact path="/dashboard" component={Dashboard} />
-              <Route exact path="*" component={Dashboard} />
+              <Route exact path="*" component={BibleReader} />
             </Switch>
           </div>
         </div>

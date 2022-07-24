@@ -12,7 +12,7 @@ import { Switch, Route, BrowserRouter } from 'react-router-dom';
 
 import { useAppStore } from '../store/global';
 import { queryClientOptions } from '../interceptors/react-query';
-import { QueryClientProvider } from 'react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { Authenticate } from './pages/Authenticate';
 import { Home } from './pages/Home';
 

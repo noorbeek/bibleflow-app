@@ -3,7 +3,7 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useAppStore } from 'store/global';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 
 export function Authenticate() {
   const [formData, setFormData] = useState({
@@ -11,21 +11,15 @@ export function Authenticate() {
     password: '',
   });
 
-  const authenticate = useMutation(
-    async form => {
-      const auth = await axios.post(`/auth`, {
-        username: form.username,
-        password: form.password,
-      });
-      console.log(auth);
-      if (auth?.data?.response?.authorization) {
-        useAppStore.getState().login(auth?.data?.response?.authorization);
-      }
-    },
-    {
-      fetchPolicy: 'no-cache',
-    },
-  );
+  const authenticate = useMutation(['authenticate'], async form => {
+    const auth = await axios.post(`/auth`, {
+      username: formData.username,
+      password: formData.password,
+    });
+    if (auth?.data?.response?.authorization) {
+      useAppStore.getState().login(auth?.data?.response?.authorization);
+    }
+  });
 
   return (
     <>
@@ -46,10 +40,7 @@ export function Authenticate() {
             className="mt-8 space-y-6"
             onSubmit={e => {
               e.preventDefault();
-              authenticate.mutate({
-                username: formData.username,
-                password: formData.password,
-              });
+              authenticate.mutate();
             }}
           >
             <input type="hidden" name="remember" defaultValue="true" />

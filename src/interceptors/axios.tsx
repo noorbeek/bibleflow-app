@@ -11,8 +11,9 @@ axios.defaults.baseURL = 'http://localhost:8777/';
 
 /** Set authorization token from session store */
 
-if (useAppStore.getState().token) {
-  axios.defaults.headers.common['Authorization'] = useAppStore.getState().token;
+if (useAppStore.getState().authenticationToken) {
+  axios.defaults.headers.common['Authorization'] =
+    useAppStore.getState().authenticationToken;
 }
 
 /** Error interceptor */
