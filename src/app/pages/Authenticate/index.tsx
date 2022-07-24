@@ -7,8 +7,8 @@ import { useMutation } from 'react-query';
 
 export function Authenticate() {
   const [formData, setFormData] = useState({
-    username: 'noorbeek@gmail.com',
-    password: 'Jedan1@l',
+    username: '',
+    password: '',
   });
 
   const authenticate = useMutation(
@@ -34,19 +34,13 @@ export function Authenticate() {
         <meta name="description" content="A Boilerplate application homepage" />
       </Helmet>
       <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-8">
+        <div className="max-w-md w-80 space-y-8">
           <div>
             <img
-              className="mx-auto h-12 w-auto"
-              src="https://tailwindui.com/img/logos/workflow-mark-primary-500.svg"
+              className="mx-auto h-60 w-auto"
+              src="/assets/logo-vertical.svg"
               alt="Workflow"
             />
-            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-              BibleFlow
-            </h2>
-            <p className="mt-2 text-center text-sm text-gray-600">
-              Bijbel-tijdlijn studie tool
-            </p>
           </div>
           <form
             className="mt-8 space-y-6"
@@ -127,7 +121,7 @@ export function Authenticate() {
             <div>
               <button
                 type="submit"
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-500 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-400"
+                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-500 hover:bg-primary-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-400"
               >
                 <span className="absolute left-0 inset-y-0 flex items-center pl-3">
                   {/* <LockClosedIcon className="h-5 w-5 text-primary-400 group-hover:text-primary-400" aria-hidden="true" /> */}
