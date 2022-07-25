@@ -51,8 +51,10 @@ export const useAppStore = create<AppStore>(
         });
 
         // Set bibles
-        const bibleTranslations = await axios.get('/bibleTranslations');
-        const bibleBooks = await axios.get('/bibleBooks');
+        const bibleTranslations = await axios.get(
+          '/bibleTranslations?limit=9999',
+        );
+        const bibleBooks = await axios.get('/bibleBooks?limit=9999');
 
         set({
           bibleTranslations: bibleTranslations.data?.response,

@@ -1,5 +1,5 @@
 /* This example requires Tailwind CSS v2.0+ */
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid';
 
@@ -8,7 +8,13 @@ function classNames(...classes) {
 }
 
 export default function Selectbox(props) {
-  const [selected, setSelected] = useState(props.options[0]);
+  const [selected, setSelected] = useState(
+    props.selected
+      ? props.options.find(item => parseInt(props.selected) === item.id)
+        ? props.options.find(item => parseInt(props.selected) === item.id)
+        : props.options[0]
+      : props.options[0],
+  );
 
   function changeSelected(option) {
     setSelected(option);
@@ -23,7 +29,7 @@ export default function Selectbox(props) {
             {props.label ? props.label : 'Selecteer'}
           </Listbox.Label>
           <div className="mt-1 relative">
-            <Listbox.Button className="relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            <Listbox.Button className="relative w-full bg-white border border-gray-300 rounded-md shadow-sm hover:shadow-xl transition-all pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
               <span className="w-full inline-flex truncate">
                 <span className="truncate">{selected.text}</span>
                 {selected.description ? (
@@ -74,7 +80,7 @@ export default function Selectbox(props) {
                           </span>
                           <span
                             className={classNames(
-                              active ? 'text-indigo-200' : 'text-gray-500',
+                              selected ? 'text-indigo-200' : 'text-gray-500',
                               'ml-2 truncate',
                             )}
                           >
