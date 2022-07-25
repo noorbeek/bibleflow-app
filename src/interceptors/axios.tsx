@@ -7,7 +7,7 @@ import { useAppStore } from '../store/global';
  * REST default options
  */
 
-axios.defaults.baseURL = 'http://localhost:8777/';
+axios.defaults.baseURL = process.env.API_BASEURL;
 
 /** Set authorization token from session store */
 
