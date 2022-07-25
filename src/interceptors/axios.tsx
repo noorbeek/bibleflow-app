@@ -7,9 +7,8 @@ import { useAppStore } from '../store/global';
  * REST default options
  */
 
-axios.defaults.baseURL = process.env.API_BASEURL;
+axios.defaults.baseURL = process.env.REACT_APP_API_BASEURL;
 
-console.warn(process.env);
 /** Set authorization token from session store */
 
 if (useAppStore.getState().authenticationToken) {
