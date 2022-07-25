@@ -98,7 +98,7 @@ export default function BibleReader(props) {
         <div className="pb-5 border-b border-gray-200 dark:border-white/10 px-4 sm:px-0">
           <div className="sm:flex sm:justify-between sm:items-baseline">
             <div className="sm:w-0 sm:flex-1">
-              <h1 id="message-heading" className="text-lg font-medium">
+              <h1 id="message-heading">
                 {getBibleTranslation(readerState.translation)?.name} (
                 {getBibleTranslation(readerState.translation)?.abbreviation})
               </h1>
@@ -188,7 +188,7 @@ export default function BibleReader(props) {
             </ul>
           </div>
         </div>
-        <nav className="border-t border-white/25 mt-8 pt-4 flex flex-row items-start justify-between sm:px-0">
+        <nav className="border-t border-black/5 dark:border-white/10 mt-8 pt-4 flex flex-row items-start justify-between sm:px-0">
           <div className="grow">
             <a
               onClick={event =>
@@ -221,7 +221,7 @@ export default function BibleReader(props) {
               </a>
             ))}
           </div>
-          <div className="grow justify-end">
+          <div className="grow flex justify-end">
             <a
               onClick={event =>
                 setChapter({
@@ -242,6 +242,18 @@ export default function BibleReader(props) {
             </a>
           </div>
         </nav>
+        <div className="mt-8 pt-4 text-center border-t border-black/5 dark:border-white/10">
+          <p className="mt-1 text-sm mute">
+            {getBibleTranslation(readerState.translation)?.name} (
+            {getBibleTranslation(readerState.translation)?.abbreviation}) -
+            {getBibleBook(readerState.book)?.name} {readerState.chapter}:1-
+            {bibleVerses?.data?.data?.response?.length}
+            <br />
+            <small>
+              {getBibleTranslation(readerState.translation)?.copyright}
+            </small>
+          </p>
+        </div>
       </main>
     </>
   );

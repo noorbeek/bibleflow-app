@@ -28,14 +28,14 @@
   h5,
   h6 {
     @apply block;
-    @apply font-extrabold;
+    @apply font-bold;
     @apply tracking-tight;
   }
 
   h1 {
-    @apply text-3xl;
-    @apply sm:text-4xl;
-    @apply lg:text-5xl;
+    @apply text-lg;
+    @apply sm:text-xl;
+    @apply lg:text-2xl;
   }
   h2 {
     @apply text-2xl;
@@ -56,6 +56,7 @@
   }
 
   a {
+    cursor: pointer;
     @apply text-slate-800/100;
   }
   a:hover {
@@ -64,7 +65,7 @@
   .dark a {
     @apply text-slate-50/100;
   }
-  .dark hover {
+  .dark a:hover {
     @apply text-primary;
   }
 
