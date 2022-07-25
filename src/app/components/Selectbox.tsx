@@ -8,19 +8,18 @@ function classNames(...classes) {
 }
 
 export default function Selectbox(props) {
-  let options: any[] = [];
-
-  if (props.options && props.options.length && props.options[0].id) {
-    options = props.options;
-  }
-
   const [selected, setSelected] = useState(
-    options.find(option => option.id && option.id === parseInt(props.selected))
-      ? options.find(
+    props.options &&
+      props.options.length &&
+      props.options[0].id &&
+      props.options.find(
+        option => option.id && option.id === parseInt(props.selected),
+      )
+      ? props.options.find(
           option => option.id && option.id === parseInt(props.selected),
         )
-      : options.length
-      ? options[0]
+      : props.options && props.options.length
+      ? props.options[0]
       : null,
   );
 
@@ -33,17 +32,21 @@ export default function Selectbox(props) {
     <Listbox value={selected} onChange={changeSelected}>
       {({ open }) => (
         <>
-          <Listbox.Label className="block text-sm font-medium text-gray-700">
-            {props.label ? props.label : 'Selecteer'} - {props.selected}
+          <Listbox.Label className="hidden sm:block text-sm font-medium">
+            {props.label ? props.label : 'Selecteer'}
           </Listbox.Label>
           <div className="mt-1 relative">
-            <Listbox.Button className="relative w-full bg-white border border-gray-300 rounded-md shadow-sm hover:shadow-xl transition-all pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            <Listbox.Button className="relative w-full text-default hover:text-white bg-white dark:bg-white/10 border border-gray-900/25 rounded-md shadow-sm hover:shadow-xl transition-all pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm">
               <span className="w-full inline-flex truncate">
                 <span className="truncate">
-                  {selected && selected.text ? selected.text : ''}
+                  {selected && selected.text
+                    ? selected.text
+                    : props.selected
+                    ? props.selected
+                    : ''}
                 </span>
                 {selected && selected.description ? (
-                  <span className="ml-2 truncate text-gray-500">
+                  <span className="ml-2 truncate mute">
                     {selected.description}
                   </span>
                 ) : (
@@ -51,10 +54,7 @@ export default function Selectbox(props) {
                 )}
               </span>
               <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                <SelectorIcon
-                  className="h-5 w-5 text-gray-400"
-                  aria-hidden="true"
-                />
+                <SelectorIcon className="h-5 w-5 mute" aria-hidden="true" />
               </span>
             </Listbox.Button>
 
@@ -65,13 +65,13 @@ export default function Selectbox(props) {
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <Listbox.Options className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+              <Listbox.Options className="absolute z-10 mt-1 w-full bg-default text-default shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
                 {props.options?.map(option => (
                   <Listbox.Option
                     key={option.id}
                     className={({ active }) =>
                       classNames(
-                        active ? 'text-white bg-indigo-600' : 'text-gray-900',
+                        active ? 'text-white bg-primary' : '',
                         'cursor-default select-none relative py-2 pl-3 pr-9',
                       )
                     }
@@ -101,7 +101,7 @@ export default function Selectbox(props) {
                         {selected ? (
                           <span
                             className={classNames(
-                              active ? 'text-white' : 'text-indigo-600',
+                              active ? 'text-white' : 'text-primary',
                               'absolute inset-y-0 right-0 flex items-center pr-4',
                             )}
                           >

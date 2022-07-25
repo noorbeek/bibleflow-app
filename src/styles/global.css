@@ -2,10 +2,123 @@
 @tailwind components;
 @tailwind utilities;
 
-#root,
-html,
-body {
-    height: 100%;
-    width: 100%;
-    background-color: #f7f7f7;
+/** Extend BASE */
+
+@layer base {
+
+  /** Typography */
+
+  html, body, #app, .bg-default {
+    @apply bg-slate-50;
+  }
+  #app.dark, .dark .bg-default {
+    background-color: #1F1D36;
+  }
+   html, body, #app, .text-default {
+    @apply text-slate-800;
+  }
+  #app.dark, .dark .text-default {
+    @apply text-slate-50;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply block;
+    @apply font-extrabold;
+    @apply tracking-tight;
+  }
+
+  h1 {
+    @apply text-3xl;
+    @apply sm:text-4xl;
+    @apply lg:text-5xl;
+  }
+  h2 {
+    @apply text-2xl;
+  }
+  h3 {
+    @apply text-lg;
+  }
+
+  p {
+    @apply py-2;
+  }
+
+  .mute {
+    @apply text-slate-800/50;
+  }
+  .dark .mute {
+    @apply text-slate-50/50;
+  }
+
+  a {
+    @apply text-slate-800/100;
+  }
+  a:hover {
+    @apply text-primary;
+  }
+  .dark a {
+    @apply text-slate-50/100;
+  }
+  .dark hover {
+    @apply text-primary;
+  }
+
+  .handwritten {
+    font-family: 'Pangolin';
+  }
+
+  /** Elements */
+
+  button {
+    @apply bg-primary;
+    @apply text-white;
+    @apply flex;
+    @apply items-center;
+    @apply content-center;
+    @apply justify-center;
+    @apply px-3;
+    @apply py-2;
+    @apply rounded;
+    @apply text-sm;
+    @apply gap-2;
+  }
+  button:hover {
+    @apply bg-primary;
+    @apply shadow-lg;
+  }
+
+  button.inverse {
+    @apply bg-transparent;
+    @apply border;
+  }
+  button.inverse:hover {
+    @apply bg-white;
+    @apply text-black;
+  }
+
+  input[type="text"],
+  input[type="email"] {
+    @apply rounded;
+    @apply px-3;
+    @apply py-2;
+    @apply text-black;
+  }
+
+}
+
+/** Other */
+
+html, body, #root, #app {
+  height: 100%;
+  width: 100%;
+  font-family: Poppins, sans-serif;
+  margin: 0;
+  overflow: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

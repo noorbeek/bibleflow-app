@@ -6,11 +6,13 @@ interface AppStore {
   authenticated?: boolean;
   authenticationToken?: any;
   user?: any;
+  darkMode?: boolean;
   bibleBooks?: any;
   bibleTranslations?: any;
   bibleTimelines?: any;
   logout: any;
   login: any;
+  toggleDarkMode: any;
 }
 
 type AppStorePersist = (
@@ -33,11 +35,18 @@ export const useAppStore = create<AppStore>(
       user: null,
       authenticationToken: null,
 
+      // User prefrences
+      darkMode: false,
+
+      // General data
+
       bibleBooks: [],
       bibleTranslations: [],
       bibleTimelines: [],
 
       // Mutators
+
+      toggleDarkMode: () => set(state => ({ darkMode: !state.darkMode })),
 
       login: async authorizationToken => {
         // Set auth

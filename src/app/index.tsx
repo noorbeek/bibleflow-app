@@ -18,6 +18,7 @@ import { Home } from './pages/Home';
 
 export function App() {
   const authenticated = useAppStore().authenticated;
+  const darkMode = useAppStore().darkMode;
 
   return (
     <QueryClientProvider client={queryClientOptions}>
@@ -25,13 +26,15 @@ export function App() {
         <Helmet titleTemplate="BibleFlow" defaultTitle="BibleFlow">
           <meta name="description" content="A React Boilerplate application" />
         </Helmet>
-        <Switch>
-          {authenticated ? (
-            <Route exact path="*" component={Home} />
-          ) : (
-            <Route exact path="*" component={Authenticate} />
-          )}
-        </Switch>
+        <div id="app" className={darkMode ? 'dark' : ''}>
+          <Switch>
+            {authenticated ? (
+              <Route exact path="*" component={Home} />
+            ) : (
+              <Route exact path="*" component={Authenticate} />
+            )}
+          </Switch>
+        </div>
       </BrowserRouter>
     </QueryClientProvider>
   );
