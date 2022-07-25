@@ -68,7 +68,7 @@ export function Home() {
           className={({ open }) =>
             classNames(
               open ? 'fixed inset-0 z-40 overflow-y-auto' : '',
-              'bg-white dark:bg-slate-900/25 shadow-sm lg:static lg:overflow-y-visible',
+              'bg-white dark:bg-black/25 shadow-sm lg:static lg:overflow-y-visible',
             )
           }
         >
@@ -91,7 +91,7 @@ export function Home() {
                     <div className="flex items-center px-6 py-4 md:max-w-3xl md:mx-auto lg:max-w-none lg:mx-0 xl:px-0">
                       <div className="w-full">
                         <label htmlFor="search" className="sr-only">
-                          Search
+                          Zoeken
                         </label>
                         <div className="relative">
                           <div className="pointer-events-none absolute inset-y-0 left-0 pl-3 flex items-center">
@@ -104,7 +104,7 @@ export function Home() {
                             id="search"
                             name="search"
                             className="block w-full bg-white dark:bg-white/10 border border-gray-300 dark:border-white/25 rounded-md py-2 pl-10 pr-3 text-sm placeholder-gray-500 focus:outline-none focus:text-gray-900 focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                            placeholder="Search"
+                            placeholder="Gen 1:1-1:5, Exo 3..."
                             type="search"
                           />
                         </div>
@@ -114,7 +114,6 @@ export function Home() {
                   <div className="flex items-center md:absolute md:right-0 md:inset-y-0 lg:hidden">
                     {/* Mobile menu button */}
                     <Popover.Button className="-mx-2 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:mute focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500">
-                      <span className="sr-only">Open menu</span>
                       {open ? (
                         <XIcon className="block h-6 w-6" aria-hidden="true" />
                       ) : (
@@ -128,7 +127,7 @@ export function Home() {
                   <div className="hidden lg:flex lg:items-center lg:justify-end xl:col-span-4">
                     <a
                       onClick={toggleDarkMode}
-                      className="ml-5 flex-shrink-0 rounded-full p-1 mute focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                      className="ml-5 flex-shrink-0 rounded-full p-1 mute"
                     >
                       {darkMode ? (
                         <SunIcon className="h-6 w-6" aria-hidden="true" />
@@ -140,8 +139,7 @@ export function Home() {
                     {/* Profile dropdown */}
                     <Menu as="div" className="flex-shrink-0 relative ml-5">
                       <div>
-                        <Menu.Button className="bg-white rounded-full flex focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                          <span className="sr-only">Open user menu</span>
+                        <Menu.Button className="bg-transparent hover:bg-transparent rounded-full flex">
                           <Avatar
                             text={
                               user && user.name?.length > 2
@@ -160,7 +158,7 @@ export function Home() {
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-95"
                       >
-                        <Menu.Items className="origin-top-right absolute z-10 right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 focus:outline-none">
+                        <Menu.Items className="origin-top-right absolute z-10 right-0 mt-2 w-48 rounded-md shadow-lg bg-default ring-1 ring-black ring-opacity-5 py-1 focus:outline-none">
                           {userNavigation.map(item => (
                             <Menu.Item key={item.name}>
                               {({ active }) => (

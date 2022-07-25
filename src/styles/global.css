@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Pangolin&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -15,7 +18,7 @@
     background-color: #1F1D36;
   }
    html, body, #app, .text-default {
-    @apply text-slate-800;
+    @apply text-slate-700;
   }
   #app.dark, .dark .text-default {
     @apply text-slate-50;
@@ -28,7 +31,7 @@
   h5,
   h6 {
     @apply block;
-    @apply font-bold;
+    @apply font-extrabold;
     @apply tracking-tight;
   }
 
@@ -99,15 +102,21 @@
   }
   button.inverse:hover {
     @apply bg-white;
-    @apply text-black;
   }
 
   input[type="text"],
-  input[type="email"] {
+  input[type="email"],
+  input[type="password"] {
+    @apply bg-white;
     @apply rounded;
     @apply px-3;
     @apply py-2;
-    @apply text-black;
+  }
+
+  .dark input[type="text"],
+  .dark input[type="email"],
+  .dark input[type="password"] {
+    @apply bg-white/10;
   }
 
 }
@@ -117,7 +126,7 @@
 html, body, #root, #app {
   height: 100%;
   width: 100%;
-  font-family: Poppins, sans-serif;
+  font-family: Noto Sans, sans-serif;
   margin: 0;
   overflow: auto;
   -webkit-font-smoothing: antialiased;
