@@ -8,12 +8,20 @@ function classNames(...classes) {
 }
 
 export default function Selectbox(props) {
+  let options: any[] = [];
+
+  if (props.options && props.options.length && props.options[0].id) {
+    options = props.options;
+  }
+
   const [selected, setSelected] = useState(
-    props.selected
-      ? props.options.find(item => parseInt(props.selected) === item.id)
-        ? props.options.find(item => parseInt(props.selected) === item.id)
-        : props.options[0]
-      : props.options[0],
+    options.find(option => option.id && option.id === parseInt(props.selected))
+      ? options.find(
+          option => option.id && option.id === parseInt(props.selected),
+        )
+      : options.length
+      ? options[0]
+      : null,
   );
 
   function changeSelected(option) {
@@ -26,13 +34,15 @@ export default function Selectbox(props) {
       {({ open }) => (
         <>
           <Listbox.Label className="block text-sm font-medium text-gray-700">
-            {props.label ? props.label : 'Selecteer'}
+            {props.label ? props.label : 'Selecteer'} - {props.selected}
           </Listbox.Label>
           <div className="mt-1 relative">
             <Listbox.Button className="relative w-full bg-white border border-gray-300 rounded-md shadow-sm hover:shadow-xl transition-all pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
               <span className="w-full inline-flex truncate">
-                <span className="truncate">{selected.text}</span>
-                {selected.description ? (
+                <span className="truncate">
+                  {selected && selected.text ? selected.text : ''}
+                </span>
+                {selected && selected.description ? (
                   <span className="ml-2 truncate text-gray-500">
                     {selected.description}
                   </span>

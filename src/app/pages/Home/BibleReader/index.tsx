@@ -14,9 +14,6 @@ export default function BibleReader(props) {
       ? localStorage['currentTranslation']
       : bibleTranslations[0].id,
     book: localStorage['currentBook'] ? localStorage['currentBook'] : 1,
-    chapters: localStorage['currentChapters']
-      ? localStorage['currentChapters']
-      : 50,
     chapter: localStorage['currentChapter']
       ? localStorage['currentChapter']
       : 1,
@@ -36,15 +33,20 @@ export default function BibleReader(props) {
       ),
   );
 
-  function updateLocalStorage(translation, book, chapters, chapter, verse) {
+  const bibleChapters = useQuery(
+    ['bibleVerses', readerState.translation, readerState.book],
+    async () =>
+      await axios.get(
+        `/bibleVerses?select=id,chapter&order=chapter&where=translation:${readerState.translation}+and+book:${readerState.book}+and+verse:1`,
+      ),
+  );
+
+  function updateLocalStorage(translation, book, chapter, verse) {
     if (translation) {
       localStorage['currentTranslation'] = translation;
     }
     if (book) {
       localStorage['currentBook'] = book;
-    }
-    if (chapters) {
-      localStorage['currentChapters'] = chapters;
     }
     if (chapter) {
       localStorage['currentChapter'] = chapter;
@@ -55,7 +57,7 @@ export default function BibleReader(props) {
   }
 
   function setTranslation(translation) {
-    updateLocalStorage(translation.id, 1, 50, 1, null);
+    updateLocalStorage(translation.id, 1, 1, null);
     setReaderState(
       Object.assign({}, readerState, {
         translation: translation.id,
@@ -66,22 +68,18 @@ export default function BibleReader(props) {
     );
   }
 
-  async function setBook(book) {
-    const chapters = await axios.get(
-      `/bibleVerses?select=id&where=translation:${readerState.translation}+and+book:${readerState.book}+and+verse:1`,
-    );
-    updateLocalStorage(null, book.id, chapters.data.response.length, 1, null);
+  function setBook(book) {
+    updateLocalStorage(null, book.id, 1, null);
     setReaderState(
       Object.assign({}, readerState, {
         book: book.id,
-        chapters: chapters.data.response.length,
         chapter: 1,
       }),
     );
   }
 
   function setChapter(chapter) {
-    updateLocalStorage(null, null, null, chapter.id, null);
+    updateLocalStorage(null, null, chapter.id, null);
     setReaderState(Object.assign({}, readerState, { chapter: chapter.id }));
   }
 
@@ -116,6 +114,8 @@ export default function BibleReader(props) {
                 id: translation.id,
                 text: translation.name,
                 description: translation.abbreviation,
+                active: translation.id === readerState.translation,
+                selected: translation.id === readerState.translation,
               };
             })}
           />
@@ -128,6 +128,8 @@ export default function BibleReader(props) {
                 id: book.id,
                 text: book.name,
                 description: book.abbreviations.join(', '),
+                active: book.id === readerState.book,
+                selected: book.id === readerState.book,
               };
             })}
           />
@@ -135,15 +137,15 @@ export default function BibleReader(props) {
             label="Hoofdstuk"
             selected={readerState.chapter}
             onChange={setChapter}
-            options={Array.from(Array(readerState.chapters).keys()).map(
-              chapterId => {
-                return {
-                  id: chapterId + 1,
-                  text: chapterId + 1,
-                  description: '',
-                };
-              },
-            )}
+            options={bibleChapters?.data?.data?.response?.map(chapter => {
+              return {
+                id: chapter.chapter,
+                text: chapter.chapter,
+                description: '',
+                active: chapter.chapter === readerState.chapter,
+                selected: chapter.chapter === readerState.chapter,
+              };
+            })}
           />
         </div>
         <div className="my-4">

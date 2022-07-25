@@ -8,6 +8,7 @@ interface AppStore {
   user?: any;
   bibleBooks?: any;
   bibleTranslations?: any;
+  bibleTimelines?: any;
   logout: any;
   login: any;
 }
@@ -32,6 +33,10 @@ export const useAppStore = create<AppStore>(
       user: null,
       authenticationToken: null,
 
+      bibleBooks: [],
+      bibleTranslations: [],
+      bibleTimelines: [],
+
       // Mutators
 
       login: async authorizationToken => {
@@ -55,10 +60,12 @@ export const useAppStore = create<AppStore>(
           '/bibleTranslations?limit=9999',
         );
         const bibleBooks = await axios.get('/bibleBooks?limit=9999');
+        const bibleTimelines = await axios.get('/bibleTimelines?limit=9999');
 
         set({
           bibleTranslations: bibleTranslations.data?.response,
           bibleBooks: bibleBooks.data?.response,
+          bibleTimelines: bibleTimelines.data?.response,
         });
       },
 
