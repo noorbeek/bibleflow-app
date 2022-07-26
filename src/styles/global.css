@@ -58,6 +58,13 @@
     @apply text-slate-50/50;
   }
 
+  .highlight {
+    @apply bg-yellow-500/50;
+  }
+  .dark .highlight {
+    @apply bg-yellow-300/50;
+  }
+
   a {
     cursor: pointer;
     @apply text-slate-800/100;

@@ -3,12 +3,13 @@ import React, { Fragment, useState } from 'react';
 import { useAppStore } from 'store/global';
 import { useQuery } from '@tanstack/react-query';
 import Selectbox from 'app/components/Selectbox';
-import { getBibleBook, getBibleTranslation } from 'app/services/Bibles';
+import { getBibleBook, getBibleTranslation } from 'services/Bibles';
 import {
   ChevronRightIcon,
   ArrowNarrowLeftIcon,
   ArrowNarrowRightIcon,
 } from '@heroicons/react/solid';
+import BibleVerses from 'app/components/bible/BibleVerses';
 
 export default function BibleReader(props) {
   const bibleTranslations = useAppStore.getState().bibleTranslations;
@@ -33,7 +34,7 @@ export default function BibleReader(props) {
     ],
     async () =>
       await axios.get(
-        `/bibleVerses?where=translation:${readerState.translation}+and+book:${readerState.book}+and+chapter:${readerState.chapter}`,
+        `/bibleVerses?limit=999&order=book,chapter,verse&where=translation:${readerState.translation}+and+book:${readerState.book}+and+chapter:${readerState.chapter}`,
       ),
   );
 
@@ -46,7 +47,7 @@ export default function BibleReader(props) {
     ],
     async () =>
       await axios.get(
-        `/bibleVerses?select=id,chapter&order=chapter&where=translation:${readerState.translation}+and+book:${readerState.book}+and+verse:1`,
+        `/bibleVerses?select=id,chapter&limit=999&order=chapter&where=translation:${readerState.translation}+and+book:${readerState.book}+and+verse:1`,
       ),
   );
 
@@ -161,35 +162,7 @@ export default function BibleReader(props) {
           </div>
         </div>
         <div className="my-4">
-          <div className="bg-white dark:bg-transparent shadow hover:shadow-2xl transition-all overflow-hidden sm:rounded-md">
-            <ul
-              role="list"
-              className="divide-y divide-black/10 dark:divide-white/10"
-            >
-              {bibleVerses?.data?.data?.response?.map(verse => (
-                <li key={verse.id}>
-                  <div className="block hover:bg-gray-50 hover:dark:bg-white/10">
-                    <div className="px-4 py-4 flex items-center sm:px-6">
-                      <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
-                        <div className="">
-                          <sup className="text-primary/75 font-bold">
-                            {verse.verse}
-                          </sup>{' '}
-                          {verse.text}
-                        </div>
-                      </div>
-                      {/* <div className="ml-5 flex-shrink-0">
-                        <ChevronRightIcon
-                          className="h-5 w-5 text-gray-400"
-                          aria-hidden="true"
-                        />
-                      </div> */}
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <BibleVerses>{bibleVerses?.data?.data?.response}</BibleVerses>
         </div>
         <nav className="border-t border-black/5 dark:border-white/10 mt-8 pt-4 flex flex-row items-start justify-between sm:px-0">
           <div className="grow">

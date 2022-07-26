@@ -31,10 +31,14 @@ export function Authenticate() {
         <div className="max-w-md w-80 space-y-8">
           <div>
             <img
-              className="mx-auto h-60 w-auto"
-              src="/assets/logo-vertical.svg"
+              className="mx-auto h-40 w-auto"
+              src="/assets/logo.svg"
               alt="Workflow"
             />
+          </div>
+          <div className="text-center">
+            <h1 className="text-4xl">BibleFlow</h1>
+            <p className="mute">Timeline studytool</p>
           </div>
           <form
             className="mt-8 space-y-6"

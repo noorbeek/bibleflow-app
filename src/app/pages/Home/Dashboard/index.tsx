@@ -79,7 +79,7 @@ export default function Dashboard(props) {
             </label>
             <select
               id="question-tabs"
-              className="block w-full rounded-md border-gray-300 text-base font-medium text-gray-900 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+              className="block w-full rounded-md border-gray-300 text-base font-medium shadow-sm focus:border-primary-500 focus:ring-primary-500"
               defaultValue={tabs.find(tab => tab?.current)?.name}
             >
               {tabs.map(tab => (
@@ -103,7 +103,7 @@ export default function Dashboard(props) {
                       : 'text-gray-500 hover:text-gray-700',
                     tabIdx === 0 ? 'rounded-l-lg' : '',
                     tabIdx === tabs.length - 1 ? 'rounded-r-lg' : '',
-                    'group relative min-w-0 flex-1 overflow-hidden bg-white py-4 px-6 text-sm font-medium text-center hover:bg-gray-50 focus:z-10',
+                    'group relative min-w-0 flex-1 overflow-hidden bg-default py-4 px-6 text-sm font-medium text-center focus:z-10',
                   )}
                 >
                   <span>{tab.name}</span>
@@ -125,7 +125,7 @@ export default function Dashboard(props) {
             {questions.map(question => (
               <li
                 key={question.id}
-                className="bg-white px-4 py-6 shadow sm:p-6 sm:rounded-lg"
+                className="bg-default px-4 py-6 shadow sm:p-6 sm:rounded-lg"
               >
                 <article aria-labelledby={'question-title-' + question.id}>
                   <div>
@@ -138,7 +138,7 @@ export default function Dashboard(props) {
                         />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-medium text-gray-900">
+                        <p className="text-sm font-medium">
                           <a
                             href={question.author.href}
                             className="hover:underline"
@@ -160,7 +160,7 @@ export default function Dashboard(props) {
                           className="relative inline-block text-left"
                         >
                           <div>
-                            <Menu.Button className="-m-2 p-2 rounded-full flex items-center text-gray-400 hover:text-gray-600">
+                            <Menu.Button className="-m-2 p-2 rounded-full flex items-center">
                               <span className="sr-only">Open options</span>
                               <DotsVerticalIcon
                                 className="h-5 w-5"
@@ -178,7 +178,7 @@ export default function Dashboard(props) {
                             leaveFrom="transform opacity-100 scale-100"
                             leaveTo="transform opacity-0 scale-95"
                           >
-                            <Menu.Items className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                            <Menu.Items className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-default ring-1 ring-black ring-opacity-5 focus:outline-none">
                               <div className="py-1">
                                 <Menu.Item>
                                   {({ active }) => (

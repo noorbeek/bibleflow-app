@@ -8,7 +8,7 @@
 
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Switch, Route, BrowserRouter } from 'react-router-dom';
+import { Routes, Route, BrowserRouter } from 'react-router-dom';
 
 import { useAppStore } from '../store/global';
 import { queryClientOptions } from '../interceptors/react-query';
@@ -27,13 +27,13 @@ export function App() {
           <meta name="description" content="A React Boilerplate application" />
         </Helmet>
         <div id="app" className={darkMode ? 'dark' : ''}>
-          <Switch>
+          <Routes>
             {authenticated ? (
-              <Route exact path="*" component={Home} />
+              <Route path="*" element={<Home />} />
             ) : (
-              <Route exact path="*" component={Authenticate} />
+              <Route path="*" element={<Authenticate />} />
             )}
-          </Switch>
+          </Routes>
         </div>
       </BrowserRouter>
     </QueryClientProvider>
