@@ -83,7 +83,7 @@ export default function Search(props) {
           </div>
         </div>
 
-        <div className="my-4 text-justify">
+        <div className="my-4 text-justify px-4 sm:px-0">
           {bibleVerses?.data?.data?.response.map(verse => {
             let setBook = false;
             let setChapter = false;

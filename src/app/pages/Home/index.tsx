@@ -93,11 +93,11 @@ export function Home() {
                     className="group flex items-center px-3 py-2 rounded-md"
                   >
                     <img
-                      className="block h-8 w-auto lex-shrink-0 -ml-1 mr-3"
+                      className="block h-8 w-auto lex-shrink-0 -ml-1 sm:-ml-0 mr-0 sm:mr-3"
                       src="/assets/logo.svg"
                       alt="Workflow"
                     />
-                    <div className="leading-3">
+                    <div className="leading-3 hidden sm:block">
                       <span className="text-default text-sm font-extrabold">
                         BibleFlow
                       </span>
@@ -131,9 +131,6 @@ export function Home() {
                               onChange={event => setQuery(event.target.value)}
                             />
                           </div>
-                          <button type="submit">
-                            <span>Zoek</span>
-                          </button>
                         </div>
 
                         {/* <label htmlFor="search" className="sr-only">
@@ -236,7 +233,11 @@ export function Home() {
               </div>
             </div>
 
-            <Popover.Panel as="nav" className="lg:hidden" aria-label="Global">
+            <Popover.Panel
+              as="nav"
+              className="lg:hidden w-full h-full bg-default"
+              aria-label="Global"
+            >
               <div className="max-w-3xl mx-auto px-2 pt-2 pb-3 space-y-1 sm:px-4">
                 {navigation.map(item => (
                   <a
@@ -301,15 +302,6 @@ export function Home() {
                     </a>
                   ))}
                 </div>
-              </div>
-
-              <div className="mt-6 max-w-3xl mx-auto px-4 sm:px-6">
-                <a
-                  href="#"
-                  className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700"
-                >
-                  New Post
-                </a>
               </div>
             </Popover.Panel>
           </>
