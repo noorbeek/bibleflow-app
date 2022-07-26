@@ -18,7 +18,9 @@ export default function Search(props) {
   const bibleBooks = useAppStore.getState().bibleBooks;
   const location = useLocation();
 
-  let q = location.search.replace(/^.*(\?+|&+)q=([^$&]+).*$/, '$2');
+  let q = decodeURIComponent(
+    location.search.replace(/^.*(\?+|&+)q=([^$&]+).*$/, '$2'),
+  );
 
   const [searchState, setSearchState] = useState<any>({
     translation: localStorage['currentTranslation']
@@ -28,10 +30,19 @@ export default function Search(props) {
 
   const bibleVerses = useQuery(
     ['bibleVerses', searchState.translation, q],
-    async () =>
-      await axios.get(
-        `/bibleVerses?limit=999&order=book,chapter,verse&where=translation:${searchState.translation}+and+text~${q}`,
-      ),
+    async () => {
+      let query: any = [];
+      q.split(/\s*,+\s*/g).forEach(orQ => {
+        if (orQ) {
+          query.push(`(text~${orQ.split(/\s+/g).join('+and+text~')})`);
+        }
+      });
+      return await axios.get(
+        `/bibleVerses?limit=999&order=book,chapter,verse&where=translation:${
+          searchState.translation
+        }+and+(${query.join('+or+')})`,
+      );
+    },
   );
 
   function updateLocalStorage(translation, book, chapter, verse) {
@@ -85,7 +96,7 @@ export default function Search(props) {
               setChapter = true;
             }
             return (
-              <>
+              <span key={verse.id}>
                 {setBook ? (
                   <div className="font-bold text-lg pt-4">
                     {getBibleBook(verse.book).name}
@@ -95,11 +106,11 @@ export default function Search(props) {
                   <div
                     className={'mute text-sm ' + (setBook ? 'pb-4' : 'py-4')}
                   >
-                    Hoofdstuk {verse.chapter}
+                    {getBibleBook(verse.book).name} {verse.chapter}
                   </div>
                 ) : null}
                 <BibleVerse highlight={q}>{verse}</BibleVerse>
-              </>
+              </span>
             );
           })}
         </div>

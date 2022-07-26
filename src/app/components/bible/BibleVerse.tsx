@@ -7,20 +7,19 @@ export default function BibleVerse(props) {
   );
 
   if (props.highlight) {
-    console.warn(
-      verse,
-      props.highlight,
-      verse.match(new RegExp('(' + props.highlight + ')', 'gi')),
-    );
-    verse = verse.replace(
-      new RegExp(
-        '([\u0000-\u0019\u0021-\uFFFF]*' +
-          props.highlight +
-          '[\u0000-\u0019\u0021-\uFFFF]*)',
-        'gui',
-      ),
-      '<span class="highlight">$1</span>',
-    );
+    props.highlight.split(/[\s,]/g).forEach(element => {
+      if (element) {
+        verse = verse.replace(
+          new RegExp(
+            '([ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏàáâãäåæçèéêëìíîïÐÑÒÓÔÕÖØÙÚÛÜÝÞßðñòóôõöøùúûüýþÿa-z]*' +
+              element +
+              '[ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏàáâãäåæçèéêëìíîïÐÑÒÓÔÕÖØÙÚÛÜÝÞßðñòóôõöøùúûüýþÿa-z]*)',
+            'gi',
+          ),
+          '<span class="highlight">$1</span>',
+        );
+      }
+    });
   }
   return (
     <span className="bible-verse text-justify">
