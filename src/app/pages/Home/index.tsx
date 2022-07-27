@@ -27,27 +27,19 @@ import BibleReader from './BibleReader';
 import ButtonDarkMode from 'app/components/buttons/DarkMode';
 import Search from './Search';
 import BibleTimeline from './BibleTimeline';
+import BibleStudies from './BibleStudies';
+import BibleStudy from './BibleStudies/BibleStudy';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
   { name: 'Bijbel', href: '/', icon: BookOpenIcon },
+  { name: 'Bijbelstudies', href: '/studies', icon: TrendingUpIcon },
   { name: 'Timeline', href: '/timeline', icon: CollectionIcon },
-  { name: 'Trending', href: '#', icon: TrendingUpIcon },
 ];
 const userNavigation = [
   { name: 'Your Profile', href: '#' },
   { name: 'Settings', href: '#' },
   { name: 'Sign out', onClick: () => useAppStore.getState().logout() },
-];
-const communities = [
-  { name: 'Movies', href: '#' },
-  { name: 'Food', href: '#' },
-  { name: 'Sports', href: '#' },
-  { name: 'Animals', href: '#' },
-  { name: 'Science', href: '#' },
-  { name: 'Dinosaurs', href: '#' },
-  { name: 'Talents', href: '#' },
-  { name: 'Gaming', href: '#' },
 ];
 
 function classNames(...classes) {
@@ -397,6 +389,8 @@ export function Home() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/search" element={<Search />} />
             <Route path="/timeline" element={<BibleTimeline />} />
+            <Route path="/studies" element={<BibleStudies />} />
+            <Route path="/studies/:id" element={<BibleStudy />} />
             <Route path="/" element={<BibleReader />} />
             <Route path="*" element={<BibleReader />} />
           </Routes>
