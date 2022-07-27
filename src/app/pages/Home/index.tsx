@@ -26,11 +26,12 @@ import {
 import BibleReader from './BibleReader';
 import ButtonDarkMode from 'app/components/buttons/DarkMode';
 import Search from './Search';
+import BibleTimeline from './BibleTimeline';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
   { name: 'Bijbel', href: '/', icon: BookOpenIcon },
-  { name: 'Timelines', href: '/timelines', icon: CollectionIcon },
+  { name: 'Timeline', href: '/timeline', icon: CollectionIcon },
   { name: 'Trending', href: '#', icon: TrendingUpIcon },
 ];
 const userNavigation = [
@@ -395,6 +396,7 @@ export function Home() {
           <Routes>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/search" element={<Search />} />
+            <Route path="/timeline" element={<BibleTimeline />} />
             <Route path="/" element={<BibleReader />} />
             <Route path="*" element={<BibleReader />} />
           </Routes>
