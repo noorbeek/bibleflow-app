@@ -79,7 +79,7 @@ export function Home() {
         className={({ open }) =>
           classNames(
             open ? 'fixed inset-0 z-40 overflow-y-auto' : '',
-            'bg-white dark:bg-black/20 shadow-sm lg:static lg:overflow-y-visible',
+            'bg-default shadow-sm lg:static lg:overflow-y-visible',
           )
         }
       >
@@ -181,14 +181,12 @@ export function Home() {
                   {/* Profile dropdown */}
                   <Menu as="div" className="flex-shrink-0 relative ml-5">
                     <div>
-                      <Menu.Button className="bg-transparent hover:bg-transparent rounded-full flex">
-                        <Avatar
-                          text={
-                            user && user.name?.length > 2
-                              ? user.name[0] + user.name[1]
-                              : ''
-                          }
-                        />
+                      <Menu.Button className="bg-transparent hover:bg-transparent hover:shadow-none text-default rounded-full flex">
+                        <Avatar className="bg-gray-300 dark:bg-primary cursor-pointer">
+                          {user && user.name?.length > 2
+                            ? user.name[0] + user.name[1]
+                            : ''}
+                        </Avatar>
                       </Menu.Button>
                     </div>
                     <Transition
@@ -222,13 +220,6 @@ export function Home() {
                       </Menu.Items>
                     </Transition>
                   </Menu>
-
-                  <a
-                    href="#"
-                    className="ml-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-500 hover:bg-primary-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-                  >
-                    New Post
-                  </a>
                 </div>
               </div>
             </div>
@@ -273,7 +264,7 @@ export function Home() {
               </div>
               <div className="border-t border-gray-200 dark:border-white/10 pt-4">
                 <div className="max-w-3xl mx-auto px-4 flex items-center sm:px-6 ">
-                  <div className="flex-shrink-0">
+                  <div className="flex-shrink-0 text-default">
                     {user ? user.name[0] + user.name[1] : '?'}
                   </div>
                   <div className="ml-3">
@@ -286,7 +277,7 @@ export function Home() {
                   </div>
                   <button
                     type="button"
-                    className="ml-auto flex-shrink-0 bg-transparent rounded-full p-1 hover:mute focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                    className="ml-auto flex-shrink-0 bg-transparent rounded-full p-1 hover:mute focus:outline-none"
                   >
                     <ButtonDarkMode />
                   </button>

@@ -65,14 +65,14 @@ export default function Selectbox(props) {
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <Listbox.Options className="absolute z-10 mt-1 w-full bg-default text-default shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+              <Listbox.Options className="absolute bg-default z-10 mt-1 w-full text-default drop-shadow-2xl max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
                 {props.options?.map(option => (
                   <Listbox.Option
                     key={option.id}
                     className={({ active }) =>
                       classNames(
                         active ? 'text-white bg-primary' : '',
-                        'cursor-default select-none relative py-2 pl-3 pr-9',
+                        'hover:bg-primary cursor-default select-none relative py-2 pl-3 pr-9',
                       )
                     }
                     value={option}

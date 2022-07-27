@@ -10,6 +10,7 @@ import {
   ArrowNarrowRightIcon,
 } from '@heroicons/react/solid';
 import BibleVerses from 'app/components/bible/BibleVerses';
+import Api from 'services/Api';
 
 export default function BibleReader(props) {
   const bibleTranslations = useAppStore.getState().bibleTranslations;
@@ -33,9 +34,11 @@ export default function BibleReader(props) {
       readerState.chapter,
     ],
     async () =>
-      await axios.get(
-        `/bibleVerses?limit=999&order=book,chapter,verse&where=translation:${readerState.translation}+and+book:${readerState.book}+and+chapter:${readerState.chapter}`,
-      ),
+      await Api.get(`/bibleVerses`, {
+        limit: 999,
+        where: `translation:${readerState.translation} and book:${readerState.book} and chapter:${readerState.chapter}`,
+        order: 'book,chapter,verse',
+      }),
   );
 
   const bibleChapters = useQuery(
@@ -46,9 +49,12 @@ export default function BibleReader(props) {
       readerState.chapter,
     ],
     async () =>
-      await axios.get(
-        `/bibleVerses?select=id,chapter&limit=999&order=chapter&where=translation:${readerState.translation}+and+book:${readerState.book}+and+verse:1`,
-      ),
+      await Api.get(`/bibleVerses`, {
+        limit: 999,
+        select: 'id,chapter',
+        where: `translation:${readerState.translation} and book:${readerState.book} and verse:1`,
+        order: 'chapter',
+      }),
   );
 
   function updateLocalStorage(translation, book, chapter, verse) {
@@ -105,7 +111,7 @@ export default function BibleReader(props) {
               </h1>
               <p className="mt-1 text-sm text-gray-500 truncate">
                 {getBibleBook(readerState.book)?.name} {readerState.chapter}:1-
-                {bibleVerses?.data?.data?.response?.length}
+                {bibleVerses?.data?.length}
               </p>
             </div>
           </div>
@@ -149,7 +155,7 @@ export default function BibleReader(props) {
               label="Hoofdstuk"
               selected={readerState.chapter}
               onChange={setChapter}
-              options={bibleChapters?.data?.data?.response?.map(chapter => {
+              options={bibleChapters?.data?.map(chapter => {
                 return {
                   id: chapter.chapter,
                   text: chapter.chapter,
@@ -162,7 +168,7 @@ export default function BibleReader(props) {
           </div>
         </div>
         <div className="my-4">
-          <BibleVerses>{bibleVerses?.data?.data?.response}</BibleVerses>
+          <BibleVerses>{bibleVerses?.data}</BibleVerses>
         </div>
         <nav className="border-t border-black/5 dark:border-white/10 mt-8 pt-4 flex flex-row items-start justify-between sm:px-0">
           <div className="grow">
@@ -223,7 +229,7 @@ export default function BibleReader(props) {
             {getBibleTranslation(readerState.translation)?.name} (
             {getBibleTranslation(readerState.translation)?.abbreviation}) -
             {getBibleBook(readerState.book)?.name} {readerState.chapter}:1-
-            {bibleVerses?.data?.data?.response?.length}
+            {bibleVerses?.data?.length}
             <br />
             <small>
               {getBibleTranslation(readerState.translation)?.copyright}

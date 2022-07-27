@@ -12,6 +12,7 @@ import {
 import BibleVerses from 'app/components/bible/BibleVerses';
 import { useLocation } from 'react-router-dom';
 import BibleVerse from 'app/components/bible/BibleVerse';
+import Api from 'services/Api';
 
 export default function Search(props) {
   const bibleTranslations = useAppStore.getState().bibleTranslations;
@@ -37,11 +38,13 @@ export default function Search(props) {
           query.push(`(text~${orQ.split(/\s+/g).join('+and+text~')})`);
         }
       });
-      return await axios.get(
-        `/bibleVerses?limit=999&order=book,chapter,verse&where=translation:${
-          searchState.translation
-        }+and+(${query.join('+or+')})`,
-      );
+      return await Api.get(`/bibleVerses`, {
+        limit: 999,
+        order: 'book,chapter,verse',
+        where: `translation:${searchState.translation} and (${query.join(
+          ' or ',
+        )})`,
+      });
     },
   );
 
@@ -77,14 +80,14 @@ export default function Search(props) {
                 {getBibleTranslation(searchState.translation)?.abbreviation})
               </h1>
               <p className="mt-1 text-sm text-gray-500 truncate">
-                {bibleVerses?.data?.data?.response?.length} verzen gevonden
+                {bibleVerses?.data?.length} verzen gevonden
               </p>
             </div>
           </div>
         </div>
 
         <div className="my-4 text-justify px-4 sm:px-0">
-          {bibleVerses?.data?.data?.response.map(verse => {
+          {bibleVerses?.data?.map(verse => {
             let setBook = false;
             let setChapter = false;
             if (verse.book !== currentBook) {
