@@ -1,22 +1,13 @@
-import axios from 'axios';
 import React, { Fragment, useState } from 'react';
 import { useAppStore } from 'store/global';
 import { useQuery } from '@tanstack/react-query';
-import Selectbox from 'app/components/Selectbox';
 import { getBibleBook, getBibleTranslation } from 'services/Bibles';
-import {
-  ChevronRightIcon,
-  ArrowNarrowLeftIcon,
-  ArrowNarrowRightIcon,
-} from '@heroicons/react/solid';
-import BibleVerses from 'app/components/bible/BibleVerses';
 import { useLocation } from 'react-router-dom';
 import BibleVerse from 'app/components/bible/BibleVerse';
 import Api from 'services/Api';
 
 export default function Search(props) {
   const bibleTranslations = useAppStore.getState().bibleTranslations;
-  const bibleBooks = useAppStore.getState().bibleBooks;
   const location = useLocation();
 
   let q = decodeURIComponent(
@@ -32,30 +23,26 @@ export default function Search(props) {
   const bibleVerses = useQuery(
     ['bibleVerses', searchState.translation, q],
     async () => {
-      let query: any = [];
-      q.split(/\s*,+\s*/g).forEach(orQ => {
-        if (orQ) {
-          query.push(`(text~${orQ.split(/\s+/g).join('+and+text~')})`);
-        }
-      });
-      return await Api.get(`/bibleVerses`, {
-        limit: 999,
-        order: 'book,chapter,verse',
-        where: `translation:${searchState.translation} and (${query.join(
-          ' or ',
-        )})`,
-      });
+      return await Api.get(
+        `/search/${
+          getBibleTranslation(searchState.translation).abbreviation
+        }?q=${q}`,
+        {
+          limit: 999,
+          order: 'book,chapter,verse',
+        },
+      );
     },
   );
 
-  function updateLocalStorage(translation, book, chapter, verse) {
+  function updateLocalStorage(translation) {
     if (translation) {
       localStorage['currentTranslation'] = translation;
     }
   }
 
   function setTranslation(translation) {
-    updateLocalStorage(translation.id, 1, 1, null);
+    updateLocalStorage(translation.id);
     setSearchState(
       Object.assign({}, searchState, {
         translation: translation.id,

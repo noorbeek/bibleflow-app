@@ -1,19 +1,26 @@
 import React from 'react';
 
 export default function BibleVerse(props) {
+  let chars =
+    'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏàáâãäåæçèéêëìíîïÐÑÒÓÔÕÖØÙÚÛÜÝÞßðñòóôõöøùúûüýþÿa-z';
   let verse: string = props?.children?.text.replace(
     /\*+([^\*]+)\*+/gi,
     '<i>$1</i>',
   );
 
   if (props.highlight) {
-    props.highlight.split(/[\s,]/g).forEach(element => {
-      if (element) {
+    props.highlight.split(/[,]+/g).forEach(element => {
+      if (element && element.match(/^[a-z-\s]+$/gi)) {
+        console.warn(element.trim().replace(/[\s]+/g, '|'));
         verse = verse.replace(
           new RegExp(
-            '([ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏàáâãäåæçèéêëìíîïÐÑÒÓÔÕÖØÙÚÛÜÝÞßðñòóôõöøùúûüýþÿa-z]*' +
-              element +
-              '[ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏàáâãäåæçèéêëìíîïÐÑÒÓÔÕÖØÙÚÛÜÝÞßðñòóôõöøùúûüýþÿa-z]*)',
+            '([' +
+              chars +
+              ']*(' +
+              element.trim().replace(/\s+/g, '|') +
+              ')[' +
+              chars +
+              ']*)',
             'gi',
           ),
           '<span class="highlight">$1</span>',
