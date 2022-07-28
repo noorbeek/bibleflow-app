@@ -37,9 +37,9 @@ const navigation = [
   { name: 'Timeline', href: '/timeline', icon: CollectionIcon },
 ];
 const userNavigation = [
-  { name: 'Your Profile', href: '#' },
-  { name: 'Settings', href: '#' },
-  { name: 'Sign out', onClick: () => useAppStore.getState().logout() },
+  { name: 'Mijn profiel', href: '#' },
+  { name: 'Instellingen', href: '#' },
+  { name: 'Uitloggen', onClick: () => useAppStore.getState().logout() },
 ];
 
 function classNames(...classes) {
@@ -78,7 +78,7 @@ export function Home() {
       >
         {({ open }) => (
           <>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
               <div className="relative flex justify-between xl:grid xl:grid-cols-12 lg:gap-8">
                 <div className="flex md:absolute md:left-0 md:inset-y-0 lg:static xl:col-span-2">
                   <a
@@ -90,16 +90,18 @@ export function Home() {
                       src="/assets/logo.svg"
                       alt="Workflow"
                     />
-                    <div className="leading-3 hidden sm:block">
-                      <span className="text-default text-sm font-extrabold">
+                    <div className="leading-3 hidden lg:block">
+                      <span className="text-default text-sm font-extrabold truncate">
                         BibleFlow
                       </span>
                       <br />
-                      <span className="mute text-xs">Timeline studytool</span>
+                      <span className="mute text-xs truncate">
+                        Timeline studytool
+                      </span>
                     </div>
                   </a>
                 </div>
-                <div className="min-w-0 flex-1 md:px-8 lg:px-0 xl:col-span-6">
+                <div className="min-w-0 flex-1 md:px-8 lg:px-0 xl:col-span-7">
                   <div className="flex items-center px-6 py-4 md:max-w-3xl md:mx-auto lg:max-w-none lg:mx-0 xl:px-0">
                     <form className="w-full" onSubmit={searchSubmit}>
                       <div className="w-full">
@@ -168,7 +170,7 @@ export function Home() {
                     )}
                   </Popover.Button>
                 </div>
-                <div className="hidden lg:flex lg:items-center lg:justify-end xl:col-span-4">
+                <div className="hidden lg:flex lg:items-center lg:justify-end xl:col-span-3">
                   <ButtonDarkMode />
 
                   {/* Profile dropdown */}
@@ -293,8 +295,8 @@ export function Home() {
       </Popover>
 
       <div className="py-10">
-        <div className="max-w-3xl mx-auto sm:px-6 lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-12 lg:gap-8">
-          <div className="hidden lg:block lg:col-span-3 xl:col-span-2">
+        <div className="w-full mx-auto sm:px-6 lg:px-8 lg:grid lg:grid-cols-12 lg:gap-8">
+          <div className="hidden lg:block lg:col-span-2">
             <nav
               aria-label="Sidebar"
               className="sticky top-4 divide-y divide-gray-300 dark:divide-gray-700"

@@ -11,8 +11,12 @@
 
   /** Typography */
 
-  html, body, #app, {
+  #app, #root {
     @apply bg-slate-50;
+    @apply min-h-full;
+    @apply absolute;
+    @apply inset-0;
+    @apply overflow-auto;
   }
   #app.dark {
     background-color: #2F2A46;
@@ -136,12 +140,11 @@
 
 /** Other */
 
-html, body, #root, #app {
+html, body {
   height: 100%;
   width: 100%;
   font-family: Noto Sans, sans-serif;
   margin: 0;
-  overflow: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

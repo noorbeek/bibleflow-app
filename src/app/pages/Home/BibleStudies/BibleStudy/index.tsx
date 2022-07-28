@@ -6,8 +6,8 @@ import Selectbox from 'app/components/Selectbox';
 import { getBibleBook, getBibleTranslation } from 'services/Bibles';
 import {
   ChevronRightIcon,
-  ArrowNarrowLeftIcon,
-  ArrowNarrowRightIcon,
+  InformationCircleIcon,
+  ClipboardListIcon,
 } from '@heroicons/react/solid';
 import BibleVerses from 'app/components/bible/BibleVerses';
 import Api from 'services/Api';
@@ -50,7 +50,7 @@ export default function BibleStudy(props) {
 
   return (
     <>
-      <main className="lg:col-span-6 text-justify px-4 sm:px-0">
+      <main className="lg:col-span-7 text-justify px-4 sm:px-0">
         <div className="pb-5 border-b border-gray-200 dark:border-white/10">
           <div className="sm:flex sm:justify-between sm:items-baseline">
             <div className="sm:w-0 sm:flex-1">
@@ -104,16 +104,14 @@ export default function BibleStudy(props) {
           </ul>
         </div>
       </main>
-      <aside className="sticky lg:col-span-3 px-4 sm:px-0">
-        <div className="sticky">
-          <section className="pb-5 mb-5 border-b border-gray-200 dark:border-white/10">
+      <aside className="lg:col-span-3 px-4 sm:px-0">
+        <div className="sticky top-0 ">
+          <section className="pb-4 mb-5 border-b border-gray-200 dark:border-white/10">
             <div>
-              <p
-                className="text-xs font-semibold mute uppercase tracking-wider"
-                id="bibletranslations-headline"
-              >
-                Over deze studie
-              </p>
+              <div className="text-xs font-semibold mute uppercase py-5 tracking-wider border-b border-gray-200 dark:border-white/10">
+                <InformationCircleIcon className="w-6 h-6 inline" /> Over deze
+                studie
+              </div>
               <div className="my-6 text-sm">
                 <label className="mute text-xs">Auteur</label>
                 <br />
@@ -123,12 +121,9 @@ export default function BibleStudy(props) {
           </section>
           <section className="pb-5 mb-5 border-b border-gray-200 dark:border-white/10">
             <div>
-              <p
-                className="text-xs font-semibold mute uppercase tracking-wider"
-                id="bibletranslations-headline"
-              >
-                Index
-              </p>
+              <div className="text-xs font-semibold mute uppercase pb-5 tracking-wider border-b border-gray-200 dark:border-white/10">
+                <ClipboardListIcon className="w-6 h-6 inline" /> Inhoudsopgave
+              </div>
               <div className="my-6 text-sm">
                 <ul role="list" className="-my-4">
                   {studyComponents?.data?.map(component => (
