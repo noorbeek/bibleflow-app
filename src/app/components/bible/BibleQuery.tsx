@@ -38,12 +38,12 @@ export default function BibleQuery(props) {
           <span key={verse.id}>
             {setBook ? (
               <div className="font-bold text-lg pt-4">
-                {getBibleBook(verse.book).name}
+                {getBibleBook(verse.book)?.name}
               </div>
             ) : null}
             {setChapter ? (
               <div className={'mute text-sm ' + (setBook ? 'pb-4' : 'py-4')}>
-                {getBibleBook(verse.book).name} {verse.chapter}
+                {getBibleBook(verse.book)?.name} {verse.chapter}
               </div>
             ) : null}
             <BibleVerse>{verse}</BibleVerse>

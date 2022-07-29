@@ -18,7 +18,7 @@ export default function BibleReader(props) {
   const [readerState, setReaderState] = useState<any>({
     translation: localStorage['currentTranslation']
       ? localStorage['currentTranslation']
-      : bibleTranslations[0].id,
+      : bibleTranslations[0]?.id,
     book: localStorage['currentBook'] ? localStorage['currentBook'] : 1,
     chapter: localStorage['currentChapter']
       ? localStorage['currentChapter']
