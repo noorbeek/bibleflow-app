@@ -74,7 +74,7 @@ export default function Search(props) {
           </div>
         </div>
 
-        <div className="my-4 text-justify p-4 md:p-8 dark:px-0 bg-white dark:bg-transparent shadow transition-all overflow-hidden sm:rounded-md">
+        <div className="my-4 text-justify p-4 md:p-8 bg-white dark:bg-transparent shadow transition-all overflow-hidden sm:rounded-md">
           {bibleVerses?.data?.map(verse => {
             let setBook = false;
             let setChapter = false;
@@ -92,7 +92,6 @@ export default function Search(props) {
             }
             if (currentVerse && verse.verse * 1 !== currentVerse * 1 + 1) {
               setVerse = true;
-              console.warn(verse.verse * 1 + ' !== ' + (currentVerse * 1 + 1));
             }
             currentVerse = verse.verse * 1;
             return (
