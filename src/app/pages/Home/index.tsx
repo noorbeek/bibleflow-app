@@ -29,6 +29,8 @@ import Search from './Search';
 import BibleTimeline from './BibleTimeline';
 import BibleStudies from './BibleStudies';
 import BibleStudy from './BibleStudies/BibleStudy';
+import ShareBanner from 'app/components/ShareBanner';
+import { useShareStore } from 'store/share';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
@@ -53,6 +55,7 @@ export function Home() {
   const bibleTimelines = useAppStore().bibleTimelines;
   const location = useLocation();
   const navigate = useNavigate();
+  const { bibleVerses: selectedVerses } = useShareStore();
 
   let [q, setQuery] = useState(localStorage['q'] ? localStorage['q'] : '');
 
@@ -397,6 +400,7 @@ export function Home() {
             <Route path="*" element={<BibleReader />} />
           </Routes>
         </div>
+        <ShareBanner />
       </div>
     </div>
   );

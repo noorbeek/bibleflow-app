@@ -10,6 +10,7 @@ interface AppStore {
   bibleBooks?: any;
   bibleTranslations?: any;
   bibleTimelines?: any;
+  bibleVerses?: any;
   logout: any;
   login: any;
   toggleDarkMode: any;
@@ -43,6 +44,7 @@ export const useAppStore = create<AppStore>(
       bibleBooks: [],
       bibleTranslations: [],
       bibleTimelines: [],
+      bibleVerses: [],
 
       // Mutators
 

@@ -59,7 +59,7 @@ export default function Search(props) {
 
   return (
     <>
-      <main className="col-span-9">
+      <main className="col-span-10">
         <div className="pb-5 border-b border-gray-200 dark:border-white/10 px-4 sm:px-0">
           <div className="sm:flex sm:justify-between sm:items-baseline">
             <div className="sm:w-0 sm:flex-1">
@@ -74,7 +74,7 @@ export default function Search(props) {
           </div>
         </div>
 
-        <div className="my-4 text-justify px-4 sm:px-0">
+        <div className="my-4 text-justify p-4 md:p-8 dark:px-0 bg-white dark:bg-transparent shadow transition-all overflow-hidden sm:rounded-md">
           {bibleVerses?.data?.map(verse => {
             let setBook = false;
             let setChapter = false;
