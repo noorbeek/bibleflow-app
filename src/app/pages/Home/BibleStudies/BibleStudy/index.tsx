@@ -1,22 +1,34 @@
-import axios from 'axios';
 import React, { Fragment, useState } from 'react';
-import { useAppStore } from 'store/global';
 import { useQuery } from '@tanstack/react-query';
-import Selectbox from 'app/components/Selectbox';
-import { getBibleBook, getBibleTranslation } from 'services/Bibles';
 import {
   ChevronRightIcon,
   InformationCircleIcon,
+  PlusCircleIcon,
   ClipboardListIcon,
 } from '@heroicons/react/solid';
-import BibleVerses from 'app/components/bible/BibleVerses';
 import Api from 'services/Api';
-import { useNavigate, useParams } from 'react-router-dom';
-import BibleVerse from 'app/components/bible/BibleVerse';
+import { useParams } from 'react-router-dom';
 import BibleQuery from 'app/components/bible/BibleQuery';
+import { SortableItem } from 'app/components/SortableItem';
 
-export default function BibleStudy(props) {
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+
+export default function BibleStudy() {
   const { id } = useParams();
+  const [itemList, setItemList] = useState([]);
 
   const study = useQuery(
     ['study'],
@@ -35,6 +47,11 @@ export default function BibleStudy(props) {
         order: 'sort',
         limit: 999,
       }),
+    {
+      onSuccess: data => {
+        setItemList(data);
+      },
+    },
   );
 
   const refs = studyComponents?.data?.reduce((acc, value) => {
@@ -47,6 +64,33 @@ export default function BibleStudy(props) {
       behavior: 'smooth',
       block: 'start',
     });
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
+
+  function handleDragEnd(event) {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      const oldIndex = itemList.findIndex((item: any) => item.id === active.id);
+      const newIndex = itemList.findIndex((item: any) => item.id === over.id);
+      const newList = arrayMove(itemList, oldIndex, newIndex);
+
+      setItemList(newList);
+
+      newList.forEach((component: any, index) => {
+        if (index !== component.sort) {
+          Api.put(`/studyComponents/${component.id}`, {
+            sort: index,
+          });
+        }
+      });
+    }
+  }
 
   return (
     <>
@@ -63,46 +107,65 @@ export default function BibleStudy(props) {
           </div>
         </div>
         <div className="py-4 font-bold">{study?.data?.description}</div>
-        <div className="bg-white dark:bg-transparent shadow overflow-hidden sm:rounded-md">
-          <ul role="list">
-            {studyComponents?.data?.map(component => (
-              <li key={component.id} ref={refs[component.id]}>
-                {component.type === 'header' ? (
-                  <div
-                    className="py-4"
-                    dangerouslySetInnerHTML={{
-                      __html:
-                        '<h' +
-                        (component.properties?.level > 0 &&
-                        component.properties?.level < 7
-                          ? component.properties?.level
-                          : 1) +
-                        '>' +
-                        component.properties?.text +
-                        '</h' +
-                        (component.properties?.level > 0 &&
-                        component.properties?.level < 7
-                          ? component.properties?.level
-                          : 1) +
-                        '>',
-                    }}
-                  ></div>
-                ) : null}
-                {component.type === 'text' ? (
-                  <div
-                    className="py-4"
-                    dangerouslySetInnerHTML={{
-                      __html: component.properties?.text,
-                    }}
-                  ></div>
-                ) : null}
-                {component.type === 'bibleQuery' ? (
-                  <BibleQuery>{component.properties?.query}</BibleQuery>
-                ) : null}
-              </li>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={itemList}
+            strategy={verticalListSortingStrategy}
+          >
+            {itemList?.map((component: any) => (
+              <SortableItem key={component.id} id={component.id}>
+                <div
+                  ref={refs[component.id]}
+                  className="relative p-4 hover:bg-primary/25 border-l-8 border-primary/10 dark:border-primary/10"
+                >
+                  {/* <DotsVerticalIcon className="w-6 h-6 absolute left-2" /> */}
+                  {component.type === 'header' ? (
+                    <div
+                      className="py-4"
+                      dangerouslySetInnerHTML={{
+                        __html:
+                          '<h' +
+                          (component.properties?.level > 0 &&
+                          component.properties?.level < 6
+                            ? component.properties?.level + 1
+                            : 2) +
+                          '>' +
+                          component.properties?.text +
+                          '</h' +
+                          (component.properties?.level > 0 &&
+                          component.properties?.level < 6
+                            ? component.properties?.level + 1
+                            : 2) +
+                          '>',
+                      }}
+                    ></div>
+                  ) : null}
+                  {component.type === 'text' ? (
+                    <div
+                      className="py-4"
+                      dangerouslySetInnerHTML={{
+                        __html: component.properties?.text,
+                      }}
+                    ></div>
+                  ) : null}
+                  {component.type === 'bibleQuery' ? (
+                    <BibleQuery>{component.properties?.query}</BibleQuery>
+                  ) : null}
+                </div>
+                <div className="p-2 my-2 hover:bg-primary/25">
+                  <div className="relative flex items-center justify-center">
+                    <div className="absolute w-full h-1 border-t border-black/10 dark:border-white/10"></div>
+                    <PlusCircleIcon className="w-6 h-6 inline" />
+                  </div>
+                </div>
+              </SortableItem>
             ))}
-          </ul>
-        </div>
+          </SortableContext>
+        </DndContext>
       </main>
       <aside className="lg:col-span-3 px-4 sm:px-0">
         <div className="sticky top-0 ">
@@ -125,8 +188,8 @@ export default function BibleStudy(props) {
                 <ClipboardListIcon className="w-6 h-6 inline" /> Inhoudsopgave
               </div>
               <div className="my-6 text-sm">
-                <ul role="list" className="-my-4">
-                  {studyComponents?.data?.map(component => (
+                <ul role="list" className="-my-4 divide-x">
+                  {itemList?.map((component: any) => (
                     <li key={component.id} className="truncate">
                       {component.type === 'header' ? (
                         <a

@@ -2,15 +2,11 @@ import React from 'react';
 import Api from 'services/Api';
 import { useQuery } from '@tanstack/react-query';
 import BibleVerse from './BibleVerse';
-import BibleVerses from './BibleVerses';
-import { useAppStore } from 'store/global';
 import { getBibleBook } from 'services/Bibles';
 
 export default function BibleQuery(props) {
-  const bibleTranslations = useAppStore.getState().bibleTranslations;
-  const bibleBooks = useAppStore.getState().bibleBooks;
   const bibleQuery = useQuery(
-    ['bibleQuery'],
+    [`bibleQuery${props.children}`],
     async () =>
       await Api.get(`/search/hsv?q=${props.children}`, {
         order: 'book,chapter,verse',
@@ -46,7 +42,7 @@ export default function BibleQuery(props) {
                 {getBibleBook(verse.book)?.name} {verse.chapter}
               </div>
             ) : null}
-            <BibleVerse>{verse}</BibleVerse>
+            <BibleVerse highlight={props?.children}>{verse}</BibleVerse>
           </span>
         );
       })}

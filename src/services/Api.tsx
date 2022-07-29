@@ -11,16 +11,16 @@ const get = async (uri: string, params: object = {}) => {
   const res = await axios.get(url(uri), { params: params });
   return res?.data?.response;
 };
-const post = async (uri: string, params: object = {}) => {
-  const res = await axios.post(url(uri), { params: params });
+const post = async (uri: string, data: object = {}) => {
+  const res = await axios.post(url(uri), data);
   return res?.data?.response;
 };
-const put = async (uri: string, params: object = {}) => {
-  const res = await axios.put(url(uri), { params: params });
+const put = async (uri: string, data: object = {}) => {
+  const res = await axios.put(url(uri), data);
   return res?.data?.response;
 };
-const del = async (uri: string, params: object = {}) => {
-  const res = await axios.delete(url(uri), { params: params });
+const remove = async (uri: string, data: object = {}) => {
+  const res = await axios.delete(url(uri), data);
   return res?.data?.response;
 };
 
@@ -35,4 +35,4 @@ const url = (uri: string) => {
 
 /** Exports */
 
-export default { get, post, put, del };
+export default { get, post, put, remove };
