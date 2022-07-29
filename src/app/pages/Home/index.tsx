@@ -284,7 +284,7 @@ export function Home() {
                   {userNavigation.map(item => (
                     <a
                       key={item.name}
-                      href={item.href}
+                      onClick={item.onClick}
                       className="block rounded-md py-2 px-3 text-base font-medium mute"
                     >
                       {item.name}
@@ -354,13 +354,13 @@ export function Home() {
                 >
                   {bibleTranslations.map(bibleTranslation => (
                     <a
-                      key={bibleTranslation.name}
+                      key={bibleTranslation?.name}
                       href="#"
                       className="group flex items-center px-3 py-2 text-sm font-medium rounded-md"
                     >
                       <span className="truncate">
-                        {bibleTranslation.name} ({bibleTranslation.abbreviation}
-                        )
+                        {bibleTranslation?.name} (
+                        {bibleTranslation?.abbreviation})
                       </span>
                     </a>
                   ))}

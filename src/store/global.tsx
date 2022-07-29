@@ -2,30 +2,16 @@ import axios from 'axios';
 import create, { StateCreator } from 'zustand';
 import { persist, PersistOptions } from 'zustand/middleware';
 
-interface AppStore {
-  authenticated?: boolean;
-  authenticationToken?: any;
-  user?: any;
-  darkMode?: boolean;
-  bibleBooks?: any;
-  bibleTranslations?: any;
-  bibleTimelines?: any;
-  bibleVerses?: any;
-  logout: any;
-  login: any;
-  toggleDarkMode: any;
-}
-
 type AppStorePersist = (
-  config: StateCreator<AppStore>,
-  options: PersistOptions<AppStore>,
-) => StateCreator<AppStore>;
+  config: StateCreator<any>,
+  options: PersistOptions<any>,
+) => StateCreator<any>;
 
 /**
  * Store
  */
 
-export const useAppStore = create<AppStore>(
+export const useAppStore = create<any>(
   (persist as unknown as AppStorePersist)(
     set => ({
       /**
@@ -46,7 +32,16 @@ export const useAppStore = create<AppStore>(
       bibleTimelines: [],
       bibleVerses: [],
 
+      // Current
+
+      currentTranslation: 1,
+      currentBook: 1,
+      currentChapter: 1,
+      currentVerse: 1,
+
       // Mutators
+
+      mutate: () => set((state, newState) => ({ ...state, ...newState })),
 
       toggleDarkMode: () => set(state => ({ darkMode: !state.darkMode })),
 
