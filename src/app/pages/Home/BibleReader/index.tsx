@@ -188,7 +188,7 @@ export default function BibleReader(props) {
             </a>
           </div>
           <div className="grow text-center">
-            {bibleChapters?.data?.data?.response?.map(chapter => (
+            {bibleChapters?.data?.map(chapter => (
               <a
                 key={chapter.id}
                 onClick={event => setChapter({ id: chapter.chapter })}
@@ -208,9 +208,8 @@ export default function BibleReader(props) {
               onClick={event =>
                 setChapter({
                   id:
-                    readerState.chapter + 1 >
-                    bibleChapters?.data?.data?.response?.length
-                      ? bibleChapters?.data?.data?.response?.length
+                    readerState.chapter + 1 > bibleChapters?.data?.length
+                      ? bibleChapters?.data?.length
                       : readerState.chapter + 1,
                 })
               }

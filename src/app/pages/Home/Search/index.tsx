@@ -53,8 +53,9 @@ export default function Search(props) {
     );
   }
 
-  let currentBook = null;
-  let currentChapter = null;
+  let currentBook: number = 0;
+  let currentChapter: number = 0;
+  let currentVerse: number = 0;
 
   return (
     <>
@@ -77,6 +78,10 @@ export default function Search(props) {
           {bibleVerses?.data?.map(verse => {
             let setBook = false;
             let setChapter = false;
+            let setVerse = false;
+            if (verse.verse * 1 < currentVerse * 1) {
+              currentVerse = 0;
+            }
             if (verse.book !== currentBook) {
               currentBook = verse.book;
               setBook = true;
@@ -85,6 +90,11 @@ export default function Search(props) {
               currentChapter = verse.chapter;
               setChapter = true;
             }
+            if (currentVerse && verse.verse * 1 !== currentVerse * 1 + 1) {
+              setVerse = true;
+              console.warn(verse.verse * 1 + ' !== ' + (currentVerse * 1 + 1));
+            }
+            currentVerse = verse.verse * 1;
             return (
               <span key={verse.id}>
                 {setBook ? (
@@ -99,6 +109,7 @@ export default function Search(props) {
                     {getBibleBook(verse.book).name} {verse.chapter}
                   </div>
                 ) : null}
+                {setVerse ? <br /> : null}
                 <BibleVerse highlight={q}>{verse}</BibleVerse>
               </span>
             );

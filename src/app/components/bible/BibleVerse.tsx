@@ -11,7 +11,6 @@ export default function BibleVerse(props) {
   if (props.highlight) {
     props.highlight.split(/[,]+/g).forEach(element => {
       if (element && element.match(/^[a-z-\s]+$/gi)) {
-        console.warn(element.trim().replace(/[\s]+/g, '|'));
         verse = verse.replace(
           new RegExp(
             '([' +
@@ -33,7 +32,7 @@ export default function BibleVerse(props) {
       <sup className="text-primary/75 font-bold">{props?.children?.verse}</sup>{' '}
       <span
         dangerouslySetInnerHTML={{
-          __html: verse,
+          __html: verse + ' ',
         }}
       ></span>
     </span>
