@@ -13,7 +13,7 @@ export default function BibleQuery(props) {
     ['bibleQuery'],
     async () =>
       await Api.get(`/search/hsv?q=${props.children}`, {
-        order: 'createdAt desc',
+        order: 'book,chapter,verse',
         join: 'createdBy',
       }),
   );

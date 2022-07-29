@@ -36,6 +36,7 @@ export const useShareStore = create<any>(
             if (verse.chapter !== currentChapter) {
               currentChapter = verse.chapter;
               text +=
+                (text ? '\n' : '') +
                 getBibleBook(verse.book).name +
                 ' ' +
                 verse.chapter +

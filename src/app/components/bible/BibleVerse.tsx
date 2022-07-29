@@ -34,8 +34,10 @@ export default function BibleVerse(props) {
   return (
     <span
       className={
-        'bible-verse text-justify cursor-pointer ' +
-        (find(verse) ? 'underline decoration-dotted' : '')
+        'bible-verse text-justify cursor-pointer dark:hover:text-primary-50 hover:text-primary-600 ' +
+        (find(verse)
+          ? 'underline decoration-dotted dark:text-primary-100 text-primary-700'
+          : '')
       }
       onClick={() => toggle(verse)}
     >
