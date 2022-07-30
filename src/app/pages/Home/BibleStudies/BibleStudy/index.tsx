@@ -5,6 +5,7 @@ import {
   InformationCircleIcon,
   PlusCircleIcon,
   ClipboardListIcon,
+  BookmarkIcon,
 } from '@heroicons/react/solid';
 import Api from 'services/Api';
 import { useParams } from 'react-router-dom';
@@ -25,6 +26,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 
 export default function BibleStudy() {
   const { id } = useParams();
@@ -49,6 +51,27 @@ export default function BibleStudy() {
       }),
     {
       onSuccess: data => {
+        let currentLevel: any = [];
+        data.forEach(component => {
+          if (component.type === 'header') {
+            // Parse header level
+            let level: number =
+              component?.properties?.level && component?.properties?.level > 0
+                ? component?.properties?.level - 1
+                : 0;
+
+            // Set new header number
+            currentLevel[level] = currentLevel[level]
+              ? currentLevel[level] + 1
+              : 1;
+
+            // Strip sublevels
+            currentLevel = currentLevel.slice(0, level + 1);
+
+            // Set level name
+            component.properties.levelName = currentLevel.join('.') + '.';
+          }
+        });
         setItemList(data);
       },
     },
@@ -108,6 +131,7 @@ export default function BibleStudy() {
         </div>
         <div className="py-4 font-bold">{study?.data?.description}</div>
         <DndContext
+          modifiers={[restrictToVerticalAxis]}
           sensors={sensors}
           collisionDetection={closestCenter}
           onDragEnd={handleDragEnd}
@@ -120,29 +144,38 @@ export default function BibleStudy() {
               <SortableItem key={component.id} id={component.id}>
                 <div
                   ref={refs[component.id]}
-                  className="relative p-4 hover:bg-primary/25 border-l-8 border-primary/10 dark:border-primary/10"
+                  className={
+                    'relative py-2 hover:bg-primary/25 border-primary/10 dark:border-primary/10 ' +
+                    (component.type === 'header' ? 'border-b ' : '') +
+                    (component.type === 'bibleQuery' ? 'border-l-8 px-4 ' : '')
+                  }
                 >
                   {/* <DotsVerticalIcon className="w-6 h-6 absolute left-2" /> */}
                   {component.type === 'header' ? (
-                    <div
-                      className="py-4"
-                      dangerouslySetInnerHTML={{
-                        __html:
-                          '<h' +
-                          (component.properties?.level > 0 &&
-                          component.properties?.level < 6
-                            ? component.properties?.level + 1
-                            : 2) +
-                          '>' +
-                          component.properties?.text +
-                          '</h' +
-                          (component.properties?.level > 0 &&
-                          component.properties?.level < 6
-                            ? component.properties?.level + 1
-                            : 2) +
-                          '>',
-                      }}
-                    ></div>
+                    <div className="py-4 flex item-center">
+                      <div
+                        className="flex-grow"
+                        dangerouslySetInnerHTML={{
+                          __html:
+                            '<h' +
+                            (component.properties?.level > 0 &&
+                            component.properties?.level < 6
+                              ? component.properties?.level + 1
+                              : 2) +
+                            '>' +
+                            component.properties?.levelName +
+                            ' ' +
+                            component.properties?.text +
+                            '</h' +
+                            (component.properties?.level > 0 &&
+                            component.properties?.level < 6
+                              ? component.properties?.level + 1
+                              : 2) +
+                            '>',
+                        }}
+                      ></div>
+                      <BookmarkIcon className="w-6 h-6 inline" />
+                    </div>
                   ) : null}
                   {component.type === 'text' ? (
                     <div
@@ -188,30 +221,38 @@ export default function BibleStudy() {
                 <ClipboardListIcon className="w-6 h-6 inline" /> Inhoudsopgave
               </div>
               <div className="my-6 text-sm">
-                <ul role="list" className="-my-4 divide-x">
-                  {itemList?.map((component: any) => (
-                    <li key={component.id} className="truncate">
-                      {component.type === 'header' ? (
-                        <a
-                          onClick={() => scrollTo(component.id)}
-                          className={
-                            (component?.properties?.level === 1
-                              ? 'font-bold py-2 '
-                              : '') +
-                            'inline-block pl-' +
-                            (component.properties.level
-                              ? (component.properties.level - 1) * 3
-                              : 0)
-                          }
-                        >
-                          {component.properties?.level > 1 ? (
+                <ul role="list" className="-my-4">
+                  {itemList?.map((component: any) => {
+                    if (component.type === 'header') {
+                      return (
+                        <li key={component.id} className="truncate">
+                          {component.type === 'header' ? (
+                            <a
+                              onClick={() => scrollTo(component.id)}
+                              className={
+                                (component?.properties?.level === 1
+                                  ? 'font-bold py-2 '
+                                  : '') + 'inline-block leading-6'
+                              }
+                              style={{
+                                paddingLeft:
+                                  (component.properties.level
+                                    ? component.properties.level - 1
+                                    : 0) + 'em',
+                              }}
+                            >
+                              {/* {component.properties?.level > 1 ? (
                             <ChevronRightIcon className="w-4 h-4 inline-block" />
+                          ) : null} */}
+                              {component.properties?.levelName +
+                                ' ' +
+                                component.properties?.text}
+                            </a>
                           ) : null}
-                          {component.properties?.text}
-                        </a>
-                      ) : null}
-                    </li>
-                  ))}
+                        </li>
+                      );
+                    }
+                  })}
                 </ul>
               </div>
             </div>

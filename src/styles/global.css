@@ -53,9 +53,11 @@
   }
   h2 {
     @apply text-2xl;
+    @apply text-primary;
   }
   h3 {
     @apply text-lg;
+    @apply underline;
   }
 
   p {
