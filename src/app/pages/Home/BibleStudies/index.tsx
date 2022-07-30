@@ -2,6 +2,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { ChevronRightIcon } from '@heroicons/react/solid';
 import Api from 'services/Api';
+import Header from 'app/components/Header';
 
 export default function BibleStudies(props) {
   const studies = useQuery(
@@ -15,16 +16,10 @@ export default function BibleStudies(props) {
   return (
     <>
       <main className="col-span-9">
-        <div className="pb-5 border-b border-gray-200 dark:border-white/10 px-4 sm:px-0">
-          <div className="sm:flex sm:justify-between sm:items-baseline">
-            <div className="sm:w-0 sm:flex-1">
-              <h1 id="message-heading">Bijbelstudies</h1>
-              <p className="mt-1 text-sm text-gray-500 truncate">
-                {studies?.data?.length} studies gevonden
-              </p>
-            </div>
-          </div>
-        </div>
+        <Header
+          title="Bijbelstudies"
+          subtitle={studies?.data?.length + ' studies gevonden'}
+        />
 
         <div className="bg-white dark:bg-transparent shadow overflow-hidden sm:rounded-md">
           <ul role="list" className="divide-y divide-gray-200">

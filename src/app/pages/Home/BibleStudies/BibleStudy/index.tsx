@@ -1,7 +1,6 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
-  ChevronRightIcon,
   InformationCircleIcon,
   PlusCircleIcon,
   ClipboardListIcon,
@@ -27,21 +26,19 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
+import { StudyComponentModel } from 'models/Api';
+import Header from 'app/components/Header';
 
-export default function BibleStudy() {
+export default function BibleStudyPage() {
   const { id } = useParams();
-  const [itemList, setItemList] = useState([]);
-
-  const study = useQuery(
-    ['study'],
-    async () =>
-      await Api.get(`/studies/${id}`, {
-        order: 'createdAt desc',
-        join: 'createdBy',
-      }),
+  const [studyComponents, setStudyComponents] = useState<StudyComponentModel[]>(
+    [],
   );
 
-  const studyComponents = useQuery(
+  /**
+   * Data services
+   */
+  const studyComponentService = useQuery(
     ['studyComponents'],
     async () =>
       await Api.get(`/studyComponents`, {
@@ -50,9 +47,10 @@ export default function BibleStudy() {
         limit: 999,
       }),
     {
-      onSuccess: data => {
-        let currentLevel: any = [];
-        data.forEach(component => {
+      // Update state on success
+      onSuccess: (data: Array<StudyComponentModel>) => {
+        let currentLevel: Array<number> = [];
+        data.forEach((component: StudyComponentModel) => {
           if (component.type === 'header') {
             // Parse header level
             let level: number =
@@ -72,40 +70,63 @@ export default function BibleStudy() {
             component.properties.levelName = currentLevel.join('.') + '.';
           }
         });
-        setItemList(data);
+        setStudyComponents(data);
       },
     },
   );
 
-  const refs = studyComponents?.data?.reduce((acc, value) => {
-    acc[value.id] = React.createRef();
-    return acc;
-  }, {});
+  const studyService = useQuery(
+    ['study'],
+    async () =>
+      await Api.get(`/studies/${id}`, {
+        order: 'createdAt desc',
+        join: 'createdBy',
+      }),
+  );
 
+  /**
+   * Scroll to header from index by refs
+   */
   const scrollTo = id =>
     refs[id].current.scrollIntoView({
       behavior: 'smooth',
       block: 'start',
     });
 
-  const sensors = useSensors(
+  const refs: any = studyComponentService?.data?.reduce((acc, value) => {
+    acc[value.id] = React.createRef();
+    return acc;
+  }, {});
+
+  /**
+   * Drag and drop
+   */
+
+  const dndSensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     }),
   );
 
-  function handleDragEnd(event) {
+  function onDragEnd(event) {
     const { active, over } = event;
 
     if (active.id !== over.id) {
-      const oldIndex = itemList.findIndex((item: any) => item.id === active.id);
-      const newIndex = itemList.findIndex((item: any) => item.id === over.id);
-      const newList = arrayMove(itemList, oldIndex, newIndex);
+      // Find positions and create new list
+      const oldIndex = studyComponents.findIndex(
+        (item: any) => item.id === active.id,
+      );
+      const newIndex = studyComponents.findIndex(
+        (item: any) => item.id === over.id,
+      );
+      const newList = arrayMove(studyComponents, oldIndex, newIndex);
 
-      setItemList(newList);
+      // Update state
+      setStudyComponents(newList);
 
-      newList.forEach((component: any, index) => {
+      // Update SQL
+      newList.forEach((component: StudyComponentModel, index) => {
         if (index !== component.sort) {
           Api.put(`/studyComponents/${component.id}`, {
             sort: index,
@@ -118,35 +139,33 @@ export default function BibleStudy() {
   return (
     <>
       <main className="lg:col-span-7 text-justify px-4 sm:px-0">
-        <div className="pb-5 border-b border-gray-200 dark:border-white/10">
-          <div className="sm:flex sm:justify-between sm:items-baseline">
-            <div className="sm:w-0 sm:flex-1">
-              <h1>{study?.data?.name}</h1>
-              <p className="mt-1 text-sm mute truncate">
-                Gemaakt door {study?.data?.createdBy?.name} op{' '}
-                {study?.data?.createdAt}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="py-4 font-bold">{study?.data?.description}</div>
+        <Header
+          title={studyService?.data?.name}
+          subtitle={
+            'Gemaakt door ' +
+            studyService?.data?.createdBy?.name +
+            ' op ' +
+            studyService?.data?.createdAt
+          }
+        />
+        <div className="py-4 font-bold">{studyService?.data?.description}</div>
         <DndContext
           modifiers={[restrictToVerticalAxis]}
-          sensors={sensors}
+          sensors={dndSensors}
           collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
+          onDragEnd={onDragEnd}
         >
           <SortableContext
-            items={itemList}
+            items={studyComponents}
             strategy={verticalListSortingStrategy}
           >
-            {itemList?.map((component: any) => (
+            {studyComponents?.map(component => (
               <SortableItem key={component.id} id={component.id}>
                 <div
                   ref={refs[component.id]}
                   className={
                     'relative py-2 hover:bg-primary/25 border-primary/10 dark:border-primary/10 ' +
-                    (component.type === 'header' ? 'border-b ' : '') +
+                    (component.type === 'header' ? ' ' : '') +
                     (component.type === 'bibleQuery' ? 'border-l-8 px-4 ' : '')
                   }
                 >
@@ -189,12 +208,12 @@ export default function BibleStudy() {
                     <BibleQuery>{component.properties?.query}</BibleQuery>
                   ) : null}
                 </div>
-                <div className="p-2 my-2 hover:bg-primary/25">
+                {/* <div className="p-2 my-2 hover:bg-primary/25">
                   <div className="relative flex items-center justify-center">
                     <div className="absolute w-full h-1 border-t border-black/10 dark:border-white/10"></div>
                     <PlusCircleIcon className="w-6 h-6 inline" />
                   </div>
-                </div>
+                </div> */}
               </SortableItem>
             ))}
           </SortableContext>
@@ -211,7 +230,7 @@ export default function BibleStudy() {
               <div className="my-6 text-sm">
                 <label className="mute text-xs">Auteur</label>
                 <br />
-                {study?.data?.createdBy?.name}
+                {studyService?.data?.createdBy?.name}
               </div>
             </div>
           </section>
@@ -222,7 +241,7 @@ export default function BibleStudy() {
               </div>
               <div className="my-6 text-sm">
                 <ul role="list" className="-my-4">
-                  {itemList?.map((component: any) => {
+                  {studyComponents?.map((component: any) => {
                     if (component.type === 'header') {
                       return (
                         <li key={component.id} className="truncate">

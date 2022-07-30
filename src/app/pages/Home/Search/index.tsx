@@ -5,6 +5,7 @@ import { getBibleBook, getBibleTranslation } from 'services/Bibles';
 import { useLocation } from 'react-router-dom';
 import BibleVerse from 'app/components/bible/BibleVerse';
 import Api from 'services/Api';
+import Header from 'app/components/Header';
 
 export default function Search(props) {
   const bibleTranslations = useAppStore.getState().bibleTranslations;
@@ -60,19 +61,15 @@ export default function Search(props) {
   return (
     <>
       <main className="col-span-10">
-        <div className="pb-5 border-b border-gray-200 dark:border-white/10 px-4 sm:px-0">
-          <div className="sm:flex sm:justify-between sm:items-baseline">
-            <div className="sm:w-0 sm:flex-1">
-              <h1 id="message-heading">
-                {getBibleTranslation(searchState.translation)?.name} (
-                {getBibleTranslation(searchState.translation)?.abbreviation})
-              </h1>
-              <p className="mt-1 text-sm text-gray-500 truncate">
-                {bibleVerses?.data?.length} verzen gevonden
-              </p>
-            </div>
-          </div>
-        </div>
+        <Header
+          title={
+            getBibleTranslation(searchState.translation)?.name +
+            '(' +
+            getBibleTranslation(searchState.translation)?.abbreviation +
+            ')'
+          }
+          subtitle={bibleVerses?.data?.length + ' verzen gevonden'}
+        />
 
         <div className="my-4 text-justify p-4 md:p-8 bg-white dark:bg-transparent shadow transition-all overflow-hidden sm:rounded-md">
           {bibleVerses?.data?.map(verse => {

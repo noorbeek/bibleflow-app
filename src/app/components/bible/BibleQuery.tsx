@@ -33,7 +33,7 @@ export default function BibleQuery(props) {
         return (
           <span key={verse.id}>
             {setBook ? (
-              <div className="font-bold text-lg pt-4">
+              <div className="font-bold text-lg pb-4">
                 {getBibleBook(verse.book)?.name}
               </div>
             ) : null}

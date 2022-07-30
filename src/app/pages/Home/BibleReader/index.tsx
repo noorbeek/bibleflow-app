@@ -11,6 +11,7 @@ import {
 } from '@heroicons/react/solid';
 import BibleVerses from 'app/components/bible/BibleVerses';
 import Api from 'services/Api';
+import Header from 'app/components/Header';
 
 export default function BibleReader(props) {
   const bibleTranslations = useAppStore.getState().bibleTranslations;
@@ -102,20 +103,21 @@ export default function BibleReader(props) {
   return (
     <>
       <main className="col-span-9">
-        <div className="pb-5 border-b border-gray-200 dark:border-white/10 px-4 sm:px-0">
-          <div className="sm:flex sm:justify-between sm:items-baseline">
-            <div className="sm:w-0 sm:flex-1">
-              <h1 id="message-heading">
-                {getBibleTranslation(readerState.translation)?.name} (
-                {getBibleTranslation(readerState.translation)?.abbreviation})
-              </h1>
-              <p className="mt-1 text-sm text-gray-500 truncate">
-                {getBibleBook(readerState.book)?.name} {readerState.chapter}:1-
-                {bibleVerses?.data?.length}
-              </p>
-            </div>
-          </div>
-        </div>
+        <Header
+          title={
+            getBibleTranslation(readerState.translation)?.name +
+            '(' +
+            getBibleTranslation(readerState.translation)?.abbreviation +
+            ')'
+          }
+          subtitle={
+            getBibleBook(readerState.book)?.name +
+            ' ' +
+            readerState.chapter +
+            ':1-' +
+            bibleVerses?.data?.length
+          }
+        />
 
         <div className="flex flex-col sm:flex-row my-4 pb-5 border-b border-gray-200 dark:border-white/10 px-4 sm:px-0">
           <div className="flex-none">

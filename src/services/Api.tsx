@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { ApiRequestParamsModel } from 'models/Api';
 
 /**
  * Main HTTP methods
@@ -7,7 +8,7 @@ import axios from 'axios';
  * @returns
  */
 
-const get = async (uri: string, params: object = {}) => {
+const get = async (uri: string, params: ApiRequestParamsModel = {}) => {
   const res = await axios.get(url(uri), { params: params });
   return res?.data?.response;
 };

@@ -2,15 +2,11 @@ import React, { useState } from 'react';
 import { useAppStore } from 'store/global';
 import { Fragment } from 'react';
 import { Menu, Popover, Transition } from '@headlessui/react';
-import { SunIcon as SunIconSolid, SearchIcon } from '@heroicons/react/solid';
+import { SearchIcon } from '@heroicons/react/solid';
 import {
-  BellIcon,
-  SunIcon,
   CollectionIcon,
-  HomeIcon,
   MenuIcon,
   TrendingUpIcon,
-  UserGroupIcon,
   XIcon,
   BookOpenIcon,
 } from '@heroicons/react/outline';
@@ -28,12 +24,12 @@ import ButtonDarkMode from 'app/components/buttons/DarkMode';
 import Search from './Search';
 import BibleTimeline from './BibleTimeline';
 import BibleStudies from './BibleStudies';
-import BibleStudy from './BibleStudies/BibleStudy';
 import ShareBanner from 'app/components/ShareBanner';
 import { useShareStore } from 'store/share';
+import BibleStudyPage from './BibleStudies/BibleStudy';
 
 const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
+  //{ name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
   { name: 'Bijbel', href: '/', icon: BookOpenIcon },
   { name: 'Bijbelstudies', href: '/studies', icon: TrendingUpIcon },
   { name: 'Timeline', href: '/timeline', icon: CollectionIcon },
@@ -50,12 +46,10 @@ function classNames(...classes) {
 
 export function Home() {
   const user = useAppStore().user;
-  const bibleBooks = useAppStore().bibleBooks;
   const bibleTranslations = useAppStore().bibleTranslations;
   const bibleTimelines = useAppStore().bibleTimelines;
   const location = useLocation();
   const navigate = useNavigate();
-  const { bibleVerses: selectedVerses } = useShareStore();
 
   let [q, setQuery] = useState(localStorage['q'] ? localStorage['q'] : '');
 
@@ -395,7 +389,7 @@ export function Home() {
             <Route path="/search" element={<Search />} />
             <Route path="/timeline" element={<BibleTimeline />} />
             <Route path="/studies" element={<BibleStudies />} />
-            <Route path="/studies/:id" element={<BibleStudy />} />
+            <Route path="/studies/:id" element={<BibleStudyPage />} />
             <Route path="/" element={<BibleReader />} />
             <Route path="*" element={<BibleReader />} />
           </Routes>

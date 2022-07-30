@@ -12,6 +12,7 @@ import {
 import BibleVerses from 'app/components/bible/BibleVerses';
 import Api from 'services/Api';
 import BibleTimelineLayer from 'app/components/bible/BibleTimelineLayer';
+import Header from 'app/components/Header';
 
 export default function BibleTimeline(props) {
   const bibleTranslations = useAppStore.getState().bibleTranslations;
@@ -31,16 +32,12 @@ export default function BibleTimeline(props) {
   return (
     <>
       <main className="col-span-9">
-        <div className="pb-5 border-b border-gray-200 dark:border-white/10 px-4 sm:px-0">
-          <div className="sm:flex sm:justify-between sm:items-baseline">
-            <div className="sm:w-0 sm:flex-1">
-              <h1 id="message-heading">Tijdlijn</h1>
-              <p className="mt-1 text-sm text-gray-500 truncate">
-                {bibletimelinemarkers?.data?.length} tijdlijn segmenten gevonden
-              </p>
-            </div>
-          </div>
-        </div>
+        <Header
+          title="Tijdlijn"
+          subtitle={
+            bibletimelinemarkers?.data?.length + ' tijdlijn segmenten gevonden'
+          }
+        />
 
         <div className="my-4">
           <BibleTimelineLayer>{bibletimelinemarkers?.data}</BibleTimelineLayer>
