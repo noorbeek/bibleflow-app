@@ -1,11 +1,9 @@
-import axios from 'axios';
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import { useAppStore } from 'store/global';
 import { useQuery } from '@tanstack/react-query';
 import Selectbox from 'app/components/Selectbox';
-import { getBibleBook, getBibleTranslation } from 'services/Bibles';
+import { useBibleBook, useBibleTranslation } from 'services/Bibles';
 import {
-  ChevronRightIcon,
   ArrowNarrowLeftIcon,
   ArrowNarrowRightIcon,
 } from '@heroicons/react/solid';
@@ -16,6 +14,7 @@ import Header from 'app/components/Header';
 export default function BibleReader(props) {
   const bibleTranslations = useAppStore.getState().bibleTranslations;
   const bibleBooks = useAppStore.getState().bibleBooks;
+
   const [readerState, setReaderState] = useState<any>({
     translation: localStorage['currentTranslation']
       ? localStorage['currentTranslation']
@@ -26,6 +25,9 @@ export default function BibleReader(props) {
       : 1,
     verse: localStorage['currentVerse'] ? localStorage['currentVerse'] : 0,
   });
+
+  const bibleTranslation = useBibleTranslation(readerState.translation);
+  const bibleBook = useBibleBook(readerState.book);
 
   const bibleVerses = useQuery(
     [
@@ -105,13 +107,10 @@ export default function BibleReader(props) {
       <main className="col-span-9">
         <Header
           title={
-            getBibleTranslation(readerState.translation)?.name +
-            '(' +
-            getBibleTranslation(readerState.translation)?.abbreviation +
-            ')'
+            bibleTranslation?.name + ' (' + bibleTranslation?.abbreviation + ')'
           }
           subtitle={
-            getBibleBook(readerState.book)?.name +
+            bibleBook?.name +
             ' ' +
             readerState.chapter +
             ':1-' +
@@ -227,14 +226,11 @@ export default function BibleReader(props) {
         </nav>
         <div className="mt-8 pt-4 text-center border-t border-black/5 dark:border-white/10">
           <p className="mt-1 text-sm mute">
-            {getBibleTranslation(readerState.translation)?.name} (
-            {getBibleTranslation(readerState.translation)?.abbreviation}) -
-            {getBibleBook(readerState.book)?.name} {readerState.chapter}:1-
+            {bibleTranslation?.name} ({bibleTranslation?.abbreviation}) -
+            {bibleBook?.name} {readerState.chapter}:1-
             {bibleVerses?.data?.length}
             <br />
-            <small>
-              {getBibleTranslation(readerState.translation)?.copyright}
-            </small>
+            <small>{bibleTranslation?.copyright}</small>
           </p>
         </div>
       </main>
