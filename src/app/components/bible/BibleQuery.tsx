@@ -11,6 +11,10 @@ export default function BibleQuery(props) {
   const bibleTranslation = useBibleTranslation();
   const [pagination, setPagination]: any = useState(null);
 
+  let currentBook = null;
+  let currentChapter = null;
+
+  // Bible query service
   const bibleQuery = useQuery(
     [`bibleQuery${props.children}`, pagination?.page],
     async () =>
@@ -34,26 +38,21 @@ export default function BibleQuery(props) {
     },
   );
 
+  // Set page callback from <Pagination>
   const setPage = (page: number) => {
     setPagination({ ...pagination, page: page });
   };
 
-  let currentBook = null;
-  let currentChapter = null;
-
   return (
     <>
       {bibleQuery?.data?.response?.map((verse, index) => {
-        let setBook = false;
-        let setChapter = false;
-        if (verse.book !== currentBook) {
-          currentBook = verse.book;
-          setBook = true;
-        }
-        if (verse.chapter !== currentChapter) {
-          currentChapter = verse.chapter;
-          setChapter = true;
-        }
+        // Remember book and chapter and write if they change
+        let setBook = verse.book !== currentBook;
+        let setChapter = verse.chapter !== currentChapter;
+
+        currentBook = verse.book;
+        currentChapter = verse.chapter;
+
         return (
           <span
             key={verse.id}

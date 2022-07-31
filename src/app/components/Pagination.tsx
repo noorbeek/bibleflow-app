@@ -7,7 +7,9 @@ import {
 } from '@heroicons/react/solid';
 import Link from './Link';
 import { SearchIcon } from '@heroicons/react/outline';
+
 export default function Pagination(props) {
+  // State
   const [pagination, setPagination] = useState({
     first: 1,
     start: 1,
@@ -17,8 +19,9 @@ export default function Pagination(props) {
     range: [1],
   });
 
+  // Callback method when setting page
   const setPage = page => {
-    props.callback(page);
+    props.callback(page, pagination);
   };
 
   useEffect(() => {
@@ -53,7 +56,7 @@ export default function Pagination(props) {
       range = range.splice(range.indexOf(first), first + (maxPages - first));
     }
 
-    // Update state
+    // Update state with new calculations
     setPagination({
       first: 1,
       start: range[0],

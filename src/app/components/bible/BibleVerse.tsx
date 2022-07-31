@@ -5,13 +5,17 @@ export default function BibleVerse(props) {
   const { find, toggle, share } = useShareStore();
   const verse: any = props?.children;
 
+  // Special character regular expressions
   let chars =
     'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏàáâãäåæçèéêëìíîïÐÑÒÓÔÕÖØÙÚÛÜÝÞßðñòóôõöøùúûüýþÿa-z';
+
+  // Replace all italic words
   let text: string = props?.children?.text.replace(
     /\*+([^\*]+)\*+/gi,
     '<i>$1</i>',
   );
 
+  // Create highlighted words from user query
   if (props.highlight) {
     props.highlight.split(/[,]+/g).forEach(element => {
       if (

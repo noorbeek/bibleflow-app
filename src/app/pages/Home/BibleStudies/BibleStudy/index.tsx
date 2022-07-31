@@ -27,8 +27,9 @@ import {
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import { StudyComponentModel } from 'models/Api';
 import Header from 'app/components/Header';
+import Link from 'app/components/Link';
 
-export default function BibleStudyPage() {
+export default function BibleStudy() {
   const { id } = useParams();
   const [studyComponents, setStudyComponents] = useState<StudyComponentModel[]>(
     [],
@@ -253,7 +254,7 @@ export default function BibleStudyPage() {
                       return (
                         <li key={component.id} className="truncate">
                           {component.type === 'header' ? (
-                            <a
+                            <Link
                               onClick={() => scrollTo(component.id)}
                               className={
                                 (component?.properties?.level === 1
@@ -273,7 +274,7 @@ export default function BibleStudyPage() {
                               {component.properties?.levelName +
                                 '. ' +
                                 component.properties?.text}
-                            </a>
+                            </Link>
                           ) : null}
                         </li>
                       );

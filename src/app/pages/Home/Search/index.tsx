@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { useBibleTranslation } from 'services/Bibles';
 import { useSearchParams } from 'react-router-dom';
 import Header from 'app/components/Header';
@@ -9,16 +9,14 @@ export default function Search() {
   const [searchParams] = useSearchParams();
 
   return (
-    <>
-      <main className="col-span-10">
-        <Header
-          title={`${bibleTranslation?.name} (${bibleTranslation?.abbreviation})`}
-          subtitle={`Zoekresultaten voor "${searchParams?.get('q')}"`}
-        />
-        <div className="pb-4 mb-4 px-4 sm:px-0">
-          <BibleQuery limit="100">{searchParams?.get('q')}</BibleQuery>
-        </div>
-      </main>
-    </>
+    <main className="col-span-10">
+      <Header
+        title={`${bibleTranslation?.name} (${bibleTranslation?.abbreviation})`}
+        subtitle={`Zoekresultaten voor "${searchParams?.get('q')}"`}
+      />
+      <div className="pb-4 mb-4 px-4 sm:px-0">
+        <BibleQuery limit="100">{searchParams?.get('q')}</BibleQuery>
+      </div>
+    </main>
   );
 }

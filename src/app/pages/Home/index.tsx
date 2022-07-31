@@ -12,21 +12,16 @@ import {
 } from '@heroicons/react/outline';
 import Avatar from 'app/components/Avatar';
 import Dashboard from './Dashboard';
-import {
-  BrowserRouter,
-  Route,
-  Routes,
-  useLocation,
-  useNavigate,
-} from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import BibleReader from './BibleReader';
 import ButtonDarkMode from 'app/components/buttons/DarkMode';
 import Search from './Search';
 import BibleTimeline from './BibleTimeline';
 import BibleStudies from './BibleStudies';
 import ShareBanner from 'app/components/ShareBanner';
-import BibleStudyPage from './BibleStudies/BibleStudy';
+import BibleStudy from './BibleStudies/BibleStudy';
 import { useBibleTranslations } from 'services/Bibles';
+import Link from 'app/components/Link';
 
 const navigation = [
   //{ name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
@@ -276,13 +271,13 @@ export function Home() {
                 </div>
                 <div className="mt-3 max-w-3xl mx-auto px-2 space-y-1 sm:px-4 border-t border-gray-200 dark:border-white/10">
                   {userNavigation.map(item => (
-                    <a
+                    <Link
                       key={item.name}
                       onClick={item.onClick}
                       className="block rounded-md py-2 px-3 text-base font-medium mute"
                     >
                       {item.name}
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -347,7 +342,7 @@ export function Home() {
                   aria-labelledby="bibletranslations-headline"
                 >
                   {bibleTranslations.map(bibleTranslation => (
-                    <a
+                    <Link
                       key={bibleTranslation?.name}
                       href="#"
                       className="group flex items-center px-3 py-2 text-sm font-medium rounded-md"
@@ -356,7 +351,7 @@ export function Home() {
                         {bibleTranslation?.name} (
                         {bibleTranslation?.abbreviation})
                       </span>
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -372,13 +367,13 @@ export function Home() {
                   aria-labelledby="biblebooks-headline"
                 >
                   {bibleTimelines.map(bibleTimeline => (
-                    <a
+                    <Link
                       key={bibleTimeline.name}
                       href="#"
                       className="group flex items-center px-3 py-2 text-sm font-medium rounded-md"
                     >
                       <span className="truncate">{bibleTimeline.name}</span>
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -389,7 +384,7 @@ export function Home() {
             <Route path="/search" element={<Search />} />
             <Route path="/timeline" element={<BibleTimeline />} />
             <Route path="/studies" element={<BibleStudies />} />
-            <Route path="/studies/:id" element={<BibleStudyPage />} />
+            <Route path="/studies/:id" element={<BibleStudy />} />
             <Route path="/" element={<BibleReader />} />
             <Route path="*" element={<BibleReader />} />
           </Routes>
