@@ -151,3 +151,11 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/** Safari hacks */
+
+@supports (-webkit-overflow-scrolling: touch) {
+   input {
+     font-size: 16px;
+   }
+}
