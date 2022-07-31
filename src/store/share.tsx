@@ -1,6 +1,5 @@
 import create, { StateCreator } from 'zustand';
 import { persist, PersistOptions } from 'zustand/middleware';
-import { getBibleBook, getBibleTranslation } from 'services/Bibles';
 
 type ShareStorePersist = (
   config: StateCreator<any>,

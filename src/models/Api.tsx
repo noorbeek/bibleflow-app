@@ -9,6 +9,7 @@ export type ApiRequestParamsModel = {
   order?: string;
   limit?: number;
   offset?: number;
+  page?: number;
 };
 
 export type ApiResponseModel = {
@@ -17,11 +18,11 @@ export type ApiResponseModel = {
     datetime?: string;
     duration?: string;
     pagination?: {
-      count?: number;
-      limit?: number;
-      offset?: number;
-      pages?: number;
-      page?: number;
+      count: number;
+      limit: number;
+      offset: number;
+      pages: number;
+      page: number;
     };
     resource?: string;
   };

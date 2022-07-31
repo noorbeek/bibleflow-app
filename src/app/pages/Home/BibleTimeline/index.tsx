@@ -1,23 +1,10 @@
-import axios from 'axios';
-import React, { Fragment, useState } from 'react';
-import { useAppStore } from 'store/global';
+import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import Selectbox from 'app/components/Selectbox';
-import { getBibleBook, getBibleTranslation } from 'services/Bibles';
-import {
-  ChevronRightIcon,
-  ArrowNarrowLeftIcon,
-  ArrowNarrowRightIcon,
-} from '@heroicons/react/solid';
-import BibleVerses from 'app/components/bible/BibleVerses';
 import Api from 'services/Api';
 import BibleTimelineLayer from 'app/components/bible/BibleTimelineLayer';
 import Header from 'app/components/Header';
 
 export default function BibleTimeline(props) {
-  const bibleTranslations = useAppStore.getState().bibleTranslations;
-  const bibleBooks = useAppStore.getState().bibleBooks;
-
   const bibletimelinemarkers = useQuery(
     ['bibletimelinemarkers'],
     async () =>

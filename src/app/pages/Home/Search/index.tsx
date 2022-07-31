@@ -24,38 +24,6 @@ export default function Search(props) {
     location.search.replace(/^.*(\?+|&+)q=([^$&]+).*$/, '$2'),
   );
 
-  const bibleVerses = useQuery(
-    ['bibleVerses', currentTranslation, q],
-    async () => {
-      return await Api.get(
-        `/search/${
-          bibleTranslation?.abbreviation
-            ? bibleTranslation?.abbreviation
-            : 'hsv'
-        }?q=${q}`,
-        {
-          limit: 999,
-          order: 'book,chapter,verse',
-        },
-      );
-    },
-  );
-
-  // function setTranslation(translation) {
-  //   setSearchState(
-  //     Object.assign({}, searchState, {
-  //       translation: translation.id,
-  //       book: 1,
-  //       chapter: 1,
-  //       chapters: 50,
-  //     }),
-  //   );
-  // }
-
-  let currentBook: number = 0;
-  let currentChapter: number = 0;
-  let currentVerse: number = 0;
-
   return (
     <>
       <main className="col-span-10">
