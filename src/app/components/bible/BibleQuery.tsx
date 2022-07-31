@@ -32,7 +32,12 @@ export default function BibleQuery(props) {
           setChapter = true;
         }
         return (
-          <span key={verse.id} className="text-sm">
+          <span
+            key={verse.id}
+            className={
+              'text-justify ' + (props?.className ? props?.className : '')
+            }
+          >
             {setBook ? (
               <div className={'font-bold ' + (index ? 'pt-4' : '')}>
                 {bibleBooks.find(book => book.id === verse.book)?.name}

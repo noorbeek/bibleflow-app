@@ -66,7 +66,7 @@ export default function BibleStudyPage() {
             currentLevel = currentLevel.slice(0, level + 1);
 
             // Set level name
-            component.properties.levelName = currentLevel.join('.') + '.';
+            component.properties.levelName = currentLevel.join('.');
           }
         });
         setStudyComponents(data.response);
@@ -175,7 +175,7 @@ export default function BibleStudyPage() {
                 >
                   {/* <DotsVerticalIcon className="w-6 h-6 absolute left-2" /> */}
                   {component.type === 'header' ? (
-                    <div className="py-4 flex item-center">
+                    <div className="py-4 pb-8 mb-8 border-b border-black/10 dark:border-white/10">
                       <div
                         className="flex-grow"
                         dangerouslySetInnerHTML={{
@@ -186,8 +186,6 @@ export default function BibleStudyPage() {
                               ? component.properties?.level + 1
                               : 2) +
                             '>' +
-                            component.properties?.levelName +
-                            ' ' +
                             component.properties?.text +
                             '</h' +
                             (component.properties?.level > 0 &&
@@ -197,19 +195,24 @@ export default function BibleStudyPage() {
                             '>',
                         }}
                       ></div>
-                      <BookmarkIcon className="w-6 h-6 inline" />
+                      <div className="mute text-sm">
+                        Sectie {component.properties?.levelName}
+                      </div>
+                      {/* <BookmarkIcon className="w-6 h-6 inline" /> */}
                     </div>
                   ) : null}
                   {component.type === 'text' ? (
                     <div
-                      className="py-4"
+                      className="pb-4"
                       dangerouslySetInnerHTML={{
                         __html: component.properties?.text,
                       }}
                     ></div>
                   ) : null}
                   {component.type === 'bibleQuery' ? (
-                    <BibleQuery>{component.properties?.query}</BibleQuery>
+                    <BibleQuery className="text-sm">
+                      {component.properties?.query}
+                    </BibleQuery>
                   ) : null}
                 </div>
                 {/* <div className="p-2 my-2 hover:bg-primary/25">
@@ -268,7 +271,7 @@ export default function BibleStudyPage() {
                             <ChevronRightIcon className="w-4 h-4 inline-block" />
                           ) : null} */}
                               {component.properties?.levelName +
-                                ' ' +
+                                '. ' +
                                 component.properties?.text}
                             </a>
                           ) : null}
