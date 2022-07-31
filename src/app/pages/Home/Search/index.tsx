@@ -1,39 +1,23 @@
-import React, { Fragment, useState } from 'react';
-import { useAppStore } from 'store/global';
-import { useQuery } from '@tanstack/react-query';
-import {
-  useBibleBook,
-  useBibleBooks,
-  useBibleTranslation,
-  useBibleTranslations,
-} from 'services/Bibles';
-import { useLocation } from 'react-router-dom';
-import BibleVerse from 'app/components/bible/BibleVerse';
-import Api from 'services/Api';
+import React, { Fragment } from 'react';
+import { useBibleTranslation } from 'services/Bibles';
+import { useSearchParams } from 'react-router-dom';
 import Header from 'app/components/Header';
 import BibleQuery from 'app/components/bible/BibleQuery';
 
-export default function Search(props) {
-  const bibleTranslations = useBibleTranslations();
+export default function Search() {
   const bibleTranslation = useBibleTranslation();
-  const bibleBook = useBibleBook();
-  const currentTranslation = useAppStore(state => state.currentTranslation);
-  const location = useLocation();
-
-  let q = decodeURIComponent(
-    location.search.replace(/^.*(\?+|&+)q=([^$&]+).*$/, '$2'),
-  );
+  const [searchParams] = useSearchParams();
 
   return (
     <>
       <main className="col-span-10">
         <Header
-          title={
-            bibleTranslation?.name + '(' + bibleTranslation?.abbreviation + ')'
-          }
-          subtitle={'Zoekresultaten voor "' + q + '"'}
+          title={`${bibleTranslation?.name} (${bibleTranslation?.abbreviation})`}
+          subtitle={`Zoekresultaten voor "${searchParams?.get('q')}"`}
         />
-        <BibleQuery>{q}</BibleQuery>
+        <div className="pb-4 mb-4 px-4 sm:px-0">
+          <BibleQuery limit="100">{searchParams?.get('q')}</BibleQuery>
+        </div>
       </main>
     </>
   );

@@ -14,7 +14,10 @@ export default function BibleVerse(props) {
 
   if (props.highlight) {
     props.highlight.split(/[,]+/g).forEach(element => {
-      if (element && element.match(/^[a-z-\s]+$/gi)) {
+      if (
+        element &&
+        element.trim().match(new RegExp('^[' + chars + '- ]+$', 'gi'))
+      ) {
         text = text.replace(
           new RegExp(
             '([' +

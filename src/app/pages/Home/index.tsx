@@ -25,8 +25,8 @@ import Search from './Search';
 import BibleTimeline from './BibleTimeline';
 import BibleStudies from './BibleStudies';
 import ShareBanner from 'app/components/ShareBanner';
-import { useShareStore } from 'store/share';
 import BibleStudyPage from './BibleStudies/BibleStudy';
+import { useBibleTranslations } from 'services/Bibles';
 
 const navigation = [
   //{ name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
@@ -46,7 +46,7 @@ function classNames(...classes) {
 
 export function Home() {
   const user = useAppStore().user;
-  const bibleTranslations = useAppStore().bibleTranslations;
+  const bibleTranslations = useBibleTranslations();
   const bibleTimelines = useAppStore().bibleTimelines;
   const location = useLocation();
   const navigate = useNavigate();
