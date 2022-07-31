@@ -62,17 +62,17 @@ export const useAppStore = create<any>(
         });
 
         // Set bibles
-        const bibleTranslations = await axios.get(
-          '/bibleTranslations?limit=9999',
-        );
-        const bibleBooks = await axios.get('/bibleBooks?limit=9999');
-        const bibleTimelines = await axios.get('/bibleTimelines?limit=9999');
+        // const bibleTranslations = await axios.get(
+        //   '/bibleTranslations?limit=9999',
+        // );
+        // const bibleBooks = await axios.get('/bibleBooks?limit=9999');
+        // const bibleTimelines = await axios.get('/bibleTimelines?limit=9999');
 
-        set({
-          bibleTranslations: bibleTranslations.data?.response,
-          bibleBooks: bibleBooks.data?.response,
-          bibleTimelines: bibleTimelines.data?.response,
-        });
+        // set({
+        //   bibleTranslations: bibleTranslations.data?.response,
+        //   bibleBooks: bibleBooks.data?.response,
+        //   bibleTimelines: bibleTimelines.data?.response,
+        // });
       },
 
       logout: async () => {

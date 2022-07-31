@@ -1,5 +1,8 @@
 import { useAppStore } from 'store/global';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import Api from './Api';
+import { BibleBookModel, BibleTranslationModel } from 'models/Api';
 
 const bibleBooks = useAppStore.getState().bibleBooks;
 const bibleTranslations = useAppStore.getState().bibleTranslations;
@@ -14,24 +17,76 @@ export function getBibleTranslation(id) {
   )[0];
 }
 
-export const useBibleTranslation: any = (id: number = 1) => {
-  const bibleTranslations = useAppStore(state => state.bibleTranslations);
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    setData(bibleTranslations.filter(book => book.id === id)[0]);
-  }, [bibleTranslations, id]);
+export const useBibleBooks = (): Array<BibleBookModel> => {
+  const [data, setData] = useState([]);
+  useQuery(
+    [`bibleBooksQuery`],
+    async () =>
+      await Api.get(`/bibleBooks`, {
+        limit: 999,
+      }),
+    {
+      onSuccess: data => {
+        setData(data?.response);
+      },
+    },
+  );
 
   return data;
 };
 
-export const useBibleBook: any = (id: number = 1) => {
-  const bibleBooks = useAppStore(state => state.bibleBooks);
+export const useBibleBook = (id: number = 1): BibleBookModel | null => {
   const [data, setData] = useState(null);
+  useQuery(
+    [`bibleBookQuery`, id],
+    async () =>
+      await Api.get(`/bibleBooks/${id}`, {
+        limit: 999,
+      }),
+    {
+      onSuccess: data => {
+        setData(data?.response);
+      },
+    },
+  );
 
-  useEffect(() => {
-    setData(bibleBooks.filter(book => book.id === id)[0]);
-  }, [bibleBooks, id]);
+  return data;
+};
+
+export const useBibleTranslations = (): Array<BibleTranslationModel> => {
+  const [data, setData] = useState([]);
+  useQuery(
+    [`bibleTranslationsQuery`],
+    async () =>
+      await Api.get(`/bibleTranslations`, {
+        limit: 999,
+      }),
+    {
+      onSuccess: data => {
+        setData(data?.response);
+      },
+    },
+  );
+
+  return data;
+};
+
+export const useBibleTranslation = (
+  id: number = 1,
+): BibleTranslationModel | null => {
+  const [data, setData] = useState(null);
+  useQuery(
+    [`bibleTranslationQuery`, id],
+    async () =>
+      await Api.get(`/bibleTranslations/${id}`, {
+        limit: 999,
+      }),
+    {
+      onSuccess: data => {
+        setData(data?.response);
+      },
+    },
+  );
 
   return data;
 };

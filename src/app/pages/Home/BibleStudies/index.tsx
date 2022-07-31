@@ -18,12 +18,12 @@ export default function BibleStudies(props) {
       <main className="col-span-9">
         <Header
           title="Bijbelstudies"
-          subtitle={studies?.data?.length + ' studies gevonden'}
+          subtitle={studies?.data?.response?.length + ' studies gevonden'}
         />
 
         <div className="bg-white dark:bg-transparent shadow overflow-hidden sm:rounded-md">
           <ul role="list" className="divide-y divide-gray-200">
-            {studies?.data?.map(study => (
+            {studies?.data?.response?.map(study => (
               <li key={study.id}>
                 <a
                   href={`/studies/${study.id}`}

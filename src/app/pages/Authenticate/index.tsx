@@ -1,9 +1,10 @@
-import axios from 'axios';
 import React from 'react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useAppStore } from 'store/global';
 import { useMutation } from '@tanstack/react-query';
+import Api from 'services/Api';
+import { ApiResponseModel } from 'models/Api';
 
 export function Authenticate() {
   const [formData, setFormData] = useState({
@@ -11,15 +12,21 @@ export function Authenticate() {
     password: '',
   });
 
-  const authenticate = useMutation(['authenticate'], async form => {
-    const auth = await axios.post(`/auth`, {
-      username: formData.username,
-      password: formData.password,
-    });
-    if (auth?.data?.response?.authorization) {
-      useAppStore.getState().login(auth?.data?.response?.authorization);
-    }
-  });
+  const authenticate = useMutation(
+    ['authenticate'],
+    async () =>
+      await Api.post(`/auth`, {
+        username: formData.username,
+        password: formData.password,
+      }),
+    {
+      onSuccess: (data: ApiResponseModel) => {
+        if (data?.response?.authorization) {
+          useAppStore.getState().login(data?.response?.authorization);
+        }
+      },
+    },
+  );
 
   return (
     <>

@@ -68,11 +68,11 @@ export default function Search(props) {
             getBibleTranslation(searchState.translation)?.abbreviation +
             ')'
           }
-          subtitle={bibleVerses?.data?.length + ' verzen gevonden'}
+          subtitle={bibleVerses?.data?.response?.length + ' verzen gevonden'}
         />
 
         <div className="my-4 text-justify p-4 md:p-8 bg-white dark:bg-transparent shadow transition-all overflow-hidden sm:rounded-md">
-          {bibleVerses?.data?.map(verse => {
+          {bibleVerses?.data?.response?.map(verse => {
             let setBook = false;
             let setChapter = false;
             let setVerse = false;

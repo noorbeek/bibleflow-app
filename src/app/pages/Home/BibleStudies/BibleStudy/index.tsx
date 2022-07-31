@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   InformationCircleIcon,
-  PlusCircleIcon,
   ClipboardListIcon,
   BookmarkIcon,
 } from '@heroicons/react/solid';
@@ -48,9 +47,9 @@ export default function BibleStudyPage() {
       }),
     {
       // Update state on success
-      onSuccess: (data: Array<StudyComponentModel>) => {
+      onSuccess: data => {
         let currentLevel: Array<number> = [];
-        data.forEach((component: StudyComponentModel) => {
+        data.response?.forEach((component: StudyComponentModel) => {
           if (component.type === 'header') {
             // Parse header level
             let level: number =
@@ -70,7 +69,7 @@ export default function BibleStudyPage() {
             component.properties.levelName = currentLevel.join('.') + '.';
           }
         });
-        setStudyComponents(data);
+        setStudyComponents(data.response);
       },
     },
   );
@@ -93,10 +92,13 @@ export default function BibleStudyPage() {
       block: 'start',
     });
 
-  const refs: any = studyComponentService?.data?.reduce((acc, value) => {
-    acc[value.id] = React.createRef();
-    return acc;
-  }, {});
+  const refs: any = studyComponentService?.data?.response?.reduce(
+    (acc, value) => {
+      acc[value.id] = React.createRef();
+      return acc;
+    },
+    {},
+  );
 
   /**
    * Drag and drop
@@ -140,15 +142,17 @@ export default function BibleStudyPage() {
     <>
       <main className="lg:col-span-7 text-justify px-4 sm:px-0">
         <Header
-          title={studyService?.data?.name}
+          title={studyService?.data?.response?.name}
           subtitle={
             'Gemaakt door ' +
-            studyService?.data?.createdBy?.name +
+            studyService?.data?.response?.createdBy?.name +
             ' op ' +
-            studyService?.data?.createdAt
+            studyService?.data?.response?.createdAt
           }
         />
-        <div className="py-4 font-bold">{studyService?.data?.description}</div>
+        <div className="py-4 font-bold">
+          {studyService?.data?.response?.description}
+        </div>
         <DndContext
           modifiers={[restrictToVerticalAxis]}
           sensors={dndSensors}
@@ -230,7 +234,7 @@ export default function BibleStudyPage() {
               <div className="my-6 text-sm">
                 <label className="mute text-xs">Auteur</label>
                 <br />
-                {studyService?.data?.createdBy?.name}
+                {studyService?.data?.response?.createdBy?.name}
               </div>
             </div>
           </section>

@@ -9,24 +9,17 @@ function classNames(...classes) {
 
 export default function Selectbox(props) {
   const [selected, setSelected] = useState(
-    props.options &&
-      props.options.length &&
-      props.options[0].id &&
-      props.options.find(
-        option => option.id && option.id === parseInt(props.selected),
-      )
-      ? props.options.find(
-          option => option.id && option.id === parseInt(props.selected),
-        )
-      : props.options && props.options.length
-      ? props.options[0]
-      : null,
+    props?.options?.find(option => option.id === props?.selected),
   );
 
   function changeSelected(option) {
     setSelected(option);
     props.onChange(option);
   }
+
+  useEffect(() => {
+    setSelected(props?.options?.find(option => option.id === props?.selected));
+  }, [props.options, props.selected]);
 
   return (
     <Listbox value={selected} onChange={changeSelected}>
@@ -38,16 +31,10 @@ export default function Selectbox(props) {
           <div className="mt-1 relative">
             <Listbox.Button className="relative w-full text-default hover:text-white bg-white dark:bg-white/10 border border-gray-900/25 rounded-md shadow-sm hover:shadow-xl transition-all pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm">
               <span className="w-full inline-flex truncate">
-                <span className="truncate">
-                  {selected && selected.text
-                    ? selected.text
-                    : props.selected
-                    ? props.selected
-                    : ''}
-                </span>
-                {selected && selected.description ? (
+                <span className="truncate">{selected?.text}</span>
+                {selected?.description ? (
                   <span className="ml-2 truncate mute">
-                    {selected.description}
+                    {selected?.description}
                   </span>
                 ) : (
                   <></>

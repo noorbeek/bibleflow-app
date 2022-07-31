@@ -35,12 +35,15 @@ export default function BibleTimeline(props) {
         <Header
           title="Tijdlijn"
           subtitle={
-            bibletimelinemarkers?.data?.length + ' tijdlijn segmenten gevonden'
+            bibletimelinemarkers?.data?.response?.length +
+            ' tijdlijn segmenten gevonden'
           }
         />
 
         <div className="my-4">
-          <BibleTimelineLayer>{bibletimelinemarkers?.data}</BibleTimelineLayer>
+          <BibleTimelineLayer>
+            {bibletimelinemarkers?.data?.response}
+          </BibleTimelineLayer>
         </div>
       </main>
     </>

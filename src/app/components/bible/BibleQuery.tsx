@@ -2,9 +2,10 @@ import React from 'react';
 import Api from 'services/Api';
 import { useQuery } from '@tanstack/react-query';
 import BibleVerse from './BibleVerse';
-import { getBibleBook } from 'services/Bibles';
+import { useBibleBooks } from 'services/Bibles';
 
 export default function BibleQuery(props) {
+  const bibleBooks = useBibleBooks();
   const bibleQuery = useQuery(
     [`bibleQuery${props.children}`],
     async () =>
@@ -19,7 +20,7 @@ export default function BibleQuery(props) {
 
   return (
     <>
-      {bibleQuery?.data?.map(verse => {
+      {bibleQuery?.data?.response?.map((verse, index) => {
         let setBook = false;
         let setChapter = false;
         if (verse.book !== currentBook) {
@@ -31,15 +32,15 @@ export default function BibleQuery(props) {
           setChapter = true;
         }
         return (
-          <span key={verse.id}>
+          <span key={verse.id} className="text-sm">
             {setBook ? (
-              <div className="font-bold text-lg pb-4">
-                {getBibleBook(verse.book)?.name}
+              <div className={'font-bold ' + (index ? 'pt-4' : '')}>
+                {bibleBooks.find(book => book.id === verse.book)?.name}
               </div>
             ) : null}
             {setChapter ? (
-              <div className={'mute text-sm ' + (setBook ? 'pb-4' : 'py-4')}>
-                {getBibleBook(verse.book)?.name} {verse.chapter}
+              <div className={'mute ' + (setBook ? 'pb-4' : 'py-4')}>
+                Hoofdstuk {verse.chapter}
               </div>
             ) : null}
             <BibleVerse highlight={props?.children}>{verse}</BibleVerse>
