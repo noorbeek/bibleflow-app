@@ -22,7 +22,7 @@ export default function BibleStudies(props) {
 
   return (
     <>
-      <main className="col-span-9">
+      <main className="col-span-10">
         <Header
           title="Bijbelstudies"
           subtitle={studies?.data?.response?.length + ' studies gevonden'}

@@ -18,7 +18,7 @@ export default function BibleTimeline(props) {
 
   return (
     <>
-      <main className="col-span-9">
+      <main className="col-span-10">
         <Header
           title="Tijdlijn"
           subtitle={

@@ -6,7 +6,7 @@ import { SearchIcon } from '@heroicons/react/solid';
 import {
   CollectionIcon,
   MenuIcon,
-  TrendingUpIcon,
+  LightBulbIcon,
   XIcon,
   BookOpenIcon,
 } from '@heroicons/react/outline';
@@ -28,7 +28,7 @@ import Api from 'services/Api';
 const navigation = [
   //{ name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
   { name: 'Bijbel', href: '/', icon: BookOpenIcon },
-  { name: 'Bijbelstudies', href: '/studies', icon: TrendingUpIcon },
+  { name: 'Bijbelstudies', href: '/studies', icon: LightBulbIcon },
   { name: 'Tijdlijn', href: '/timeline', icon: CollectionIcon },
 ];
 const userNavigation = [
@@ -197,7 +197,7 @@ export function Home() {
                         {userNavigation.map(item => (
                           <Menu.Item key={item.name}>
                             {({ active }) => (
-                              <Hyperlink
+                              <a
                                 onClick={
                                   item.onClick ? item.onClick : () => true
                                 }
@@ -207,7 +207,7 @@ export function Home() {
                                 )}
                               >
                                 {item.name}
-                              </Hyperlink>
+                              </a>
                             )}
                           </Menu.Item>
                         ))}

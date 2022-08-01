@@ -71,7 +71,7 @@ export default function BibleReader(props) {
 
   return (
     <>
-      <main className="col-span-9">
+      <main className="col-span-10">
         <Header
           title={
             bibleTranslation?.name + ' (' + bibleTranslation?.abbreviation + ')'
