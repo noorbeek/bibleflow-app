@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import {
   InformationCircleIcon,
   ClipboardListIcon,
-  BookmarkIcon,
 } from '@heroicons/react/solid';
 import Api from 'services/Api';
 import { useParams } from 'react-router-dom';
@@ -28,6 +27,7 @@ import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import { StudyComponentModel } from 'models/Api';
 import Header from 'app/components/Header';
 import Link from 'app/components/Link';
+import Moment from 'moment';
 
 export default function BibleStudy() {
   const { id } = useParams();
@@ -148,7 +148,9 @@ export default function BibleStudy() {
             'Gemaakt door ' +
             studyService?.data?.response?.createdBy?.name +
             ' op ' +
-            studyService?.data?.response?.createdAt
+            (studyService?.data?.response?.createdAt
+              ? Moment(studyService?.data?.response?.createdAt).format()
+              : '')
           }
         />
         <div className="py-4 font-bold">
@@ -248,37 +250,35 @@ export default function BibleStudy() {
                 <ClipboardListIcon className="w-6 h-6 inline" /> Inhoudsopgave
               </div>
               <div className="my-6 text-sm">
-                <ul role="list" className="-my-4">
+                <ul className="-my-4">
                   {studyComponents?.map((component: any) => {
-                    if (component.type === 'header') {
-                      return (
-                        <li key={component.id} className="truncate">
-                          {component.type === 'header' ? (
-                            <Link
-                              onClick={() => scrollTo(component.id)}
-                              className={
-                                (component?.properties?.level === 1
-                                  ? 'font-bold py-2 '
-                                  : '') + 'inline-block leading-6'
-                              }
-                              style={{
-                                paddingLeft:
-                                  (component.properties.level
-                                    ? component.properties.level - 1
-                                    : 0) + 'em',
-                              }}
-                            >
-                              {/* {component.properties?.level > 1 ? (
+                    return component.type === 'header' ? (
+                      <li key={component.id} className="truncate">
+                        {component.type === 'header' ? (
+                          <Link
+                            onClick={() => scrollTo(component.id)}
+                            className={
+                              (component?.properties?.level === 1
+                                ? 'font-bold py-2 '
+                                : '') + 'inline-block leading-6'
+                            }
+                            style={{
+                              paddingLeft:
+                                (component.properties.level
+                                  ? component.properties.level - 1
+                                  : 0) + 'em',
+                            }}
+                          >
+                            {/* {component.properties?.level > 1 ? (
                             <ChevronRightIcon className="w-4 h-4 inline-block" />
                           ) : null} */}
-                              {component.properties?.levelName +
-                                '. ' +
-                                component.properties?.text}
-                            </Link>
-                          ) : null}
-                        </li>
-                      );
-                    }
+                            {component.properties?.levelName +
+                              '. ' +
+                              component.properties?.text}
+                          </Link>
+                        ) : null}
+                      </li>
+                    ) : null;
                   })}
                 </ul>
               </div>

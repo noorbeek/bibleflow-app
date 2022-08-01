@@ -48,4 +48,6 @@ const url = (uri: string) => {
 
 /** Exports */
 
-export default { get, post, put, remove };
+const Api = { get, post, put, remove };
+
+export default Api;

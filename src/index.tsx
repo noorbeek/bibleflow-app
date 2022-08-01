@@ -14,7 +14,7 @@ import './styles/global.css';
 // Intercepptors
 import './interceptors/axios';
 import './interceptors/react-query';
-import './interceptors/react-toastify';
+import './interceptors/moment';
 
 // Import root app
 import { App } from 'app';

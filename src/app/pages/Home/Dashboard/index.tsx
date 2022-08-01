@@ -11,6 +11,7 @@ import {
   ThumbUpIcon,
 } from '@heroicons/react/solid';
 import { Menu, Transition } from '@headlessui/react';
+import Link from 'app/components/Link';
 
 const tabs = [
   { name: 'Recent', href: '#', current: true },
@@ -121,7 +122,7 @@ export default function Dashboard(props) {
         </div>
         <div className="mt-4">
           <h1 className="sr-only">Recent questions</h1>
-          <ul role="list" className="space-y-4">
+          <ul className="space-y-4">
             {questions.map(question => (
               <li
                 key={question.id}
@@ -182,7 +183,7 @@ export default function Dashboard(props) {
                               <div className="py-1">
                                 <Menu.Item>
                                   {({ active }) => (
-                                    <a
+                                    <Link
                                       href="#"
                                       className={classNames(
                                         active
@@ -196,12 +197,12 @@ export default function Dashboard(props) {
                                         aria-hidden="true"
                                       />
                                       <span>Add to favorites</span>
-                                    </a>
+                                    </Link>
                                   )}
                                 </Menu.Item>
                                 <Menu.Item>
                                   {({ active }) => (
-                                    <a
+                                    <Link
                                       href="#"
                                       className={classNames(
                                         active
@@ -215,12 +216,12 @@ export default function Dashboard(props) {
                                         aria-hidden="true"
                                       />
                                       <span>Embed</span>
-                                    </a>
+                                    </Link>
                                   )}
                                 </Menu.Item>
                                 <Menu.Item>
                                   {({ active }) => (
-                                    <a
+                                    <Link
                                       href="#"
                                       className={classNames(
                                         active
@@ -234,7 +235,7 @@ export default function Dashboard(props) {
                                         aria-hidden="true"
                                       />
                                       <span>Report content</span>
-                                    </a>
+                                    </Link>
                                   )}
                                 </Menu.Item>
                               </div>
@@ -325,7 +326,7 @@ export default function Dashboard(props) {
                   Who to follow
                 </h2>
                 <div className="mt-6 flow-root">
-                  <ul role="list" className="-my-4 divide-y divide-gray-200">
+                  <ul className="-my-4 divide-y divide-gray-200">
                     {whoToFollow.map(user => (
                       <li
                         key={user.handle}
@@ -363,12 +364,12 @@ export default function Dashboard(props) {
                   </ul>
                 </div>
                 <div className="mt-6">
-                  <a
+                  <Link
                     href="#"
                     className="w-full block text-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
                   >
                     View all
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -383,7 +384,7 @@ export default function Dashboard(props) {
                   Trending
                 </h2>
                 <div className="mt-6 flow-root">
-                  <ul role="list" className="-my-4 divide-y divide-gray-200">
+                  <ul className="-my-4 divide-y divide-gray-200">
                     {trendingPosts.map(post => (
                       <li key={post.id} className="flex py-4 space-x-3">
                         <div className="flex-shrink-0">
@@ -417,12 +418,12 @@ export default function Dashboard(props) {
                   </ul>
                 </div>
                 <div className="mt-6">
-                  <a
+                  <Link
                     href="#"
                     className="w-full block text-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
                   >
                     View all
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

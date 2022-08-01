@@ -4,11 +4,13 @@ export default function Avatar(props) {
   return (
     <div
       className={
-        'h-8 w-8 leading-8 rounded-full bg-slate-300 uppercase font-bold text-sm ' +
-        (props.className ? props.className : '')
+        'inline-block h-8 w-8 leading-8 font-bold rounded-full bg-slate-300 uppercase text-sm ' +
+        (props?.className ? props.className : '') +
+        (props?.user?.avatar ? 'bg-[url(' + props.user.avatar + ')]' : '')
       }
     >
-      {props.children ? props.children : ''}
+      {props?.user?.name ? props.user.name[0] + props.user.name[1] : null}
+      {props?.children ? props.children : ''}
     </div>
   );
 }

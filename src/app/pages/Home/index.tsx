@@ -27,11 +27,11 @@ const navigation = [
   //{ name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
   { name: 'Bijbel', href: '/', icon: BookOpenIcon },
   { name: 'Bijbelstudies', href: '/studies', icon: TrendingUpIcon },
-  { name: 'Timeline', href: '/timeline', icon: CollectionIcon },
+  { name: 'Tijdlijn', href: '/timeline', icon: CollectionIcon },
 ];
 const userNavigation = [
-  { name: 'Mijn profiel', href: '#' },
-  { name: 'Instellingen', href: '#' },
+  //{ name: 'Mijn profiel', href: '#' },
+  //{ name: 'Instellingen', href: '#' },
   { name: 'Uitloggen', onClick: () => useAppStore.getState().logout() },
 ];
 
@@ -189,8 +189,7 @@ export function Home() {
                         {userNavigation.map(item => (
                           <Menu.Item key={item.name}>
                             {({ active }) => (
-                              <a
-                                href={item.href}
+                              <Link
                                 onClick={
                                   item.onClick ? item.onClick : () => true
                                 }
@@ -200,7 +199,7 @@ export function Home() {
                                 )}
                               >
                                 {item.name}
-                              </a>
+                              </Link>
                             )}
                           </Menu.Item>
                         ))}

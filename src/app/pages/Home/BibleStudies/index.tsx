@@ -1,8 +1,14 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { ChevronRightIcon } from '@heroicons/react/solid';
+import {
+  ChevronRightIcon,
+  HeartIcon as HeartSolidIcon,
+} from '@heroicons/react/solid';
+import { HeartIcon } from '@heroicons/react/outline';
 import Api from 'services/Api';
 import Header from 'app/components/Header';
+import Avatar from 'app/components/Avatar';
+import Moment from 'moment';
 
 export default function BibleStudies(props) {
   const studies = useQuery(
@@ -10,6 +16,7 @@ export default function BibleStudies(props) {
     async () =>
       await Api.get(`/studies`, {
         order: 'createdAt desc',
+        join: 'createdBy',
       }),
   );
 
@@ -22,44 +29,45 @@ export default function BibleStudies(props) {
         />
 
         <div className="bg-white dark:bg-transparent shadow overflow-hidden sm:rounded-md">
-          <ul role="list" className="divide-y divide-gray-200">
+          <ul className="divide-y divide-black/10 dark:divide-white/10">
             {studies?.data?.response?.map(study => (
               <li key={study.id}>
                 <a
                   href={`/studies/${study.id}`}
-                  className="block hover:bg-gray-50 dark:hover:bg-white/10"
+                  className="block hover:bg-primary/10 dark:hover:bg-white/10"
                 >
-                  <div className="flex items-center px-4 py-4 sm:px-6">
+                  <div className="flex items-center">
                     <div className="min-w-0 flex-1 flex items-center">
-                      <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4">
+                      <div className="min-w-0 flex-1 px-4">
                         <div>
-                          <p className="text-sm font-bold truncate">
-                            {study.name}
-                          </p>
-                          <p className="mt-2 flex items-center text-sm mute truncate">
-                            {study.description}
-                          </p>
-                        </div>
-                        <div className="hidden md:block">
-                          <div>
-                            <p className="text-sm mute">
-                              Aangemaakt op{' '}
-                              <time dateTime={study.createdAt}>
-                                {study.createdAt}
-                              </time>
-                            </p>
-                            <p className="mt-2 flex items-center text-sm mute">
-                              {study.createdBy}
-                            </p>
+                          <div className="text-sm truncate py-2 leading-6">
+                            <div className="font-bold">{study.name}</div>
+                            <div className="mute">{study.description}</div>
+                            <div className="pt-1 text-xs mute flex items-center space-x-2">
+                              <div>
+                                <HeartSolidIcon className="inline text-red-700 h-3 w-3" />
+                                <HeartSolidIcon className="inline text-red-700 h-3 w-3" />
+                                <HeartSolidIcon className="inline text-red-700 h-3 w-3" />
+                                <HeartSolidIcon className="inline text-red-700 h-3 w-3" />
+                                <HeartIcon className="inline h-3 w-3" />
+                              </div>
+                              <div>
+                                {study.createdAt
+                                  ? Moment(study.createdAt).format()
+                                  : ''}
+                              </div>
+                              <Avatar
+                                user={study.createdBy}
+                                className="w-4 h-4 leading-4 text-xs"
+                              />
+                              <div>{study.createdBy.name}</div>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                     <div>
-                      <ChevronRightIcon
-                        className="h-5 w-5 text-gray-400"
-                        aria-hidden="true"
-                      />
+                      <ChevronRightIcon className="h-5 w-5 mr-4 text-default dark:text-white" />
                     </div>
                   </div>
                 </a>

@@ -4,7 +4,7 @@ import { SelectorIcon } from '@heroicons/react/outline';
 export default function BibleTimelineLayer(props) {
   return (
     <div className={'flow-root'}>
-      <ul role="list" className="-mb-8">
+      <ul className="-mb-8">
         {props?.children?.map((item, idx) => (
           <li key={item.id}>
             <div className="relative pb-8 pt-4">
