@@ -1,9 +1,18 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
-  InformationCircleIcon,
   ClipboardListIcon,
+  HeartIcon as HeartSolidIcon,
 } from '@heroicons/react/solid';
+import {
+  HeartIcon,
+  BookmarkIcon,
+  MenuAlt2Icon,
+  QuestionMarkCircleIcon,
+  MenuIcon,
+  PencilAltIcon,
+  BookOpenIcon,
+} from '@heroicons/react/outline';
 import Api from 'services/Api';
 import { useParams } from 'react-router-dom';
 import BibleQuery from 'app/components/bible/BibleQuery';
@@ -23,17 +32,22 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import { StudyComponentModel } from 'models/Api';
 import Header from 'app/components/Header';
 import Hyperlink from 'app/components/Hyperlink';
 import Moment from 'moment';
+import { useAppStore } from 'store/global';
 
 export default function BibleStudy() {
   const { id } = useParams();
   const [studyComponents, setStudyComponents] = useState<StudyComponentModel[]>(
     [],
   );
+  const me = useAppStore(state => state.me);
+  const [editMode, setEditMode] = useState(false);
+  const [canEdit, setCanEdit] = useState(false);
 
   /**
    * Data services
@@ -49,28 +63,8 @@ export default function BibleStudy() {
     {
       // Update state on success
       onSuccess: data => {
-        let currentLevel: Array<number> = [];
-        data.response?.forEach((component: StudyComponentModel) => {
-          if (component.type === 'header') {
-            // Parse header level
-            let level: number =
-              component?.properties?.level && component?.properties?.level > 0
-                ? component?.properties?.level - 1
-                : 0;
-
-            // Set new header number
-            currentLevel[level] = currentLevel[level]
-              ? currentLevel[level] + 1
-              : 1;
-
-            // Strip sublevels
-            currentLevel = currentLevel.slice(0, level + 1);
-
-            // Set level name
-            component.properties.levelName = currentLevel.join('.');
-          }
-        });
-        setStudyComponents(data.response);
+        buildComponentList(data.response);
+        setCanEdit(me?.role < 300 || me?.id === data.response?.id);
       },
     },
   );
@@ -116,19 +110,51 @@ export default function BibleStudy() {
     const { active, over } = event;
 
     if (active.id !== over.id) {
-      // Find positions and create new list
-      const oldIndex = studyComponents.findIndex(
+      // Clone the components list
+      let newList = studyComponents;
+
+      // Find positions of source and target components
+      let startIndex = studyComponents.findIndex(
         (item: any) => item.id === active.id,
       );
-      const newIndex = studyComponents.findIndex(
+      let endIndex = studyComponents.findIndex(
         (item: any) => item.id === over.id,
       );
-      const newList = arrayMove(studyComponents, oldIndex, newIndex);
+
+      // Move all components within header level
+      let moveComponents = 1;
+      let withinLevel = 0;
+
+      if (studyComponents[startIndex].type === 'header') {
+        for (var i = 0; i < studyComponents.length; i++) {
+          // Check if a level exists or set to low level
+          let level = studyComponents[i].properties?.level
+            ? parseInt(studyComponents[i].properties?.level)
+            : 9;
+
+          // Set limit level by active component
+          if (studyComponents[i].id === active.id) {
+            withinLevel = level;
+          }
+          // When set, break if higher level or remember for move
+          else if (withinLevel) {
+            if (level <= withinLevel) {
+              break;
+            }
+            moveComponents++;
+          }
+        }
+      }
+
+      // Reorder list
+      for (i = 0; i < moveComponents; i++) {
+        newList = arrayMove(newList, startIndex++, endIndex++);
+      }
 
       // Update state
-      setStudyComponents(newList);
+      buildComponentList(newList);
 
-      // Update SQL
+      // Store new sort order
       newList.forEach((component: StudyComponentModel, index) => {
         if (index !== component.sort) {
           Api.put(`/studyComponents/${component.id}`, {
@@ -139,148 +165,244 @@ export default function BibleStudy() {
     }
   }
 
+  function buildComponentList(componentList) {
+    // Update section numbers
+    let currentLevel: Array<number> = [];
+    componentList.forEach((component: StudyComponentModel) => {
+      if (component.type === 'header') {
+        // Parse header level
+        let level: number =
+          component?.properties?.level && component?.properties?.level > 0
+            ? component?.properties?.level - 1
+            : 0;
+
+        // Set new header number
+        currentLevel[level] = currentLevel[level] ? currentLevel[level] + 1 : 1;
+
+        // Strip sublevels
+        currentLevel = currentLevel.slice(0, level + 1);
+
+        // Set level name
+        component.properties.levelName = currentLevel.join('.');
+      }
+    });
+
+    // Update state
+    setStudyComponents(componentList);
+  }
+
+  let currentPadding = 0;
+
   return (
     <>
       <main className="lg:col-span-7 text-justify px-4 sm:px-0">
         <Header
-          title={studyService?.data?.response?.name}
+          title={
+            <div>
+              {studyService?.data?.response?.name}
+              {editMode ? (
+                <button
+                  className="float-right"
+                  onClick={() => setEditMode(false)}
+                >
+                  <BookOpenIcon className="inline h-3 w-3" /> Leesmodus
+                </button>
+              ) : null}
+              {!editMode && canEdit ? (
+                <button
+                  className="float-right"
+                  onClick={() => setEditMode(true)}
+                >
+                  <PencilAltIcon className="inline h-3 w-3" /> Bewerkmodus
+                </button>
+              ) : null}
+            </div>
+          }
           subtitle={
-            'Gemaakt door ' +
-            studyService?.data?.response?.createdBy?.name +
-            ' op ' +
-            (studyService?.data?.response?.createdAt
-              ? Moment(studyService?.data?.response?.createdAt).format()
-              : '')
+            <>
+              Auteur {studyService?.data?.response?.createdBy?.name + ' @ '}
+              {studyService?.data?.response?.createdAt
+                ? Moment(studyService?.data?.response?.createdAt).format()
+                : ''}
+              <br />
+              <span className="mute text-xs mr-2">Rating</span>
+              <HeartSolidIcon className="inline text-red-700 h-3 w-3" />
+              <HeartSolidIcon className="inline text-red-700 h-3 w-3" />
+              <HeartSolidIcon className="inline text-red-700 h-3 w-3" />
+              <HeartSolidIcon className="inline text-red-700 h-3 w-3" />
+              <HeartIcon className="inline h-3 w-3" />
+            </>
           }
         />
-        <div className="py-4 font-bold">
+        <div className="pt-4 pb-8 font-bold">
           {studyService?.data?.response?.description}
         </div>
-        <DndContext
-          modifiers={[restrictToVerticalAxis]}
-          sensors={dndSensors}
-          collisionDetection={closestCenter}
-          onDragEnd={onDragEnd}
-        >
-          <SortableContext
-            items={studyComponents}
-            strategy={verticalListSortingStrategy}
-          >
-            {studyComponents?.map(component => (
-              <SortableItem key={component.id} id={component.id}>
-                <div
-                  ref={refs[component.id]}
-                  className={
-                    'relative py-2 hover:bg-primary/25 border-primary/10 dark:border-primary/10 ' +
-                    (component.type === 'header' ? ' ' : '') +
-                    (component.type === 'bibleQuery' ? 'border-l-8 px-4 ' : '')
-                  }
-                >
-                  {/* <DotsVerticalIcon className="w-6 h-6 absolute left-2" /> */}
-                  {component.type === 'header' ? (
-                    <div className="py-4 pb-8 mb-8 border-b border-black/10 dark:border-white/10">
-                      <div
-                        className="flex-grow"
-                        dangerouslySetInnerHTML={{
-                          __html:
-                            '<h' +
-                            (component.properties?.level > 0 &&
-                            component.properties?.level < 6
-                              ? component.properties?.level + 1
-                              : 2) +
-                            '>' +
-                            component.properties?.text +
-                            '</h' +
-                            (component.properties?.level > 0 &&
-                            component.properties?.level < 6
-                              ? component.properties?.level + 1
-                              : 2) +
-                            '>',
-                        }}
-                      ></div>
-                      <div className="mute text-sm">
-                        Sectie {component.properties?.levelName}
-                      </div>
-                      {/* <BookmarkIcon className="w-6 h-6 inline" /> */}
-                    </div>
-                  ) : null}
-                  {component.type === 'text' ? (
-                    <div
-                      className="pb-4"
-                      dangerouslySetInnerHTML={{
-                        __html: component.properties?.text,
-                      }}
-                    ></div>
-                  ) : null}
-                  {component.type === 'bibleQuery' ? (
-                    <BibleQuery className="text-sm">
-                      {component.properties?.query}
-                    </BibleQuery>
-                  ) : null}
-                </div>
-                {/* <div className="p-2 my-2 hover:bg-primary/25">
+        <ul>
+          {studyComponents?.map(component => (
+            <li key={component.id}>
+              <div
+                ref={refs[component.id]}
+                className={
+                  'relative mb-8 border-primary/10 dark:border-primary/10 ' +
+                  (component.type === 'header' ? ' ' : '') +
+                  (component.type === 'bibleQuery' ? 'border-l-8 px-4 ' : '')
+                }
+              >
+                {/* <MenuIcon className="w-6 h-6 absolute left-2" /> */}
+                {component.type === 'header' ? (
+                  <Header
+                    title={component.properties?.text}
+                    subtitle={'Sectie ' + component.properties?.levelName}
+                    level={
+                      component.properties?.level
+                        ? parseInt(component.properties?.level) + 1
+                        : 2
+                    }
+                  />
+                ) : null}
+                {component.type === 'text' ? (
+                  <div
+                    className="pb-4"
+                    dangerouslySetInnerHTML={{
+                      __html: component.properties?.text,
+                    }}
+                  ></div>
+                ) : null}
+                {component.type === 'bibleQuery' ? (
+                  <BibleQuery className="text-sm">
+                    {component.properties?.query}
+                  </BibleQuery>
+                ) : null}
+              </div>
+              {/* <div className="p-2 my-2 hover:bg-primary/25">
                   <div className="relative flex items-center justify-center">
                     <div className="absolute w-full h-1 border-t border-black/10 dark:border-white/10"></div>
                     <PlusCircleIcon className="w-6 h-6 inline" />
                   </div>
                 </div> */}
-              </SortableItem>
-            ))}
-          </SortableContext>
-        </DndContext>
+            </li>
+          ))}
+        </ul>
       </main>
       <aside className="lg:col-span-3 px-4 sm:px-0">
-        <div className="sticky top-0 ">
-          <section className="pb-4 mb-5 border-b border-gray-200 dark:border-white/10">
-            <div>
-              <div className="text-xs font-semibold mute uppercase py-5 tracking-wider border-b border-gray-200 dark:border-white/10">
-                <InformationCircleIcon className="w-6 h-6 inline" /> Over deze
-                studie
-              </div>
-              <div className="my-6 text-sm">
-                <label className="mute text-xs">Auteur</label>
-                <br />
-                {studyService?.data?.response?.createdBy?.name}
-              </div>
-            </div>
-          </section>
+        <div className="sticky top-0">
           <section className="pb-5 mb-5 border-b border-gray-200 dark:border-white/10">
             <div>
-              <div className="text-xs font-semibold mute uppercase pb-5 tracking-wider border-b border-gray-200 dark:border-white/10">
+              <div className="text-xs font-semibold mute uppercase py-5 tracking-wider border-b border-gray-200 dark:border-white/10">
                 <ClipboardListIcon className="w-6 h-6 inline" /> Inhoudsopgave
               </div>
               <div className="my-6 text-sm">
-                <ul className="-my-4">
-                  {studyComponents?.map((component: any) => {
-                    return component.type === 'header' ? (
-                      <li key={component.id} className="truncate">
-                        {component.type === 'header' ? (
-                          <Hyperlink
-                            onClick={() => scrollTo(component.id)}
+                {(() => {
+                  // Build component index
+                  let componentList = studyComponents?.map(
+                    (component: any, index) => {
+                      if (component.type === 'header') {
+                        currentPadding = component.properties.level
+                          ? component.properties.level - 1
+                          : 0;
+                      }
+                      return (
+                        <SortableItem
+                          key={component.id}
+                          id={component.id}
+                          className={'truncate leading-6'}
+                        >
+                          <div
                             className={
-                              (component?.properties?.level === 1
-                                ? 'font-bold py-2 '
-                                : '') + 'inline-block leading-6'
+                              'flex flex-row items-top ' +
+                              (editMode ? 'cursor-pointer' : '')
                             }
-                            style={{
-                              paddingLeft:
-                                (component.properties.level
-                                  ? component.properties.level - 1
-                                  : 0) + 'em',
-                            }}
                           >
-                            {/* {component.properties?.level > 1 ? (
-                            <ChevronRightIcon className="w-4 h-4 inline-block" />
-                          ) : null} */}
-                            {component.properties?.levelName +
-                              '. ' +
-                              component.properties?.text}
-                          </Hyperlink>
-                        ) : null}
-                      </li>
-                    ) : null;
-                  })}
-                </ul>
+                            <div>
+                              {editMode ? (
+                                <MenuIcon className="w-3 h-3 m-1 mr-2" />
+                              ) : null}
+                            </div>
+                            <div className="truncate">
+                              {component.type === 'header' ? (
+                                <Hyperlink
+                                  onClick={() => scrollTo(component.id)}
+                                  className={
+                                    (component?.properties?.level === 1
+                                      ? 'font-bold py-2 '
+                                      : 'block') +
+                                    (editMode
+                                      ? ' cursor-move'
+                                      : ' truncate font-bold text-default dark:text-white')
+                                  }
+                                  style={{
+                                    paddingLeft: currentPadding + 'em',
+                                  }}
+                                >
+                                  {component.properties?.levelName +
+                                    ') ' +
+                                    component.properties?.text}
+                                </Hyperlink>
+                              ) : (
+                                <Hyperlink
+                                  onClick={() => scrollTo(component.id)}
+                                  className={
+                                    'block' + (editMode ? ' cursor-move' : '')
+                                  }
+                                  style={{
+                                    paddingLeft: currentPadding + 1 + 'em',
+                                  }}
+                                >
+                                  {(() => {
+                                    switch (component.type) {
+                                      case 'bibleQuery':
+                                        return (
+                                          <>
+                                            <BookmarkIcon className="w-3 h-3 inline mr-2" />
+                                            {component.properties?.query}
+                                          </>
+                                        );
+                                      case 'text':
+                                        return (
+                                          <div className="truncate">
+                                            <MenuAlt2Icon className="w-3 h-3 inline mr-2" />
+                                            {component.properties?.text
+                                              .substring(0, 50)
+                                              .replace(/(<([^>]+)>)/gi, '')}
+                                          </div>
+                                        );
+                                      default:
+                                        return (
+                                          <>
+                                            <QuestionMarkCircleIcon className="w-3 h-3 inline mr-2" />
+                                            {component.type}
+                                          </>
+                                        );
+                                    }
+                                  })()}
+                                </Hyperlink>
+                              )}
+                            </div>
+                          </div>
+                        </SortableItem>
+                      );
+                    },
+                  );
+
+                  // Make sortabe if editmode is on
+                  return editMode ? (
+                    <DndContext
+                      modifiers={[restrictToVerticalAxis]}
+                      sensors={dndSensors}
+                      collisionDetection={closestCenter}
+                      onDragEnd={onDragEnd}
+                    >
+                      <SortableContext
+                        items={studyComponents}
+                        strategy={verticalListSortingStrategy}
+                      >
+                        {componentList}
+                      </SortableContext>
+                    </DndContext>
+                  ) : (
+                    <div>{componentList}</div>
+                  );
+                })()}
               </div>
             </div>
           </section>

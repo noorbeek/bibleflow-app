@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Pangolin&display=swap');
 
 @tailwind base;
@@ -25,7 +25,7 @@
     @apply text-slate-700;
   }
   #app.dark, .dark .text-default {
-    @apply text-slate-50;
+    @apply text-white;
   }
   .bg-default {
     @apply bg-white;
@@ -49,11 +49,10 @@
     @apply text-lg;
     @apply sm:text-xl;
     @apply lg:text-2xl;
-    @apply text-primary;
+    @apply uppercase;
   }
   h2 {
     @apply text-2xl;
-    @apply text-primary;
   }
   h3 {
     @apply text-lg;
@@ -112,7 +111,8 @@
     @apply gap-2;
   }
   button:hover {
-    @apply bg-primary;
+    @apply transition-all;
+    @apply bg-primary-400;
     @apply shadow-lg;
   }
 
@@ -146,7 +146,8 @@
 html, body {
   height: 100%;
   width: 100%;
-  font-family: Noto Sans, sans-serif;
+  font-family: Source Sans Pro, sans-serif;
+  font-size: 18px;
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
