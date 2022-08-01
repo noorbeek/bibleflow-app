@@ -39,6 +39,7 @@ import Header from 'app/components/Header';
 import Hyperlink from 'app/components/Hyperlink';
 import Moment from 'moment';
 import { useAppStore } from 'store/global';
+import { InView } from 'react-intersection-observer';
 
 export default function BibleStudy() {
   const { id } = useParams();
@@ -191,6 +192,21 @@ export default function BibleStudy() {
     setStudyComponents(componentList);
   }
 
+  /**
+   * Update state of component when is in/out of view
+   * @param component
+   * @param isInView
+   */
+  function setInView(component, isInView) {
+    setStudyComponents(
+      studyComponents.map(item => {
+        return item.id === component.id
+          ? Object.assign(item, { isInView: isInView })
+          : item;
+      }),
+    );
+  }
+
   let currentPadding = 0;
 
   return (
@@ -248,38 +264,37 @@ export default function BibleStudy() {
                   (component.type === 'bibleQuery' ? 'border-l-8 px-4 ' : '')
                 }
               >
-                {/* <MenuIcon className="w-6 h-6 absolute left-2" /> */}
-                {component.type === 'header' ? (
-                  <Header
-                    title={component.properties?.text}
-                    subtitle={'Sectie ' + component.properties?.levelName}
-                    level={
-                      component.properties?.level
-                        ? parseInt(component.properties?.level) + 1
-                        : 2
-                    }
-                  />
-                ) : null}
-                {component.type === 'text' ? (
-                  <div
-                    className="pb-4"
-                    dangerouslySetInnerHTML={{
-                      __html: component.properties?.text,
-                    }}
-                  ></div>
-                ) : null}
-                {component.type === 'bibleQuery' ? (
-                  <BibleQuery className="text-sm">
-                    {component.properties?.query}
-                  </BibleQuery>
-                ) : null}
+                <InView
+                  as="div"
+                  onChange={isInView => setInView(component, isInView)}
+                >
+                  {/* <MenuIcon className="w-6 h-6 absolute left-2" /> */}
+                  {component.type === 'header' ? (
+                    <Header
+                      title={component.properties?.text}
+                      subtitle={'Sectie ' + component.properties?.levelName}
+                      level={
+                        component.properties?.level
+                          ? parseInt(component.properties?.level) + 1
+                          : 2
+                      }
+                    />
+                  ) : null}
+                  {component.type === 'text' ? (
+                    <div
+                      className="pb-4"
+                      dangerouslySetInnerHTML={{
+                        __html: component.properties?.text,
+                      }}
+                    ></div>
+                  ) : null}
+                  {component.type === 'bibleQuery' ? (
+                    <BibleQuery className="text-sm">
+                      {component.properties?.query}
+                    </BibleQuery>
+                  ) : null}
+                </InView>
               </div>
-              {/* <div className="p-2 my-2 hover:bg-primary/25">
-                  <div className="relative flex items-center justify-center">
-                    <div className="absolute w-full h-1 border-t border-black/10 dark:border-white/10"></div>
-                    <PlusCircleIcon className="w-6 h-6 inline" />
-                  </div>
-                </div> */}
             </li>
           ))}
         </ul>
@@ -301,6 +316,9 @@ export default function BibleStudy() {
                           ? component.properties.level - 1
                           : 0;
                       }
+                      let isInView =
+                        studyComponents.find(item => item?.isInView)?.id ===
+                        component.id;
                       return (
                         <SortableItem
                           key={component.id}
@@ -310,7 +328,10 @@ export default function BibleStudy() {
                           <div
                             className={
                               'flex flex-row items-top ' +
-                              (editMode ? 'cursor-pointer' : '')
+                              (editMode ? 'cursor-pointer ' : '') +
+                              (isInView
+                                ? 'font-bold text-primary dark:text-primary hover:text-primary-400 hover:dark:text-primary-400'
+                                : '')
                             }
                           >
                             <div>
@@ -328,7 +349,10 @@ export default function BibleStudy() {
                                       : 'block') +
                                     (editMode
                                       ? ' cursor-move'
-                                      : ' truncate font-bold text-default dark:text-white')
+                                      : ' truncate font-bold text-default dark:text-white') +
+                                    (isInView
+                                      ? ' font-bold text-primary dark:text-primary hover:text-primary-400 hover:dark:text-primary-400'
+                                      : '')
                                   }
                                   style={{
                                     paddingLeft: currentPadding + 'em',
@@ -342,7 +366,11 @@ export default function BibleStudy() {
                                 <Hyperlink
                                   onClick={() => scrollTo(component.id)}
                                   className={
-                                    'block' + (editMode ? ' cursor-move' : '')
+                                    'block' +
+                                    (editMode ? ' cursor-move' : '') +
+                                    (isInView
+                                      ? ' font-bold text-primary dark:text-primary hover:text-primary-400 hover:dark:text-primary-400'
+                                      : '')
                                   }
                                   style={{
                                     paddingLeft: currentPadding + 1 + 'em',

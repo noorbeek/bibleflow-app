@@ -73,4 +73,5 @@ export type StudyComponentModel = {
   study: number | StudyModel;
   name: string;
   properties: { [key: string]: any };
+  [key: string]: any;
 };
