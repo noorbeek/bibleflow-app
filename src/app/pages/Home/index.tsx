@@ -21,7 +21,9 @@ import BibleStudies from './BibleStudies';
 import ShareBanner from 'app/components/ShareBanner';
 import BibleStudy from './BibleStudies/BibleStudy';
 import { useBibleTranslations } from 'services/Bibles';
-import Link from 'app/components/Link';
+import Hyperlink from 'app/components/Hyperlink';
+import { useQuery } from '@tanstack/react-query';
+import Api from 'services/Api';
 
 const navigation = [
   //{ name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
@@ -41,6 +43,13 @@ function classNames(...classes) {
 
 export function Home() {
   const user = useAppStore().user;
+
+  const userQuery = useQuery(['me'], async () => await Api.get(`/users/me`), {
+    onSuccess: data => {
+      useAppStore.setState({ user: data.response });
+    },
+  });
+
   const bibleTranslations = useBibleTranslations();
   const bibleTimelines = useAppStore().bibleTimelines;
   const location = useLocation();
@@ -169,11 +178,10 @@ export function Home() {
                   <Menu as="div" className="flex-shrink-0 relative ml-5">
                     <div>
                       <Menu.Button className="bg-transparent hover:bg-transparent hover:shadow-none text-default rounded-full flex">
-                        <Avatar className="bg-gray-300 dark:bg-primary cursor-pointer">
-                          {user && user.name?.length > 2
-                            ? user.name[0] + user.name[1]
-                            : ''}
-                        </Avatar>
+                        <Avatar
+                          user={user}
+                          className="bg-gray-300 dark:bg-primary cursor-pointer"
+                        />
                       </Menu.Button>
                     </div>
                     <Transition
@@ -189,7 +197,7 @@ export function Home() {
                         {userNavigation.map(item => (
                           <Menu.Item key={item.name}>
                             {({ active }) => (
-                              <Link
+                              <Hyperlink
                                 onClick={
                                   item.onClick ? item.onClick : () => true
                                 }
@@ -199,7 +207,7 @@ export function Home() {
                                 )}
                               >
                                 {item.name}
-                              </Link>
+                              </Hyperlink>
                             )}
                           </Menu.Item>
                         ))}
@@ -270,13 +278,13 @@ export function Home() {
                 </div>
                 <div className="mt-3 max-w-3xl mx-auto px-2 space-y-1 sm:px-4 border-t border-gray-200 dark:border-white/10">
                   {userNavigation.map(item => (
-                    <Link
+                    <Hyperlink
                       key={item.name}
                       onClick={item.onClick}
                       className="block rounded-md py-2 px-3 text-base font-medium mute"
                     >
                       {item.name}
-                    </Link>
+                    </Hyperlink>
                   ))}
                 </div>
               </div>
@@ -341,7 +349,7 @@ export function Home() {
                   aria-labelledby="bibletranslations-headline"
                 >
                   {bibleTranslations.map(bibleTranslation => (
-                    <Link
+                    <Hyperlink
                       key={bibleTranslation?.name}
                       href="#"
                       className="group flex items-center px-3 py-2 text-sm font-medium rounded-md"
@@ -350,7 +358,7 @@ export function Home() {
                         {bibleTranslation?.name} (
                         {bibleTranslation?.abbreviation})
                       </span>
-                    </Link>
+                    </Hyperlink>
                   ))}
                 </div>
               </div>
@@ -366,13 +374,13 @@ export function Home() {
                   aria-labelledby="biblebooks-headline"
                 >
                   {bibleTimelines.map(bibleTimeline => (
-                    <Link
+                    <Hyperlink
                       key={bibleTimeline.name}
                       href="#"
                       className="group flex items-center px-3 py-2 text-sm font-medium rounded-md"
                     >
                       <span className="truncate">{bibleTimeline.name}</span>
-                    </Link>
+                    </Hyperlink>
                   ))}
                 </div>
               </div>

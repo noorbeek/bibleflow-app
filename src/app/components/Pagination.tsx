@@ -5,7 +5,7 @@ import {
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
 } from '@heroicons/react/solid';
-import Link from './Link';
+import Hyperlink from './Hyperlink';
 import { SearchIcon } from '@heroicons/react/outline';
 
 export default function Pagination(props) {
@@ -77,14 +77,14 @@ export default function Pagination(props) {
               (pagination.current === 1 ? 'opacity-25 cursor-default' : '')
             }
           >
-            <Link
+            <Hyperlink
               onClick={() => (pagination.current !== 1 ? setPage(1) : null)}
               className="pt-2 inline-flex text-sm font-medium"
             >
               <ChevronDoubleLeftIcon className={'mr-0 sm:mr-2 h-5 w-5 '} />
               <span className="hidden sm:inline">Eerste</span>
-            </Link>
-            <Link
+            </Hyperlink>
+            <Hyperlink
               onClick={() =>
                 pagination.current !== 1
                   ? setPage(pagination.current - 1)
@@ -94,12 +94,12 @@ export default function Pagination(props) {
             >
               <ChevronLeftIcon className={'mr-0 sm:mr-2 h-5 w-5 '} />
               <span className="hidden sm:inline">Vorige</span>
-            </Link>
+            </Hyperlink>
           </div>
           <div className="grow text-center">
             {pagination.start > 1 ? <span className="mute">...</span> : ''}
             {pagination.range.map(page => (
-              <Link
+              <Hyperlink
                 key={page}
                 onClick={event => setPage(page)}
                 className={
@@ -110,7 +110,7 @@ export default function Pagination(props) {
                 }
               >
                 {page}
-              </Link>
+              </Hyperlink>
             ))}
             {pagination.end < pagination.last ? (
               <span className="mute">...</span>
@@ -126,7 +126,7 @@ export default function Pagination(props) {
                 : '')
             }
           >
-            <Link
+            <Hyperlink
               onClick={() =>
                 pagination?.last !== pagination.current
                   ? setPage(pagination.current + 1)
@@ -136,8 +136,8 @@ export default function Pagination(props) {
             >
               <span className="hidden sm:inline">Volgende</span>
               <ChevronRightIcon className={'ml-0 sm:ml-3 h-5 w-5 '} />
-            </Link>
-            <Link
+            </Hyperlink>
+            <Hyperlink
               onClick={() =>
                 pagination?.last !== pagination.current
                   ? setPage(pagination.last)
@@ -147,7 +147,7 @@ export default function Pagination(props) {
             >
               <span className="hidden sm:inline">Laatste</span>
               <ChevronDoubleRightIcon className={'ml-0 sm:ml-3 h-5 w-5 '} />
-            </Link>
+            </Hyperlink>
           </div>
         </div>
       ) : null}

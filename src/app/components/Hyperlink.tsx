@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Link(props) {
+export default function Hyperlink(props) {
   // Override props to merge component attributes
   let attributes = { ...props };
   attributes.className =

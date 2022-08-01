@@ -11,7 +11,7 @@ import {
   ThumbUpIcon,
 } from '@heroicons/react/solid';
 import { Menu, Transition } from '@headlessui/react';
-import Link from 'app/components/Link';
+import Hyperlink from 'app/components/Hyperlink';
 
 const tabs = [
   { name: 'Recent', href: '#', current: true },
@@ -183,7 +183,7 @@ export default function Dashboard(props) {
                               <div className="py-1">
                                 <Menu.Item>
                                   {({ active }) => (
-                                    <Link
+                                    <Hyperlink
                                       href="#"
                                       className={classNames(
                                         active
@@ -197,12 +197,12 @@ export default function Dashboard(props) {
                                         aria-hidden="true"
                                       />
                                       <span>Add to favorites</span>
-                                    </Link>
+                                    </Hyperlink>
                                   )}
                                 </Menu.Item>
                                 <Menu.Item>
                                   {({ active }) => (
-                                    <Link
+                                    <Hyperlink
                                       href="#"
                                       className={classNames(
                                         active
@@ -216,12 +216,12 @@ export default function Dashboard(props) {
                                         aria-hidden="true"
                                       />
                                       <span>Embed</span>
-                                    </Link>
+                                    </Hyperlink>
                                   )}
                                 </Menu.Item>
                                 <Menu.Item>
                                   {({ active }) => (
-                                    <Link
+                                    <Hyperlink
                                       href="#"
                                       className={classNames(
                                         active
@@ -235,7 +235,7 @@ export default function Dashboard(props) {
                                         aria-hidden="true"
                                       />
                                       <span>Report content</span>
-                                    </Link>
+                                    </Hyperlink>
                                   )}
                                 </Menu.Item>
                               </div>
@@ -364,12 +364,12 @@ export default function Dashboard(props) {
                   </ul>
                 </div>
                 <div className="mt-6">
-                  <Link
+                  <Hyperlink
                     href="#"
                     className="w-full block text-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
                   >
                     View all
-                  </Link>
+                  </Hyperlink>
                 </div>
               </div>
             </div>
@@ -418,12 +418,12 @@ export default function Dashboard(props) {
                   </ul>
                 </div>
                 <div className="mt-6">
-                  <Link
+                  <Hyperlink
                     href="#"
                     className="w-full block text-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
                   >
                     View all
-                  </Link>
+                  </Hyperlink>
                 </div>
               </div>
             </div>

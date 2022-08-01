@@ -5,7 +5,7 @@ import { useAppStore } from 'store/global';
 import { useMutation } from '@tanstack/react-query';
 import Api from 'services/Api';
 import { ApiResponseModel } from 'models/Api';
-import Link from 'app/components/Link';
+import Hyperlink from 'app/components/Hyperlink';
 
 export function Authenticate() {
   const [formData, setFormData] = useState({
@@ -112,12 +112,12 @@ export function Authenticate() {
               </div>
 
               <div className="text-sm">
-                <Link
+                <Hyperlink
                   href="#"
                   className="font-medium text-primary-500 hover:text-primary-400"
                 >
                   Wachtwoord vergeten?
-                </Link>
+                </Hyperlink>
               </div>
             </div>
 
