@@ -91,6 +91,15 @@
     @apply text-primary;
   }
 
+  label {
+    @apply mute;
+    @apply text-xs;
+    @apply text-inherit;
+    @apply font-normal;
+    @apply no-underline;
+    @apply mb-2;
+  }
+
   .handwritten {
     font-family: 'Pangolin';
   }
@@ -104,8 +113,7 @@
     @apply items-center;
     @apply content-center;
     @apply justify-center;
-    @apply px-3;
-    @apply py-2;
+    @apply p-2;
     @apply rounded;
     @apply text-sm;
     @apply gap-2;
@@ -116,27 +124,46 @@
     @apply shadow-lg;
   }
 
-  button.inverse {
+  button.button-outline {
     @apply bg-transparent;
     @apply border;
+    @apply border-primary;
+    @apply text-primary;
+    @apply dark:border-white;
+    @apply dark:text-white;
   }
-  button.inverse:hover {
-    @apply bg-white;
+  button.button-outline:hover {
+    @apply bg-primary/10;
+    @apply border-primary-400;
+    @apply text-primary-400;
   }
 
   input[type="text"],
   input[type="email"],
-  input[type="password"] {
+  input[type="password"],
+  textarea {
+    @apply text-white;
+    @apply block;
+    @apply w-full;
     @apply bg-white;
-    @apply rounded;
-    @apply px-3;
-    @apply py-2;
-  }
-
-  .dark input[type="text"],
-  .dark input[type="email"],
-  .dark input[type="password"] {
-    @apply bg-white/10;
+    @apply dark:bg-white/10;
+    @apply border;
+    @apply border-gray-300;
+    @apply dark:border-white/25;
+    @apply rounded-md;
+    @apply p-2;
+    @apply placeholder-gray-500;
+    @apply focus:outline-none;
+    @apply focus:text-gray-900;
+    @apply dark:focus:text-white;
+    @apply focus:placeholder-gray-400;
+    @apply focus:ring-1;
+    @apply focus:ring-primary-500;
+    @apply focus:border-primary-500;
+    @apply text-sm;
+    @apply text-inherit;
+    @apply font-normal;
+    @apply no-underline;
   }
 
 }

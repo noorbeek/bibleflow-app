@@ -2,7 +2,7 @@
  * Base API response/request models
  */
 
-export type ApiRequestParamsModel = {
+export interface ApiRequestParamsModel {
   select?: string;
   join?: string;
   where?: string;
@@ -10,9 +10,9 @@ export type ApiRequestParamsModel = {
   limit?: number;
   offset?: number;
   page?: number;
-};
+}
 
-export type ApiResponseModel = {
+export interface ApiResponseModel {
   metadata: {
     [key: string]: any;
     datetime?: string;
@@ -28,50 +28,50 @@ export type ApiResponseModel = {
   };
   response?: any;
   errors?: any;
-};
+}
 
 /**
  * API resource models
  */
 
-export type BibleTranslationModel = {
+export interface BibleTranslationModel {
   id: number;
   abbreviation: string;
   name: string;
   author: string;
   copyright: string;
-};
+}
 
-export type BibleBookModel = {
+export interface BibleBookModel {
   id: number;
   name: string;
   abbreviations: Array<string>;
   section: string;
-};
+}
 
-export type BibleVerseModel = {
+export interface BibleVerseModel {
   id: number;
   translation: number | BibleTranslationModel;
   book: number | BibleBookModel;
   chapter: number;
   verse: number;
   text: string;
-};
+}
 
-export type StudyModel = {
+export interface StudyModel {
   id: number;
   type: string;
   study: number | StudyModel;
   name: string;
   properties: object;
-};
+  [key: string]: any;
+}
 
-export type StudyComponentModel = {
+export interface StudyComponentModel {
   id: number;
   sort: number;
   type: string;
   study: number | StudyModel;
-  name: string;
   properties: { [key: string]: any };
   [key: string]: any;
-};
+}

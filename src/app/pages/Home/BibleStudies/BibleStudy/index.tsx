@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   ClipboardListIcon,
@@ -11,7 +11,10 @@ import {
   QuestionMarkCircleIcon,
   MenuIcon,
   PencilAltIcon,
-  BookOpenIcon,
+  XIcon,
+  CheckCircleIcon,
+  TrashIcon,
+  PlusIcon,
 } from '@heroicons/react/outline';
 import Api from 'services/Api';
 import { useParams } from 'react-router-dom';
@@ -34,21 +37,33 @@ import {
 } from '@dnd-kit/sortable';
 
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
-import { StudyComponentModel } from 'models/Api';
+import { StudyComponentModel, StudyModel } from 'models/Api';
 import Header from 'app/components/Header';
 import Hyperlink from 'app/components/Hyperlink';
 import Moment from 'moment';
 import { useAppStore } from 'store/global';
 import { InView } from 'react-intersection-observer';
+import TextareaAutosize from 'react-textarea-autosize';
+import Dialog from 'app/components/Dialog';
+import Selectbox from 'app/components/Selectbox';
+
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 export default function BibleStudy() {
   const { id } = useParams();
-  const [studyComponents, setStudyComponents] = useState<StudyComponentModel[]>(
-    [],
-  );
-  const me = useAppStore(state => state.me);
-  const [editMode, setEditMode] = useState(false);
-  const [canEdit, setCanEdit] = useState(false);
+  const me = useAppStore(state => state.user);
+  const [forceUpdate, triggerForceUpdate] = useState(0);
+  const [editMode, editModeState] = useState(false);
+  const [canEdit, canEditState] = useState(false);
+  const [confirmCancel, confirmCancelState] = useState(false);
+  const [study, studyState] = useState<StudyModel>({} as StudyModel);
+  const [studyComponents, studyComponentsState] = useState<
+    StudyComponentModel[]
+  >([]);
+  const [toRemoveStudyComponents, toRemoveStudyComponentsState] = useState<
+    StudyComponentModel[]
+  >([]);
 
   /**
    * Data services
@@ -65,7 +80,6 @@ export default function BibleStudy() {
       // Update state on success
       onSuccess: data => {
         buildComponentList(data.response);
-        setCanEdit(me?.role < 300 || me?.id === data.response?.id);
       },
     },
   );
@@ -77,6 +91,13 @@ export default function BibleStudy() {
         order: 'createdAt desc',
         join: 'createdBy',
       }),
+    {
+      // Update state on success
+      onSuccess: data => {
+        studyState(data.response);
+        canEditState(me?.role < 300 || me?.id === data.response?.createdBy.id);
+      },
+    },
   );
 
   /**
@@ -154,15 +175,6 @@ export default function BibleStudy() {
 
       // Update state
       buildComponentList(newList);
-
-      // Store new sort order
-      newList.forEach((component: StudyComponentModel, index) => {
-        if (index !== component.sort) {
-          Api.put(`/studyComponents/${component.id}`, {
-            sort: index,
-          });
-        }
-      });
     }
   }
 
@@ -189,7 +201,66 @@ export default function BibleStudy() {
     });
 
     // Update state
-    setStudyComponents(componentList);
+    studyComponentsState(componentList);
+
+    // Force component to rerender
+    triggerForceUpdate(new Date().getTime());
+  }
+
+  function updateStudy(study: StudyModel) {
+    studyState({ ...study, isChanged: true });
+  }
+
+  function updateStudyComponent(component: StudyComponentModel) {
+    buildComponentList(
+      studyComponents.map(item => {
+        return item.id === component.id
+          ? { ...component, isChanged: true }
+          : item;
+      }),
+    );
+  }
+
+  function removeStudyComponent(component: StudyComponentModel) {
+    buildComponentList(
+      studyComponents.filter(item => item.id !== component.id),
+    );
+    toRemoveStudyComponentsState([...toRemoveStudyComponents, component]);
+  }
+
+  function addStudyComponent(type: string, afterComponentId: number) {
+    if (!type) return;
+
+    let newList = studyComponents;
+    let newComponent = { properties: {} } as StudyComponentModel;
+
+    switch (type) {
+      case 'header':
+        newComponent.properties.level = 1;
+        break;
+      case 'text':
+        newComponent.properties.text = 'Nieuw component';
+        break;
+      case 'bibleQuery':
+        newComponent.properties.query = 'Gen 1:1';
+        break;
+    }
+
+    newList.splice(
+      studyComponents.findIndex(item => item.id === afterComponentId) + 1,
+      0,
+      {
+        ...newComponent,
+        //id: Math.max(...studyComponents.map(item => item.id)) + 1,
+        id: new Date().getTime(),
+        isNew: true,
+        sort: 0,
+        type: type,
+        study: study.id,
+      },
+    );
+
+    buildComponentList(newList);
   }
 
   /**
@@ -198,7 +269,7 @@ export default function BibleStudy() {
    * @param isInView
    */
   function setInView(component, isInView) {
-    setStudyComponents(
+    studyComponentsState(
       studyComponents.map(item => {
         return item.id === component.id
           ? Object.assign(item, { isInView: isInView })
@@ -207,39 +278,61 @@ export default function BibleStudy() {
     );
   }
 
+  function save() {
+    // Store study
+    if (study?.isChanged) {
+      Api.put(`/studies/${study.id}`, study);
+    }
+
+    // Store components
+    studyComponents.forEach((component: StudyComponentModel, index) => {
+      if (component?.isNew) {
+        Api.post(`/studyComponents`, component).then(data => {
+          updateStudyComponent({
+            ...component,
+            id: data?.response?.id,
+          });
+        });
+      } else if (component.id && component?.isChanged) {
+        Api.put(`/studyComponents/${component.id}`, component);
+      }
+    });
+
+    // Remove components
+    toRemoveStudyComponents.forEach((component: StudyComponentModel, index) => {
+      Api.remove(`/studyComponents/${component.id}`);
+    });
+
+    // Disable editing mode
+    editModeState(false);
+    confirmCancelState(false);
+  }
+
+  function reset() {
+    // Refresh states from store
+    studyService.refetch();
+    studyComponentService.refetch();
+
+    // Disable editing mode
+    editModeState(false);
+    confirmCancelState(false);
+  }
+
+  function cancel() {
+    confirmCancelState(true);
+  }
+
   let currentPadding = 0;
 
   return (
     <>
       <main className="lg:col-span-7 text-justify px-4 sm:px-0">
         <Header
-          title={
-            <div>
-              {studyService?.data?.response?.name}
-              {editMode ? (
-                <button
-                  className="float-right"
-                  onClick={() => setEditMode(false)}
-                >
-                  <BookOpenIcon className="inline h-3 w-3" /> Leesmodus
-                </button>
-              ) : null}
-              {!editMode && canEdit ? (
-                <button
-                  className="float-right"
-                  onClick={() => setEditMode(true)}
-                >
-                  <PencilAltIcon className="inline h-3 w-3" /> Bewerkmodus
-                </button>
-              ) : null}
-            </div>
-          }
+          title={study?.name}
           subtitle={
             <>
-              Auteur {studyService?.data?.response?.createdBy?.name + ' @ '}
-              {studyService?.data?.response?.createdAt
-                ? Moment(studyService?.data?.response?.createdAt).format()
-                : ''}
+              Auteur {study?.createdBy?.name + ' @ '}
+              {study?.createdAt ? Moment(study?.createdAt).format() : ''}
               <br />
               <span className="mute text-xs mr-2">Rating</span>
               <HeartSolidIcon className="inline text-red-700 h-3 w-3" />
@@ -250,50 +343,245 @@ export default function BibleStudy() {
             </>
           }
         />
+        {editMode ? (
+          <>
+            <label>Studienaam</label>
+            <input
+              onChange={evt =>
+                updateStudy({ ...study, name: evt.target.value })
+              }
+              type="text"
+              value={study?.name}
+            />
+          </>
+        ) : null}
         <div className="pt-4 pb-8 font-bold">
-          {studyService?.data?.response?.description}
+          {editMode ? (
+            <div className="py-4">
+              <label>Samenvatting</label>
+              <TextareaAutosize
+                onChange={evt =>
+                  updateStudy({ ...study, description: evt.target.value })
+                }
+                value={study?.description}
+              />
+            </div>
+          ) : (
+            study?.description
+          )}
         </div>
+        {editMode ? (
+          <Header
+            className="border-none"
+            level={2}
+            title="Componenten"
+            subtitle="Bijbelstudie componenten bewerken"
+          />
+        ) : null}
         <ul>
           {studyComponents?.map(component => (
             <li key={component.id}>
               <div
                 ref={refs[component.id]}
                 className={
-                  'relative mb-8 border-primary/10 dark:border-primary/10 ' +
-                  (component.type === 'header' ? ' ' : '') +
-                  (component.type === 'bibleQuery' ? 'border-l-8 px-4 ' : '')
+                  'relative my-8 border-primary/10 dark:border-primary/10 '
                 }
               >
-                <InView
-                  as="div"
-                  onChange={isInView => setInView(component, isInView)}
-                >
-                  {/* <MenuIcon className="w-6 h-6 absolute left-2" /> */}
-                  {component.type === 'header' ? (
-                    <Header
-                      title={component.properties?.text}
-                      subtitle={'Sectie ' + component.properties?.levelName}
-                      level={
-                        component.properties?.level
-                          ? parseInt(component.properties?.level) + 1
-                          : 2
+                {editMode ? (
+                  <div className="font-bold py-4 flex flex-row justify-between">
+                    <div>
+                      {(() => {
+                        switch (component.type) {
+                          case 'text':
+                            return 'Tekst';
+                          case 'bibleQuery':
+                            return 'Bijbelquery';
+                          case 'header':
+                            return (
+                              'Koptekst ' + component?.properties?.levelName
+                            );
+                          default:
+                            return component.type;
+                        }
+                      })()}
+                    </div>
+                    <button
+                      type="button"
+                      className="button-outline"
+                      onClick={evt => removeStudyComponent(component)}
+                    >
+                      <TrashIcon className="inline h-3 w-3" />
+                    </button>
+                  </div>
+                ) : null}
+                {(() => {
+                  let componentContent = <></>;
+                  if (component.type === 'header') {
+                    componentContent = editMode ? (
+                      <div className="flex flex-row space-x-2">
+                        <input
+                          onChange={evt =>
+                            updateStudyComponent({
+                              ...component,
+                              properties: {
+                                ...component.properties,
+                                text: evt.target.value,
+                              },
+                            })
+                          }
+                          type="text"
+                          value={component.properties?.text}
+                        />
+                        <Selectbox
+                          selected={
+                            component.properties?.level
+                              ? component.properties?.level
+                              : 1
+                          }
+                          onChange={option =>
+                            updateStudyComponent({
+                              ...component,
+                              properties: {
+                                ...component.properties,
+                                level: option.id,
+                              },
+                            })
+                          }
+                          options={Array.from(
+                            { length: 6 },
+                            (_, i) => i + 1,
+                          ).map(i => {
+                            return {
+                              id: i,
+                              text: 'Niveau ' + i,
+                              description: '',
+                            };
+                          })}
+                        />
+                      </div>
+                    ) : (
+                      <Header
+                        className="border-none"
+                        title={component.properties?.text}
+                        subtitle={
+                          editMode
+                            ? ''
+                            : 'Sectie ' + component.properties?.levelName
+                        }
+                        level={
+                          component.properties?.level
+                            ? parseInt(component.properties?.level) + 1
+                            : 2
+                        }
+                      />
+                    );
+                  } else if (component.type === 'text') {
+                    componentContent = editMode ? (
+                      <div className="text-black text-sm">
+                        <CKEditor
+                          editor={ClassicEditor}
+                          data={component.properties?.text}
+                          onChange={(evt, editor) =>
+                            updateStudyComponent({
+                              ...component,
+                              properties: {
+                                ...component.properties,
+                                text: editor.getData(),
+                              },
+                            })
+                          }
+                        />
+                      </div>
+                    ) : (
+                      <div
+                        className="pb-4"
+                        dangerouslySetInnerHTML={{
+                          __html: component.properties?.text,
+                        }}
+                      ></div>
+                    );
+                  } else if (component.type === 'bibleQuery') {
+                    componentContent = (
+                      <div>
+                        <div className="pb-4">
+                          {editMode ? (
+                            <input
+                              onChange={evt =>
+                                updateStudyComponent({
+                                  ...component,
+                                  properties: {
+                                    ...component.properties,
+                                    query: evt.target.value,
+                                  },
+                                })
+                              }
+                              placeholder="Gen 1:1-10, levend water"
+                              type="text"
+                              value={component.properties?.query}
+                            />
+                          ) : null}
+                        </div>
+                        <div className="bg-primary/5 p-8 mb-4">
+                          <BibleQuery
+                            limit={editMode ? 3 : 10}
+                            className="text-sm"
+                          >
+                            {component.properties?.query}
+                          </BibleQuery>
+                        </div>
+                      </div>
+                    );
+                  }
+                  return editMode ? (
+                    <div>{componentContent}</div>
+                  ) : (
+                    <InView
+                      as="div"
+                      onChange={isInView => setInView(component, isInView)}
+                    >
+                      {componentContent}
+                    </InView>
+                  );
+                })()}
+                {editMode ? (
+                  <div className="mt-8 relative cursor-pointer hover:bg-primary/10 p-2 flex flex-row justify-around items-center">
+                    <div className="absolute left-0 right-0 border-t border-black/10 dark:border-white/10"></div>
+                    {/* <PlusIcon className="inline h-3 w-3" /> */}
+                    <Selectbox
+                      selected="0"
+                      onChange={option =>
+                        addStudyComponent(option.id, component.id)
                       }
+                      options={[
+                        {
+                          id: '0',
+                          text: (
+                            <span className="text-xs">
+                              <PlusIcon className="inline h-2 w-2 mr-2" />
+                              Component toevoegen
+                            </span>
+                          ),
+                          description: '',
+                        },
+                        {
+                          id: 'text',
+                          text: 'Tekst',
+                          description: '',
+                        },
+                        {
+                          id: 'bibleQuery',
+                          text: 'Bijbelquery',
+                          description: '',
+                        },
+                        {
+                          id: 'header',
+                          text: 'Koptekst',
+                          description: '',
+                        },
+                      ]}
                     />
-                  ) : null}
-                  {component.type === 'text' ? (
-                    <div
-                      className="pb-4"
-                      dangerouslySetInnerHTML={{
-                        __html: component.properties?.text,
-                      }}
-                    ></div>
-                  ) : null}
-                  {component.type === 'bibleQuery' ? (
-                    <BibleQuery className="text-sm">
-                      {component.properties?.query}
-                    </BibleQuery>
-                  ) : null}
-                </InView>
+                  </div>
+                ) : null}
               </div>
             </li>
           ))}
@@ -436,6 +724,34 @@ export default function BibleStudy() {
           </section>
         </div>
       </aside>
+      {canEdit ? (
+        <div className="fixed bottom-0 left-0 right-0 flex p-4 flex-row justify-end space-x-2 bg-gradient-to-t from-primary-900 to-transparent">
+          {editMode ? (
+            <div className="flex flex-row justify-between w-full">
+              <button className="button-outline" onClick={cancel}>
+                <XIcon className="h-5 w-5" />
+                <span className="hidden sm:block"> Annuleren</span>
+              </button>
+              <button onClick={save}>
+                <CheckCircleIcon className="h-5 w-5" />
+                <span className="hidden sm:block"> Opslaan</span>
+              </button>
+            </div>
+          ) : (
+            <button onClick={() => editModeState(true)}>
+              <PencilAltIcon className="h-5 w-5" />
+              <span className="hidden sm:block"> Bewerken</span>
+            </button>
+          )}
+        </div>
+      ) : null}
+      <Dialog
+        title="Weet u zeker dat u wilt annuleren?"
+        description="Alle wijzigingen worden ongedaan gemaakt als u annuleert!"
+        isOpen={confirmCancel}
+        onConfirm={reset}
+        onCancel={() => confirmCancelState(false)}
+      />
     </>
   );
 }

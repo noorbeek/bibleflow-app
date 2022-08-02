@@ -25,9 +25,11 @@ export default function Selectbox(props) {
     <Listbox value={selected} onChange={changeSelected}>
       {({ open }) => (
         <>
-          <Listbox.Label className="hidden sm:block text-sm font-medium">
-            {props.label ? props.label : 'Selecteer'}
-          </Listbox.Label>
+          {props.label ? (
+            <Listbox.Label className="hidden sm:block text-sm font-medium">
+              {props.label}
+            </Listbox.Label>
+          ) : null}
           <div className="mt-1 relative">
             <Listbox.Button className="relative w-full text-default hover:text-white bg-white dark:bg-white/10 border border-gray-900/25 rounded-md shadow-sm hover:shadow-xl transition-all pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm">
               <span className="w-full inline-flex truncate">

@@ -2,9 +2,14 @@ import React from 'react';
 
 export default function Header(props) {
   return (
-    <div className="pb-4 mb-4 px-4 sm:px-0 border-b border-gray-200 dark:border-white/10">
-      <div className="sm:flex sm:justify-between sm:items-baseline">
-        <div className="sm:w-0 sm:flex-1">
+    <div
+      className={
+        'pb-4 mb-4 px-4 sm:px-0 border-b border-gray-200 dark:border-white/10 ' +
+        (props.className ? props.className : '')
+      }
+    >
+      <div className="flex space-x-2">
+        <div className="flex-1 truncate">
           {(() => {
             switch (parseInt(props?.level ? props?.level : 1)) {
               case 2:
@@ -25,6 +30,7 @@ export default function Header(props) {
             <p className="mt-1 text-sm mute truncate">{props?.subtitle}</p>
           ) : null}
         </div>
+        {props?.button ? <div>{props?.button}</div> : null}
       </div>
     </div>
   );
