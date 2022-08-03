@@ -540,7 +540,7 @@ export default function BibleStudy() {
                         <div className="pb-4">
                           {editMode ? (
                             <input
-                              onBlur={evt =>
+                              onChange={evt =>
                                 updateStudyComponent({
                                   ...component,
                                   properties: {
