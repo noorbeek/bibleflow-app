@@ -9,12 +9,12 @@ export default function Search() {
   const [searchParams] = useSearchParams();
 
   return (
-    <main className="col-span-10 max-w-2xl">
+    <main className="col-span-10 max-w-2xl px-4 sm:px-0">
       <Header
         title={`${bibleTranslation?.name} (${bibleTranslation?.abbreviation})`}
         subtitle={`Zoekresultaten voor "${searchParams?.get('q')}"`}
       />
-      <div className="pb-4 mb-4 px-4 sm:px-0">
+      <div className="pb-4 mb-4">
         <BibleQuery limit="100">{searchParams?.get('q')}</BibleQuery>
       </div>
     </main>

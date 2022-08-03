@@ -41,14 +41,15 @@ export default function BibleVerse(props) {
   return (
     <span
       className={
-        'bible-verse text-justify cursor-pointer dark:hover:text-primary-50 hover:text-primary-600 ' +
+        'bible-verse inline-block text-justify cursor-pointer dark:hover:text-primary-50 hover:text-primary-600 ' +
         (find(verse)
-          ? 'underline decoration-dotted dark:text-primary-100 text-primary-700'
-          : '')
+          ? 'underline decoration-dotted dark:text-primary-100 text-primary-700 '
+          : '') +
+        (props?.className ? props.className : '')
       }
       onClick={() => toggle(verse)}
     >
-      <sup onClick={share} className="text-primary/75 font-bold">
+      <sup onClick={share} className="text-primary dark:text-primary-200">
         {verse.verse}
       </sup>{' '}
       <span

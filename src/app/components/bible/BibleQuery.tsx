@@ -74,7 +74,12 @@ export default function BibleQuery(props) {
               </div>
             ) : null}
             {setVerse && !setChapter && !setBook ? <br /> : null}
-            <BibleVerse highlight={props?.children}>{verse}</BibleVerse>
+            <BibleVerse
+              className={setVerse && !setChapter && !setBook ? 'indent-2' : ''}
+              highlight={props?.children}
+            >
+              {verse}
+            </BibleVerse>
           </span>
         );
       })}

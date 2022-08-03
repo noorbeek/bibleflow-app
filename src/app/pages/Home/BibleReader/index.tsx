@@ -15,6 +15,7 @@ import {
 import BibleVerses from 'app/components/bible/BibleVerses';
 import Api from 'services/Api';
 import Header from 'app/components/Header';
+import Hyperlink from 'app/components/Hyperlink';
 
 export default function BibleReader(props) {
   const currentTranslation = useAppStore(state => state.currentTranslation);
@@ -71,7 +72,7 @@ export default function BibleReader(props) {
 
   return (
     <>
-      <main className="col-span-10 max-w-2xl">
+      <main className="col-span-10 max-w-2xl px-4 sm:px-0">
         <Header
           title={
             bibleTranslation?.name + ' (' + bibleTranslation?.abbreviation + ')'
@@ -85,7 +86,7 @@ export default function BibleReader(props) {
           }
         />
 
-        <div className="flex flex-col sm:flex-row my-4 pb-5 border-b border-gray-200 dark:border-white/10 px-4 sm:px-0">
+        <div className="flex flex-col sm:flex-row my-4 pb-5 border-b border-gray-200 dark:border-white/10">
           <div className="flex-none">
             <Selectbox
               label="Vertaling"
@@ -102,7 +103,7 @@ export default function BibleReader(props) {
               })}
             />
           </div>
-          <div className="grow px-0 sm:px-4">
+          <div className="grow">
             <Selectbox
               label="Boek"
               selected={currentBook}
@@ -140,7 +141,7 @@ export default function BibleReader(props) {
         </div>
         <nav className="border-t border-black/5 dark:border-white/10 mt-8 pt-4 flex flex-row items-start justify-between sm:px-0">
           <div className="grow">
-            <a
+            <Hyperlink
               onClick={event =>
                 setChapter({
                   id: currentChapter - 1 < 1 ? 1 : currentChapter - 1,
@@ -153,11 +154,11 @@ export default function BibleReader(props) {
                 aria-hidden="true"
               />
               <span className="hidden sm:inline">Vorige</span>
-            </a>
+            </Hyperlink>
           </div>
           <div className="grow text-center">
             {bibleChapters?.data?.response?.map(chapter => (
-              <a
+              <Hyperlink
                 key={chapter.id}
                 onClick={event => setChapter({ id: chapter.chapter })}
                 className={
@@ -168,11 +169,11 @@ export default function BibleReader(props) {
                 }
               >
                 {chapter.chapter}
-              </a>
+              </Hyperlink>
             ))}
           </div>
           <div className="grow flex justify-end">
-            <a
+            <Hyperlink
               onClick={event =>
                 setChapter({
                   id:
@@ -188,7 +189,7 @@ export default function BibleReader(props) {
                 className="ml-3 h-5 w-5 text-gray-400"
                 aria-hidden="true"
               />
-            </a>
+            </Hyperlink>
           </div>
         </nav>
         <div className="mt-8 pt-4 text-center border-t border-black/5 dark:border-white/10">

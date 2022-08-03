@@ -32,7 +32,7 @@ export default function BibleStudies(props) {
 
   return (
     <>
-      <main className="col-span-10">
+      <main className="col-span-10 px-4 sm:px-0">
         <Header
           title="Bijbelstudies"
           subtitle={studies?.data?.response?.length + ' studies gevonden'}
@@ -54,7 +54,7 @@ export default function BibleStudies(props) {
                 >
                   <div className="flex items-center">
                     <div className="min-w-0 flex-1 flex items-center">
-                      <div className="min-w-0 flex-1 px-4">
+                      <div className="min-w-0 flex-1">
                         <div>
                           <div className="text-sm truncate py-2 leading-6">
                             <div className="font-bold">{study.name}</div>
