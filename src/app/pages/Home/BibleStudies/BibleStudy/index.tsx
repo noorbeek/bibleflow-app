@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   ClipboardListIcon,
@@ -49,6 +49,7 @@ import Selectbox from 'app/components/Selectbox';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { useDialogStore } from 'store/dialog';
+import BibleStudyComponentAdd from './BibleStudyComponentAdd';
 
 export default function BibleStudy() {
   const { id } = useParams();
@@ -229,7 +230,7 @@ export default function BibleStudy() {
     toRemoveStudyComponentsState([...toRemoveStudyComponents, component]);
   }
 
-  function addStudyComponent(type: string, afterComponentId: number) {
+  function addStudyComponent(type: string, studyComponentsIndex: number) {
     if (!type) return;
 
     let newList = studyComponents;
@@ -247,19 +248,14 @@ export default function BibleStudy() {
         break;
     }
 
-    newList.splice(
-      studyComponents.findIndex(item => item.id === afterComponentId) + 1,
-      0,
-      {
-        ...newComponent,
-        //id: Math.max(...studyComponents.map(item => item.id)) + 1,
-        id: new Date().getTime(),
-        isNew: true,
-        sort: 0,
-        type: type,
-        study: study.id,
-      },
-    );
+    newList.splice(studyComponentsIndex, 0, {
+      ...newComponent,
+      id: Math.max(...studyComponents.map(item => item.id)) + 9999,
+      isNew: true,
+      sort: 0,
+      type: type,
+      study: study.id,
+    });
 
     buildComponentList(newList);
   }
@@ -407,8 +403,11 @@ export default function BibleStudy() {
             subtitle="Bijbelstudie componenten bewerken"
           />
         ) : null}
+        {editMode ? (
+          <BibleStudyComponentAdd index={0} onChange={addStudyComponent} />
+        ) : null}
         <ul>
-          {studyComponents?.map(component => (
+          {studyComponents?.map((component, studyComponentsIndex) => (
             <li key={component.id}>
               <div
                 ref={refs[component.id]}
@@ -573,43 +572,10 @@ export default function BibleStudy() {
                   );
                 })()}
                 {editMode ? (
-                  <div className="mt-8 relative cursor-pointer hover:bg-primary/10 p-2 flex flex-row justify-around items-center">
-                    <div className="absolute left-0 right-0 border-t border-black/10 dark:border-white/10"></div>
-                    {/* <PlusIcon className="inline h-3 w-3" /> */}
-                    <Selectbox
-                      selected="0"
-                      onChange={option =>
-                        addStudyComponent(option.id, component.id)
-                      }
-                      options={[
-                        {
-                          id: '0',
-                          text: (
-                            <span className="text-xs">
-                              <PlusIcon className="inline h-2 w-2 mr-2" />
-                              Component toevoegen
-                            </span>
-                          ),
-                          description: '',
-                        },
-                        {
-                          id: 'text',
-                          text: 'Tekst',
-                          description: '',
-                        },
-                        {
-                          id: 'bibleQuery',
-                          text: 'Bijbelquery',
-                          description: '',
-                        },
-                        {
-                          id: 'header',
-                          text: 'Koptekst',
-                          description: '',
-                        },
-                      ]}
-                    />
-                  </div>
+                  <BibleStudyComponentAdd
+                    index={studyComponentsIndex + 1}
+                    onChange={addStudyComponent}
+                  />
                 ) : null}
               </div>
             </li>
@@ -754,7 +720,7 @@ export default function BibleStudy() {
         </div>
       </aside>
       {canEdit ? (
-        <div className="fixed bottom-0 left-0 right-0 flex p-4 flex-row justify-end space-x-2 bg-gradient-to-t from-primary-900 to-transparent">
+        <div className="fixed bottom-0 left-0 right-0 flex p-4 flex-row justify-end space-x-2 bg-gradient-to-t from-white dark:from-gray-800 to-transparent">
           {editMode ? (
             <div className="flex flex-row justify-between w-full">
               <button className="button-outline" onClick={cancel}>
@@ -767,15 +733,16 @@ export default function BibleStudy() {
               </button>
             </div>
           ) : (
-            <>
+            <div className="flex flex-row justify-between w-full">
               <button className="button-outline button-danger" onClick={remove}>
                 <TrashIcon className="h-5 w-5" />
+                <span className="hidden sm:block"> Verwijderen</span>
               </button>
               <button onClick={() => editModeState(true)}>
                 <PencilAltIcon className="h-5 w-5" />
                 <span className="hidden sm:block"> Bewerken</span>
               </button>
-            </>
+            </div>
           )}
         </div>
       ) : null}
