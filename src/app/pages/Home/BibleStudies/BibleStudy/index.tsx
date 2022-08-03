@@ -175,6 +175,11 @@ export default function BibleStudy() {
         newList = arrayMove(newList, startIndex++, endIndex++);
       }
 
+      // Update sort properties
+      newList.map(item => {
+        return { ...item, isChanged: true };
+      });
+
       // Update state
       buildComponentList(newList);
     }
