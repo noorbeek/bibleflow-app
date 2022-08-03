@@ -11,8 +11,9 @@ export default function BibleQuery(props) {
   const bibleTranslation = useBibleTranslation();
   const [pagination, setPagination]: any = useState(null);
 
-  let currentBook = null;
-  let currentChapter = null;
+  let currentBook = 0;
+  let currentChapter = 0;
+  let currentVerse = 0;
 
   // Bible query service
   const bibleQuery = useQuery(
@@ -49,9 +50,11 @@ export default function BibleQuery(props) {
         // Remember book and chapter and write if they change
         let setBook = verse.book !== currentBook;
         let setChapter = verse.chapter !== currentChapter;
+        let setVerse = verse.verse !== currentVerse + 1;
 
         currentBook = verse.book;
         currentChapter = verse.chapter;
+        currentVerse = verse.verse;
 
         return (
           <span
@@ -70,6 +73,7 @@ export default function BibleQuery(props) {
                 Hoofdstuk {verse.chapter}
               </div>
             ) : null}
+            {setVerse && !setChapter && !setBook ? <br /> : null}
             <BibleVerse highlight={props?.children}>{verse}</BibleVerse>
           </span>
         );

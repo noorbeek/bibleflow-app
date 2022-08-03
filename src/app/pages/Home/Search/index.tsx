@@ -9,7 +9,7 @@ export default function Search() {
   const [searchParams] = useSearchParams();
 
   return (
-    <main className="col-span-10">
+    <main className="col-span-10 max-w-2xl">
       <Header
         title={`${bibleTranslation?.name} (${bibleTranslation?.abbreviation})`}
         subtitle={`Zoekresultaten voor "${searchParams?.get('q')}"`}

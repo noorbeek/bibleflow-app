@@ -77,18 +77,16 @@
     @apply bg-cyan-800;
   }
 
-  a {
-    cursor: pointer;
+  /* cursor-pointer text-black/75 hover:text-black dark:text-white/75 hover:dark:text-white */
+  a, .hyperlink {
+    @apply inline-block;
+    @apply cursor-pointer;
     @apply text-slate-800/100;
+    @apply dark:text-slate-50/100;
   }
-  a:hover {
+  a:hover, .hyperlink:hover {
     @apply text-primary;
-  }
-  .dark a {
-    @apply text-slate-50/100;
-  }
-  .dark a:hover {
-    @apply text-primary;
+    @apply dark:text-primary-400;
   }
 
   label {

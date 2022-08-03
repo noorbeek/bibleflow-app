@@ -15,6 +15,7 @@ import {
   CheckCircleIcon,
   TrashIcon,
   PlusIcon,
+  SelectorIcon,
 } from '@heroicons/react/outline';
 import Api from 'services/Api';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -418,7 +419,7 @@ export default function BibleStudy() {
               <div
                 ref={refs[component.id]}
                 className={
-                  'relative my-8 border-primary/10 dark:border-primary/10 '
+                  'relative mt-4 border-primary/10 dark:border-primary/10 '
                 }
               >
                 {editMode ? (
@@ -555,7 +556,7 @@ export default function BibleStudy() {
                             />
                           ) : null}
                         </div>
-                        <div className="bg-primary/5 p-8 mb-4">
+                        <div className="bg-primary/5 p-8 mb-8">
                           <BibleQuery
                             limit={editMode ? 3 : 10}
                             className="text-sm"
@@ -616,29 +617,24 @@ export default function BibleStudy() {
                         >
                           <div
                             className={
-                              'flex flex-row items-top ' +
+                              'flex flex-row items-top justify-between ' +
                               (editMode ? 'cursor-pointer ' : '') +
-                              (isInView
-                                ? 'font-bold text-primary dark:text-primary hover:text-primary-400 hover:dark:text-primary-400'
+                              (component.type === 'header'
+                                ? component?.properties?.level === 1
+                                  ? 'pt-2 '
+                                  : 'pt-1 '
                                 : '')
                             }
                           >
-                            <div>
-                              {editMode ? (
-                                <MenuIcon className="w-3 h-3 m-1 mr-2" />
-                              ) : null}
-                            </div>
                             <div className="truncate">
                               {component.type === 'header' ? (
                                 <Hyperlink
                                   onClick={() => scrollTo(component.id)}
                                   className={
                                     (component?.properties?.level === 1
-                                      ? 'font-bold py-2 '
-                                      : 'block') +
-                                    (editMode
-                                      ? ' cursor-move'
-                                      : ' truncate font-bold text-default dark:text-white') +
+                                      ? 'font-bold '
+                                      : '') +
+                                    (editMode ? ' cursor-move' : ' truncate') +
                                     (isInView
                                       ? ' font-bold text-primary dark:text-primary hover:text-primary-400 hover:dark:text-primary-400'
                                       : '')
@@ -655,7 +651,7 @@ export default function BibleStudy() {
                                 <Hyperlink
                                   onClick={() => scrollTo(component.id)}
                                   className={
-                                    'block' +
+                                    'block opacity-75 hover:opacity-100 text-xs ' +
                                     (editMode ? ' cursor-move' : '') +
                                     (isInView
                                       ? ' font-bold text-primary dark:text-primary hover:text-primary-400 hover:dark:text-primary-400'
@@ -694,6 +690,11 @@ export default function BibleStudy() {
                                   })()}
                                 </Hyperlink>
                               )}
+                            </div>
+                            <div className="shrink">
+                              {editMode ? (
+                                <MenuIcon className="cursor-move w-3 h-3 m-1 mr-2" />
+                              ) : null}
                             </div>
                           </div>
                         </SortableItem>
