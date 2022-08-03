@@ -175,11 +175,6 @@ export default function BibleStudy() {
         newList = arrayMove(newList, startIndex++, endIndex++);
       }
 
-      // Update sort properties
-      newList.map(item => {
-        return { ...item, isChanged: true };
-      });
-
       // Update state
       buildComponentList(newList);
     }
@@ -188,7 +183,13 @@ export default function BibleStudy() {
   function buildComponentList(componentList) {
     // Update section numbers
     let currentLevel: Array<number> = [];
-    componentList.forEach((component: StudyComponentModel) => {
+    componentList.forEach((component: StudyComponentModel, index) => {
+      // Set new index
+      if (component.sort !== index) {
+        component.isChanged = true;
+        component.sort = index;
+      }
+      // Calculate header level
       if (component.type === 'header') {
         // Parse header level
         let level: number =
