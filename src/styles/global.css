@@ -138,6 +138,19 @@
     @apply text-primary-400;
   }
 
+  button.button-danger {
+    @apply bg-transparent;
+    @apply border;
+    @apply border-red-600;
+    @apply text-red-600;
+    @apply dark:border-red-600;
+    @apply dark:text-red-600;
+  }
+  button.button-outline:hover {
+    @apply border-red-500;
+    @apply text-red-500;
+  }
+
   input[type="text"],
   input[type="email"],
   input[type="password"],

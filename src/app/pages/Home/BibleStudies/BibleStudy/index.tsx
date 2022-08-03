@@ -17,7 +17,7 @@ import {
   PlusIcon,
 } from '@heroicons/react/outline';
 import Api from 'services/Api';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import BibleQuery from 'app/components/bible/BibleQuery';
 import { SortableItem } from 'app/components/SortableItem';
 
@@ -44,19 +44,20 @@ import Moment from 'moment';
 import { useAppStore } from 'store/global';
 import { InView } from 'react-intersection-observer';
 import TextareaAutosize from 'react-textarea-autosize';
-import Dialog from 'app/components/Dialog';
 import Selectbox from 'app/components/Selectbox';
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { useDialogStore } from 'store/dialog';
 
 export default function BibleStudy() {
   const { id } = useParams();
+  let navigate = useNavigate();
   const me = useAppStore(state => state.user);
+  const confirmDialog = useDialogStore(state => state.configure);
   const [forceUpdate, triggerForceUpdate] = useState(0);
   const [editMode, editModeState] = useState(false);
   const [canEdit, canEditState] = useState(false);
-  const [confirmCancel, confirmCancelState] = useState(false);
   const [study, studyState] = useState<StudyModel>({} as StudyModel);
   const [studyComponents, studyComponentsState] = useState<
     StudyComponentModel[]
@@ -305,21 +306,49 @@ export default function BibleStudy() {
 
     // Disable editing mode
     editModeState(false);
-    confirmCancelState(false);
+    confirmDialog({ isOpen: false });
   }
 
-  function reset() {
-    // Refresh states from store
-    studyService.refetch();
-    studyComponentService.refetch();
+  function remove() {
+    confirmDialog({
+      title: 'Weet u zeker dat u de studie wilt verwijderen?',
+      description: 'Dit kan niet ongedaan gemaakt worden.',
+      isOpen: true,
+      onConfirm: () => {
+        // Remove components
+        studyComponents.forEach((component: StudyComponentModel, index) => {
+          if (!component?.isNew) {
+            Api.remove(`/studyComponents/${component.id}`);
+          }
+        });
 
-    // Disable editing mode
-    editModeState(false);
-    confirmCancelState(false);
+        // Remove study & move to root
+        Api.remove(`/studies/${study.id}`, study).then(() => {
+          navigate('/studies');
+        });
+
+        // Disable dialog
+        editModeState(false);
+        confirmDialog({ isOpen: false });
+      },
+    });
   }
 
   function cancel() {
-    confirmCancelState(true);
+    confirmDialog({
+      title: 'Weet u zeker dat u wilt annuleren?',
+      description: 'Alle wijzigingen worden ongedaan gemaakt als u annuleert!',
+      isOpen: true,
+      onConfirm: () => {
+        // Refresh states from store
+        studyService.refetch();
+        studyComponentService.refetch();
+
+        // Disable editing mode
+        editModeState(false);
+        confirmDialog({ isOpen: false });
+      },
+    });
   }
 
   let currentPadding = 0;
@@ -738,20 +767,18 @@ export default function BibleStudy() {
               </button>
             </div>
           ) : (
-            <button onClick={() => editModeState(true)}>
-              <PencilAltIcon className="h-5 w-5" />
-              <span className="hidden sm:block"> Bewerken</span>
-            </button>
+            <>
+              <button className="button-outline button-danger" onClick={remove}>
+                <TrashIcon className="h-5 w-5" />
+              </button>
+              <button onClick={() => editModeState(true)}>
+                <PencilAltIcon className="h-5 w-5" />
+                <span className="hidden sm:block"> Bewerken</span>
+              </button>
+            </>
           )}
         </div>
       ) : null}
-      <Dialog
-        title="Weet u zeker dat u wilt annuleren?"
-        description="Alle wijzigingen worden ongedaan gemaakt als u annuleert!"
-        isOpen={confirmCancel}
-        onConfirm={reset}
-        onCancel={() => confirmCancelState(false)}
-      />
     </>
   );
 }

@@ -1,32 +1,18 @@
 import { Fragment, useEffect, useState } from 'react';
 import { Dialog as HeadlessDialog, Transition } from '@headlessui/react';
 import React from 'react';
+import { useDialogStore } from 'store/dialog';
 
 export default function Dialog(props) {
-  let [isOpen, setIsOpen] = useState(
-    props?.isOpen ? String(props?.isOpen).toLowerCase() === 'true' : false,
-  );
-
-  function onCancel() {
-    setIsOpen(false);
-    if (props.onCancel) {
-      return props.onCancel();
-    }
-  }
-  function onConfirm() {
-    setIsOpen(false);
-    if (props.onConfirm) {
-      return props.onConfirm();
-    }
-  }
-
-  useEffect(() => {
-    setIsOpen(String(props?.isOpen).toLowerCase() === 'true');
-  }, [isOpen, props?.isOpen]);
+  const dialogStore = useDialogStore();
 
   return (
-    <Transition appear show={isOpen} as={Fragment}>
-      <HeadlessDialog as="div" className="relative z-10" onClose={onCancel}>
+    <Transition appear show={dialogStore.isOpen} as={Fragment}>
+      <HeadlessDialog
+        as="div"
+        className="relative z-10"
+        onClose={dialogStore.onCancel}
+      >
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -55,13 +41,11 @@ export default function Dialog(props) {
                   as="h1"
                   className="text-lg font-medium leading-6 text-gray-900"
                 >
-                  {props?.title ? props?.title : 'Weet u het zeker?'}
+                  {dialogStore.title}
                 </HeadlessDialog.Title>
                 <div className="mt-2">
                   <p className="text-sm text-gray-500">
-                    {props?.description
-                      ? props?.description
-                      : 'Weet u zeker dat u wilt doorgaan?'}
+                    {dialogStore.description}
                   </p>
                 </div>
 
@@ -69,14 +53,14 @@ export default function Dialog(props) {
                   <button
                     type="button"
                     className="px-4 bg-primary dark:bg-primary"
-                    onClick={onConfirm}
+                    onClick={dialogStore.onConfirm}
                   >
                     Ja
                   </button>
                   <button
                     type="button"
                     className="button-outline border text-primary border-primary dark:text-primary dark:border-primary"
-                    onClick={onCancel}
+                    onClick={dialogStore.onCancel}
                   >
                     Annuleren
                   </button>

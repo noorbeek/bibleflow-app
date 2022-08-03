@@ -4,13 +4,15 @@ import {
   ChevronRightIcon,
   HeartIcon as HeartSolidIcon,
 } from '@heroicons/react/solid';
-import { HeartIcon } from '@heroicons/react/outline';
+import { HeartIcon, PlusCircleIcon } from '@heroicons/react/outline';
 import Api from 'services/Api';
 import Header from 'app/components/Header';
 import Avatar from 'app/components/Avatar';
 import Moment from 'moment';
+import { useNavigate } from 'react-router-dom';
 
 export default function BibleStudies(props) {
+  let navigate = useNavigate();
   const studies = useQuery(
     ['studies'],
     async () =>
@@ -20,12 +22,26 @@ export default function BibleStudies(props) {
       }),
   );
 
+  function addStudy() {
+    Api.post(`/studies`, {
+      name: 'Nieuwe Bijbelstudie',
+    }).then(data => {
+      navigate('/studies/' + data?.response?.id);
+    });
+  }
+
   return (
     <>
       <main className="col-span-10">
         <Header
           title="Bijbelstudies"
           subtitle={studies?.data?.response?.length + ' studies gevonden'}
+          button={
+            <button onClick={addStudy}>
+              <PlusCircleIcon className="h-5 w-5" />
+              <span className="hidden sm:block"> Nieuwe studie</span>
+            </button>
+          }
         />
 
         <div className="bg-white dark:bg-transparent shadow overflow-hidden sm:rounded-md">

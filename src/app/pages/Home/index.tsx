@@ -24,6 +24,7 @@ import { useBibleTranslations } from 'services/Bibles';
 import Hyperlink from 'app/components/Hyperlink';
 import { useQuery } from '@tanstack/react-query';
 import Api from 'services/Api';
+import Dialog from 'app/components/Dialog';
 
 const navigation = [
   //{ name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
@@ -398,6 +399,7 @@ export function Home() {
         </div>
         <ShareBanner />
       </div>
+      <Dialog />
     </div>
   );
 }

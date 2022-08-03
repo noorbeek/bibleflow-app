@@ -60,10 +60,10 @@ export interface BibleVerseModel {
 
 export interface StudyModel {
   id: number;
-  type: string;
-  study: number | StudyModel;
   name: string;
-  properties: object;
+  description: string;
+  createdBy: string | any;
+  createdAt?: string;
   [key: string]: any;
 }
 
