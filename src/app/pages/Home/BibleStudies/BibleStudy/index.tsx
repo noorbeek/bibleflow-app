@@ -14,8 +14,6 @@ import {
   XIcon,
   CheckCircleIcon,
   TrashIcon,
-  PlusIcon,
-  SelectorIcon,
 } from '@heroicons/react/outline';
 import Api from 'services/Api';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -363,15 +361,13 @@ export default function BibleStudy() {
           title={study?.name}
           subtitle={
             <>
-              Auteur {study?.createdBy?.name + ' @ '}
-              {study?.createdAt ? Moment(study?.createdAt).format() : ''}
-              <br />
-              <span className="mute text-xs mr-2">Rating</span>
               <HeartSolidIcon className="inline text-red-700 h-3 w-3" />
               <HeartSolidIcon className="inline text-red-700 h-3 w-3" />
               <HeartSolidIcon className="inline text-red-700 h-3 w-3" />
               <HeartSolidIcon className="inline text-red-700 h-3 w-3" />
               <HeartIcon className="inline h-3 w-3" />
+              {' | ' + study?.createdBy?.name + ' @ '}
+              {study?.createdAt ? Moment(study?.createdAt).format() : ''}
             </>
           }
         />
