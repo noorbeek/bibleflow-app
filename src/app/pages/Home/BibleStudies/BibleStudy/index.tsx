@@ -250,7 +250,7 @@ export default function BibleStudy() {
 
     newList.splice(studyComponentsIndex, 0, {
       ...newComponent,
-      id: Math.max(...studyComponents.map(item => item.id)) + 9999,
+      id: new Date().getTime(),
       isNew: true,
       sort: 0,
       type: type,
