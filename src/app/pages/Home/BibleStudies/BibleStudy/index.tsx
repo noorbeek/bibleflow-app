@@ -355,8 +355,8 @@ export default function BibleStudy() {
   let currentPadding = 0;
 
   return (
-    <>
-      <main className="lg:col-span-7 text-justify px-4 sm:px-0">
+    <div className="flex flex-col sm:flex-row col-span-10 px-4 sm:px-0">
+      <main className="text-justify basis-3/4">
         <Header
           title={study?.name}
           subtitle={
@@ -585,142 +585,140 @@ export default function BibleStudy() {
           ))}
         </ul>
       </main>
-      <aside className="lg:col-span-3 px-4 sm:px-0">
-        <div className="sticky top-0">
-          <section className="pb-5 mb-5 border-b border-gray-200 dark:border-white/10">
-            <div>
-              <div className="text-xs font-semibold mute uppercase py-5 tracking-wider border-b border-gray-200 dark:border-white/10">
-                <ClipboardListIcon className="w-6 h-6 inline" /> Inhoudsopgave
-              </div>
-              <div className="my-6 text-sm">
-                {(() => {
-                  // Build component index
-                  let componentList = studyComponents?.map(
-                    (component: any, index) => {
-                      if (component.type === 'header') {
-                        currentPadding = component.properties.level
-                          ? component.properties.level - 1
-                          : 0;
-                      }
-                      let isInView =
-                        studyComponents.find(item => item?.isInView)?.id ===
-                        component.id;
-                      return (
-                        <SortableItem
-                          key={component.id}
-                          id={component.id}
-                          className={'truncate leading-6'}
-                        >
-                          <div
-                            className={
-                              'flex flex-row items-top justify-between ' +
-                              (editMode ? 'cursor-pointer ' : '') +
-                              (component.type === 'header'
-                                ? component?.properties?.level === 1
-                                  ? 'pt-2 '
-                                  : 'pt-1 '
-                                : '')
-                            }
-                          >
-                            <div className="truncate">
-                              {component.type === 'header' ? (
-                                <Hyperlink
-                                  onClick={() => scrollTo(component.id)}
-                                  className={
-                                    (component?.properties?.level === 1
-                                      ? 'font-bold '
-                                      : '') +
-                                    (editMode ? ' cursor-move' : ' truncate') +
-                                    (isInView
-                                      ? ' font-bold text-primary dark:text-primary hover:text-primary-400 hover:dark:text-primary-400'
-                                      : '')
-                                  }
-                                  style={{
-                                    paddingLeft: currentPadding + 'em',
-                                  }}
-                                >
-                                  {component.properties?.levelName +
-                                    ') ' +
-                                    component.properties?.text}
-                                </Hyperlink>
-                              ) : (
-                                <Hyperlink
-                                  onClick={() => scrollTo(component.id)}
-                                  className={
-                                    'block opacity-75 hover:opacity-100 text-xs ' +
-                                    (editMode ? ' cursor-move' : '') +
-                                    (isInView
-                                      ? ' font-bold text-primary dark:text-primary hover:text-primary-400 hover:dark:text-primary-400'
-                                      : '')
-                                  }
-                                  style={{
-                                    paddingLeft: currentPadding + 1 + 'em',
-                                  }}
-                                >
-                                  {(() => {
-                                    switch (component.type) {
-                                      case 'bibleQuery':
-                                        return (
-                                          <>
-                                            <BookmarkIcon className="w-3 h-3 inline mr-2" />
-                                            {component.properties?.query}
-                                          </>
-                                        );
-                                      case 'text':
-                                        return (
-                                          <div className="truncate">
-                                            <MenuAlt2Icon className="w-3 h-3 inline mr-2" />
-                                            {component.properties?.text
-                                              .substring(0, 50)
-                                              .replace(/(<([^>]+)>)/gi, '')}
-                                          </div>
-                                        );
-                                      default:
-                                        return (
-                                          <>
-                                            <QuestionMarkCircleIcon className="w-3 h-3 inline mr-2" />
-                                            {component.type}
-                                          </>
-                                        );
-                                    }
-                                  })()}
-                                </Hyperlink>
-                              )}
-                            </div>
-                            <div className="shrink">
-                              {editMode ? (
-                                <MenuIcon className="cursor-move w-3 h-3 m-1 mr-2" />
-                              ) : null}
-                            </div>
-                          </div>
-                        </SortableItem>
-                      );
-                    },
-                  );
-
-                  // Make sortabe if editmode is on
-                  return editMode ? (
-                    <DndContext
-                      modifiers={[restrictToVerticalAxis]}
-                      sensors={dndSensors}
-                      collisionDetection={closestCenter}
-                      onDragEnd={onDragEnd}
-                    >
-                      <SortableContext
-                        items={studyComponents}
-                        strategy={verticalListSortingStrategy}
-                      >
-                        {componentList}
-                      </SortableContext>
-                    </DndContext>
-                  ) : (
-                    <div>{componentList}</div>
-                  );
-                })()}
-              </div>
+      <aside className="sticky pl-8 py-4 top-0 h-screen overflow-y-auto">
+        <section className="pb-5 mb-5 border-b border-gray-200 dark:border-white/10">
+          <div>
+            <div className="text-xs font-semibold mute uppercase py-5 tracking-wider border-b border-gray-200 dark:border-white/10">
+              <ClipboardListIcon className="w-6 h-6 inline" /> Inhoudsopgave
             </div>
-          </section>
-        </div>
+            <div className="my-6 text-sm">
+              {(() => {
+                // Build component index
+                let componentList = studyComponents?.map(
+                  (component: any, index) => {
+                    if (component.type === 'header') {
+                      currentPadding = component.properties.level
+                        ? component.properties.level - 1
+                        : 0;
+                    }
+                    let isInView =
+                      studyComponents.find(item => item?.isInView)?.id ===
+                      component.id;
+                    return (
+                      <SortableItem
+                        key={component.id}
+                        id={component.id}
+                        className={'truncate leading-6'}
+                      >
+                        <div
+                          className={
+                            'flex flex-row items-top justify-between ' +
+                            (editMode ? 'cursor-pointer ' : '') +
+                            (component.type === 'header'
+                              ? component?.properties?.level === 1
+                                ? 'pt-2 '
+                                : 'pt-1 '
+                              : '')
+                          }
+                        >
+                          <div className="truncate">
+                            {component.type === 'header' ? (
+                              <Hyperlink
+                                onClick={() => scrollTo(component.id)}
+                                className={
+                                  (component?.properties?.level === 1
+                                    ? 'font-bold '
+                                    : '') +
+                                  (editMode ? ' cursor-move' : ' truncate') +
+                                  (isInView
+                                    ? ' font-bold text-primary dark:text-primary hover:text-primary-400 hover:dark:text-primary-400'
+                                    : '')
+                                }
+                                style={{
+                                  paddingLeft: currentPadding + 'em',
+                                }}
+                              >
+                                {component.properties?.levelName +
+                                  ') ' +
+                                  component.properties?.text}
+                              </Hyperlink>
+                            ) : (
+                              <Hyperlink
+                                onClick={() => scrollTo(component.id)}
+                                className={
+                                  'block opacity-75 hover:opacity-100 text-xs ' +
+                                  (editMode ? ' cursor-move' : '') +
+                                  (isInView
+                                    ? ' font-bold text-primary dark:text-primary hover:text-primary-400 hover:dark:text-primary-400'
+                                    : '')
+                                }
+                                style={{
+                                  paddingLeft: currentPadding + 1 + 'em',
+                                }}
+                              >
+                                {(() => {
+                                  switch (component.type) {
+                                    case 'bibleQuery':
+                                      return (
+                                        <>
+                                          <BookmarkIcon className="w-3 h-3 inline mr-2" />
+                                          {component.properties?.query}
+                                        </>
+                                      );
+                                    case 'text':
+                                      return (
+                                        <div className="truncate">
+                                          <MenuAlt2Icon className="w-3 h-3 inline mr-2" />
+                                          {component.properties?.text
+                                            .substring(0, 50)
+                                            .replace(/(<([^>]+)>)/gi, '')}
+                                        </div>
+                                      );
+                                    default:
+                                      return (
+                                        <>
+                                          <QuestionMarkCircleIcon className="w-3 h-3 inline mr-2" />
+                                          {component.type}
+                                        </>
+                                      );
+                                  }
+                                })()}
+                              </Hyperlink>
+                            )}
+                          </div>
+                          <div className="shrink">
+                            {editMode ? (
+                              <MenuIcon className="cursor-move w-3 h-3 m-1 mr-2" />
+                            ) : null}
+                          </div>
+                        </div>
+                      </SortableItem>
+                    );
+                  },
+                );
+
+                // Make sortabe if editmode is on
+                return editMode ? (
+                  <DndContext
+                    modifiers={[restrictToVerticalAxis]}
+                    sensors={dndSensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={onDragEnd}
+                  >
+                    <SortableContext
+                      items={studyComponents}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      {componentList}
+                    </SortableContext>
+                  </DndContext>
+                ) : (
+                  <div>{componentList}</div>
+                );
+              })()}
+            </div>
+          </div>
+        </section>
       </aside>
       {canEdit ? (
         <div className="fixed bottom-0 left-0 right-0 flex p-4 flex-row justify-end space-x-2 bg-gradient-to-t from-white dark:from-gray-800 to-transparent">
@@ -749,6 +747,6 @@ export default function BibleStudy() {
           )}
         </div>
       ) : null}
-    </>
+    </div>
   );
 }
