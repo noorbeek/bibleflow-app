@@ -13,6 +13,8 @@ import {
   XIcon,
   CheckCircleIcon,
   TrashIcon,
+  ArrowUpIcon,
+  ArrowDownIcon,
 } from '@heroicons/react/outline';
 import Api from 'services/Api';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -107,6 +109,16 @@ export default function BibleStudy() {
   const scrollTo = id => {
     if (id.toString().match(/index/gi)) {
       indexRef.current.scrollTop = refs[id].current.offsetTop - 100;
+    } else if (id === 'bottom') {
+      document?.querySelector('#app')?.scrollTo({
+        top: indexRef.current.offsetTop,
+        behavior: 'smooth',
+      });
+    } else if (id === 'top') {
+      document?.querySelector('#app')?.scrollTo({
+        top: topRef.current.offsetTop - 10,
+        behavior: 'smooth',
+      });
     } else {
       refs[id].current.scrollIntoView({
         behavior: 'smooth',
@@ -116,6 +128,7 @@ export default function BibleStudy() {
   };
 
   const indexRef: any = createRef();
+  const topRef: any = createRef();
   const refs: any = studyComponentService?.data?.response?.reduce(
     (acc, value) => {
       acc[value.id] = React.createRef();
@@ -369,7 +382,7 @@ export default function BibleStudy() {
       <main className="basis-3/4">
         <Header
           className="px-4 sm:px-0"
-          title={study?.name}
+          title={<div ref={topRef}>{study?.name}</div>}
           subtitle={
             <>
               <HeartSolidIcon className="inline text-red-700 h-3 w-3" />
@@ -739,29 +752,44 @@ export default function BibleStudy() {
       </aside>
       {canEdit ? (
         <div className="fixed bottom-0 left-0 right-0 flex p-4 flex-row justify-end space-x-2 bg-gradient-to-t from-white dark:from-zinc-900 to-transparent">
-          {editMode ? (
-            <div className="flex flex-row justify-between w-full">
+          <div className="flex flex-row justify-between w-full">
+            {editMode ? (
               <button className="button-outline" onClick={cancel}>
                 <XIcon className="h-5 w-5" />
                 <span className="hidden sm:block"> Annuleren</span>
               </button>
-              <button onClick={save}>
-                <CheckCircleIcon className="h-5 w-5" />
-                <span className="hidden sm:block"> Opslaan</span>
-              </button>
-            </div>
-          ) : (
-            <div className="flex flex-row justify-between w-full">
+            ) : (
               <button className="button-outline button-danger" onClick={remove}>
                 <TrashIcon className="h-5 w-5" />
                 <span className="hidden sm:block"> Verwijderen</span>
               </button>
+            )}
+            <div className="grow flex justify-center space-x-2">
+              <button
+                className="button-outline"
+                onClick={() => scrollTo('top')}
+              >
+                <ArrowUpIcon className="h-5 w-5" />
+              </button>
+              <button
+                className="button-outline block sm:hidden"
+                onClick={() => scrollTo('bottom')}
+              >
+                <ArrowDownIcon className="h-5 w-5" />
+              </button>
+            </div>
+            {editMode ? (
+              <button onClick={save}>
+                <CheckCircleIcon className="h-5 w-5" />
+                <span className="hidden sm:block"> Opslaan</span>
+              </button>
+            ) : (
               <button onClick={() => editModeState(true)}>
                 <PencilAltIcon className="h-5 w-5" />
                 <span className="hidden sm:block"> Bewerken</span>
               </button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       ) : null}
     </div>
