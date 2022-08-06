@@ -59,9 +59,7 @@ export default function BibleQuery(props) {
         return (
           <span
             key={verse.id}
-            className={
-              'text-justify ' + (props?.className ? props?.className : '')
-            }
+            className={props?.className ? props?.className : ''}
           >
             {setBook ? (
               <div className={'font-bold ' + (index ? 'pt-4' : '')}>

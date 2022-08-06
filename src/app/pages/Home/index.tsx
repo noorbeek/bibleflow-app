@@ -30,7 +30,7 @@ const navigation = [
   //{ name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
   { name: 'Bijbel', href: '/', icon: BookOpenIcon },
   { name: 'Bijbelstudies', href: '/studies', icon: LightBulbIcon },
-  { name: 'Tijdlijn', href: '/timeline', icon: CollectionIcon },
+  //{ name: 'Tijdlijn', href: '/timeline', icon: CollectionIcon },
 ];
 const userNavigation = [
   //{ name: 'Mijn profiel', href: '#' },
@@ -363,7 +363,7 @@ export function Home() {
                   ))}
                 </div>
               </div>
-              <div className="pb-4 pt-8 space-y-1">
+              {/* <div className="pb-4 pt-8 space-y-1">
                 <p
                   className="px-3 text-xs font-semibold mute uppercase tracking-wider"
                   id="biblebooks-headline"
@@ -384,7 +384,7 @@ export function Home() {
                     </Hyperlink>
                   ))}
                 </div>
-              </div>
+              </div> */}
             </nav>
           </div>
           <Routes>

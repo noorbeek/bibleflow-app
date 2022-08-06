@@ -151,7 +151,7 @@ export default function Pagination(props) {
           </div>
         </div>
       ) : null}
-      <div className="flex flex-col sm:flex-row items-center justify-between align-middle text-xs text-center mute">
+      <div className="flex flex-col sm:flex-row items-center justify-between align-middle text-xs mute">
         {props?.title ? (
           <div>
             <SearchIcon className="w-4 h-4 inline" /> {props?.title}

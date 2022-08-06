@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { createRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   ClipboardListIcon,
@@ -9,7 +9,6 @@ import {
   BookmarkIcon,
   MenuAlt2Icon,
   QuestionMarkCircleIcon,
-  MenuIcon,
   PencilAltIcon,
   XIcon,
   CheckCircleIcon,
@@ -49,6 +48,7 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { useDialogStore } from 'store/dialog';
 import BibleStudyComponentAdd from './BibleStudyComponentAdd';
+import Content from 'app/components/Content';
 
 export default function BibleStudy() {
   const { id } = useParams();
@@ -104,15 +104,22 @@ export default function BibleStudy() {
   /**
    * Scroll to header from index by refs
    */
-  const scrollTo = id =>
-    refs[id].current.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
+  const scrollTo = id => {
+    if (id.toString().match(/index/gi)) {
+      indexRef.current.scrollTop = refs[id].current.offsetTop - 100;
+    } else {
+      refs[id].current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
+  };
 
+  const indexRef: any = createRef();
   const refs: any = studyComponentService?.data?.response?.reduce(
     (acc, value) => {
       acc[value.id] = React.createRef();
+      acc[value.id + '-index'] = React.createRef();
       return acc;
     },
     {},
@@ -271,6 +278,9 @@ export default function BibleStudy() {
    * @param isInView
    */
   function setInView(component, isInView) {
+    if (isInView) {
+      scrollTo(component.id + '-index');
+    }
     studyComponentsState(
       studyComponents.map(item => {
         return item.id === component.id
@@ -355,9 +365,10 @@ export default function BibleStudy() {
   let currentPadding = 0;
 
   return (
-    <div className="flex flex-col sm:flex-row col-span-10 px-4 sm:px-0">
-      <main className="text-justify basis-3/4">
+    <div className="flex flex-col sm:flex-row col-span-10">
+      <main className="basis-3/4">
         <Header
+          className="px-4 sm:px-0"
           title={study?.name}
           subtitle={
             <>
@@ -383,7 +394,7 @@ export default function BibleStudy() {
             />
           </>
         ) : null}
-        <div className="pt-4 pb-8 font-bold">
+        <div className="pt-4 pb-8 font-bold px-4 sm:px-0">
           {editMode ? (
             <div className="py-4">
               <label>Samenvatting</label>
@@ -398,194 +409,209 @@ export default function BibleStudy() {
             study?.description
           )}
         </div>
-        {editMode ? (
-          <Header
-            className="border-none"
-            level={2}
-            title="Componenten"
-            subtitle="Bijbelstudie componenten bewerken"
-          />
-        ) : null}
-        {editMode ? (
-          <BibleStudyComponentAdd index={0} onChange={addStudyComponent} />
-        ) : null}
-        <ul>
-          {studyComponents?.map((component, studyComponentsIndex) => (
-            <li key={component.id}>
-              <div
-                ref={refs[component.id]}
-                className={
-                  'relative mt-4 border-primary/10 dark:border-primary/10 '
-                }
-              >
-                {editMode ? (
-                  <div className="font-bold py-4 flex flex-row justify-between">
-                    <div>
-                      {(() => {
-                        switch (component.type) {
-                          case 'text':
-                            return 'Tekst';
-                          case 'bibleQuery':
-                            return 'Bijbelquery';
-                          case 'header':
-                            return (
-                              'Koptekst ' + component?.properties?.levelName
-                            );
-                          default:
-                            return component.type;
-                        }
-                      })()}
-                    </div>
-                    <button
-                      type="button"
-                      className="button-outline"
-                      onClick={evt => removeStudyComponent(component)}
-                    >
-                      <TrashIcon className="inline h-3 w-3" />
-                    </button>
-                  </div>
-                ) : null}
-                {(() => {
-                  let componentContent = <></>;
-                  if (component.type === 'header') {
-                    componentContent = editMode ? (
-                      <div className="flex flex-row space-x-2">
-                        <input
-                          onChange={evt =>
-                            updateStudyComponent({
-                              ...component,
-                              properties: {
-                                ...component.properties,
-                                text: evt.target.value,
-                              },
-                            })
-                          }
-                          type="text"
-                          value={component.properties?.text}
-                        />
-                        <Selectbox
-                          selected={
-                            component.properties?.level
-                              ? component.properties?.level
-                              : 1
-                          }
-                          onChange={option =>
-                            updateStudyComponent({
-                              ...component,
-                              properties: {
-                                ...component.properties,
-                                level: option.id,
-                              },
-                            })
-                          }
-                          options={Array.from(
-                            { length: 6 },
-                            (_, i) => i + 1,
-                          ).map(i => {
-                            return {
-                              id: i,
-                              text: 'Niveau ' + i,
-                              description: '',
-                            };
-                          })}
-                        />
-                      </div>
-                    ) : (
-                      <Header
-                        className="border-none"
-                        title={component.properties?.text}
-                        subtitle={
-                          editMode
-                            ? ''
-                            : 'Sectie ' + component.properties?.levelName
-                        }
-                        level={
-                          component.properties?.level
-                            ? parseInt(component.properties?.level) + 1
-                            : 2
-                        }
-                      />
-                    );
-                  } else if (component.type === 'text') {
-                    componentContent = editMode ? (
-                      <div className="text-black text-sm">
-                        <CKEditor
-                          editor={ClassicEditor}
-                          data={component.properties?.text}
-                          onChange={(evt, editor) =>
-                            updateStudyComponent({
-                              ...component,
-                              properties: {
-                                ...component.properties,
-                                text: editor.getData(),
-                              },
-                            })
-                          }
-                        />
-                      </div>
-                    ) : (
-                      <div
-                        className="pb-4"
-                        dangerouslySetInnerHTML={{
-                          __html: component.properties?.text,
-                        }}
-                      ></div>
-                    );
-                  } else if (component.type === 'bibleQuery') {
-                    componentContent = (
-                      <div>
-                        <div className="pb-4">
-                          {editMode ? (
-                            <input
-                              onChange={evt =>
-                                updateStudyComponent({
-                                  ...component,
-                                  properties: {
-                                    ...component.properties,
-                                    query: evt.target.value,
-                                  },
-                                })
-                              }
-                              placeholder="Gen 1:1-10, levend water"
-                              type="text"
-                              value={component.properties?.query}
-                            />
-                          ) : null}
-                        </div>
-                        <div className="bg-primary/5 p-8 mb-8">
-                          <BibleQuery
-                            limit={editMode ? 3 : 10}
-                            className="text-sm"
-                          >
-                            {component.properties?.query}
-                          </BibleQuery>
-                        </div>
-                      </div>
-                    );
+        <Content className="">
+          {editMode ? (
+            <Header
+              className="border-none"
+              level={2}
+              title="Componenten"
+              subtitle="Bijbelstudie componenten bewerken"
+            />
+          ) : null}
+          {editMode ? (
+            <BibleStudyComponentAdd index={0} onChange={addStudyComponent} />
+          ) : null}
+          <ul>
+            {studyComponents?.map((component, studyComponentsIndex) => (
+              <li key={component.id}>
+                <div
+                  ref={refs[component.id]}
+                  className={
+                    'relative mt-4 border-primary/10 dark:border-primary/10 '
                   }
-                  return editMode ? (
-                    <div>{componentContent}</div>
-                  ) : (
-                    <InView
-                      as="div"
-                      onChange={isInView => setInView(component, isInView)}
-                    >
-                      {componentContent}
-                    </InView>
-                  );
-                })()}
-                {editMode ? (
-                  <BibleStudyComponentAdd
-                    index={studyComponentsIndex + 1}
-                    onChange={addStudyComponent}
-                  />
-                ) : null}
-              </div>
-            </li>
-          ))}
-        </ul>
+                >
+                  {editMode ? (
+                    <div className="font-bold py-4 flex flex-row justify-between">
+                      <div>
+                        {(() => {
+                          switch (component.type) {
+                            case 'text':
+                              return 'Tekst';
+                            case 'bibleQuery':
+                              return 'Bijbelquery';
+                            case 'header':
+                              return (
+                                'Koptekst ' + component?.properties?.levelName
+                              );
+                            default:
+                              return component.type;
+                          }
+                        })()}
+                      </div>
+                      <button
+                        type="button"
+                        className="button-outline"
+                        onClick={evt => removeStudyComponent(component)}
+                      >
+                        <TrashIcon className="inline h-3 w-3" />
+                      </button>
+                    </div>
+                  ) : null}
+                  {(() => {
+                    let componentContent = <></>;
+                    if (component.type === 'header') {
+                      componentContent = editMode ? (
+                        <div className="flex flex-row space-x-2">
+                          <input
+                            onChange={evt =>
+                              updateStudyComponent({
+                                ...component,
+                                properties: {
+                                  ...component.properties,
+                                  text: evt.target.value,
+                                },
+                              })
+                            }
+                            type="text"
+                            value={component.properties?.text}
+                          />
+                          <Selectbox
+                            selected={
+                              component.properties?.level
+                                ? component.properties?.level
+                                : 1
+                            }
+                            onChange={option =>
+                              updateStudyComponent({
+                                ...component,
+                                properties: {
+                                  ...component.properties,
+                                  level: option.id,
+                                },
+                              })
+                            }
+                            options={Array.from(
+                              { length: 6 },
+                              (_, i) => i + 1,
+                            ).map(i => {
+                              return {
+                                id: i,
+                                text: 'Niveau ' + i,
+                                description: '',
+                              };
+                            })}
+                          />
+                        </div>
+                      ) : (
+                        <Header
+                          className="border-none"
+                          title={component.properties?.text}
+                          subtitle={
+                            editMode
+                              ? ''
+                              : 'Sectie ' + component.properties?.levelName
+                          }
+                          level={
+                            component.properties?.level
+                              ? parseInt(component.properties?.level) + 1
+                              : 2
+                          }
+                        />
+                      );
+                    } else if (component.type === 'text') {
+                      componentContent = editMode ? (
+                        <div className="text-black text-sm">
+                          <CKEditor
+                            editor={ClassicEditor}
+                            data={component.properties?.text}
+                            onChange={(evt, editor) =>
+                              updateStudyComponent({
+                                ...component,
+                                properties: {
+                                  ...component.properties,
+                                  text: editor.getData(),
+                                },
+                              })
+                            }
+                          />
+                        </div>
+                      ) : (
+                        <div
+                          className="pb-4"
+                          dangerouslySetInnerHTML={{
+                            __html: component.properties?.text,
+                          }}
+                        ></div>
+                      );
+                    } else if (component.type === 'bibleQuery') {
+                      componentContent = (
+                        <div>
+                          <div className="pb-4">
+                            {editMode ? (
+                              <input
+                                onChange={evt =>
+                                  updateStudyComponent({
+                                    ...component,
+                                    properties: {
+                                      ...component.properties,
+                                      query: evt.target.value,
+                                    },
+                                  })
+                                }
+                                placeholder="Gen 1:1-10, levend water"
+                                type="text"
+                                value={component.properties?.query}
+                              />
+                            ) : null}
+                          </div>
+                          <div className="bg-slate-50 dark:bg-primary/5 p-4 mb-8">
+                            <BibleQuery
+                              limit={editMode ? 3 : 10}
+                              className="text-sm"
+                            >
+                              {component.properties?.query}
+                            </BibleQuery>
+                          </div>
+                        </div>
+                      );
+                    }
+                    // return editMode ? (
+                    //   <div>{componentContent}</div>
+                    // ) : (
+                    //   <InView
+                    //     as="div"
+                    //     onChange={isInView => setInView(component, isInView)}
+                    //   >
+                    //     {componentContent}
+                    //   </InView>
+                    // );
+
+                    return (
+                      <InView
+                        as="div"
+                        onChange={isInView => setInView(component, isInView)}
+                      >
+                        {componentContent}
+                      </InView>
+                    );
+                  })()}
+                  {editMode ? (
+                    <BibleStudyComponentAdd
+                      index={studyComponentsIndex + 1}
+                      onChange={addStudyComponent}
+                    />
+                  ) : null}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </Content>
       </main>
-      <aside className="sticky pl-8 py-4 top-0 h-screen overflow-y-auto">
+      <aside
+        ref={indexRef}
+        className="sticky pl-8 py-4 top-0 h-screen overflow-y-auto"
+        style={{ scrollBehavior: 'smooth' }}
+      >
         <section className="pb-5 mb-5 border-b border-gray-200 dark:border-white/10">
           <div>
             <div className="text-xs font-semibold mute uppercase py-5 tracking-wider border-b border-gray-200 dark:border-white/10">
@@ -608,89 +634,80 @@ export default function BibleStudy() {
                       <SortableItem
                         key={component.id}
                         id={component.id}
-                        className={'truncate leading-6'}
+                        disabled={!editMode}
+                        className={
+                          'truncate leading-6 ' +
+                          (component.type === 'header'
+                            ? component?.properties?.level === 1
+                              ? 'pt-2 '
+                              : 'pt-1 '
+                            : '')
+                        }
                       >
-                        <div
-                          className={
-                            'flex flex-row items-top justify-between ' +
-                            (editMode ? 'cursor-pointer ' : '') +
-                            (component.type === 'header'
-                              ? component?.properties?.level === 1
-                                ? 'pt-2 '
-                                : 'pt-1 '
-                              : '')
-                          }
-                        >
-                          <div className="truncate">
-                            {component.type === 'header' ? (
-                              <Hyperlink
-                                onClick={() => scrollTo(component.id)}
-                                className={
-                                  (component?.properties?.level === 1
-                                    ? 'font-bold '
-                                    : '') +
-                                  (editMode ? ' cursor-move' : ' truncate') +
-                                  (isInView
-                                    ? ' font-bold text-primary dark:text-primary hover:text-primary-400 hover:dark:text-primary-400'
-                                    : '')
+                        <div ref={refs[component.id + '-index']}>
+                          {component.type === 'header' ? (
+                            <Hyperlink
+                              onClick={() => scrollTo(component.id)}
+                              className={
+                                (component?.properties?.level === 1
+                                  ? 'font-bold '
+                                  : '') +
+                                (editMode ? ' cursor-move' : ' truncate') +
+                                (isInView
+                                  ? ' font-bold text-primary dark:text-primary hover:text-primary-400 hover:dark:text-primary-400'
+                                  : '')
+                              }
+                              style={{
+                                paddingLeft: currentPadding + 'em',
+                              }}
+                            >
+                              {component.properties?.levelName +
+                                ') ' +
+                                component.properties?.text}
+                            </Hyperlink>
+                          ) : (
+                            <Hyperlink
+                              onClick={() => scrollTo(component.id)}
+                              className={
+                                'block opacity-75 hover:opacity-100 text-xs ' +
+                                (editMode ? ' cursor-move' : '') +
+                                (isInView
+                                  ? ' font-bold text-primary dark:text-primary hover:text-primary-400 hover:dark:text-primary-400'
+                                  : '')
+                              }
+                              style={{
+                                paddingLeft: currentPadding + 1 + 'em',
+                              }}
+                            >
+                              {(() => {
+                                switch (component.type) {
+                                  case 'bibleQuery':
+                                    return (
+                                      <>
+                                        <BookmarkIcon className="w-3 h-3 inline mr-2" />
+                                        {component.properties?.query}
+                                      </>
+                                    );
+                                  case 'text':
+                                    return (
+                                      <div className="truncate">
+                                        <MenuAlt2Icon className="w-3 h-3 inline mr-2" />
+                                        {component.properties?.text
+                                          .substring(0, 50)
+                                          .replace(/(<([^>]+)>)/gi, '')}
+                                      </div>
+                                    );
+                                  default:
+                                    return (
+                                      <>
+                                        <QuestionMarkCircleIcon className="w-3 h-3 inline mr-2" />
+                                        {component.type}
+                                      </>
+                                    );
                                 }
-                                style={{
-                                  paddingLeft: currentPadding + 'em',
-                                }}
-                              >
-                                {component.properties?.levelName +
-                                  ') ' +
-                                  component.properties?.text}
-                              </Hyperlink>
-                            ) : (
-                              <Hyperlink
-                                onClick={() => scrollTo(component.id)}
-                                className={
-                                  'block opacity-75 hover:opacity-100 text-xs ' +
-                                  (editMode ? ' cursor-move' : '') +
-                                  (isInView
-                                    ? ' font-bold text-primary dark:text-primary hover:text-primary-400 hover:dark:text-primary-400'
-                                    : '')
-                                }
-                                style={{
-                                  paddingLeft: currentPadding + 1 + 'em',
-                                }}
-                              >
-                                {(() => {
-                                  switch (component.type) {
-                                    case 'bibleQuery':
-                                      return (
-                                        <>
-                                          <BookmarkIcon className="w-3 h-3 inline mr-2" />
-                                          {component.properties?.query}
-                                        </>
-                                      );
-                                    case 'text':
-                                      return (
-                                        <div className="truncate">
-                                          <MenuAlt2Icon className="w-3 h-3 inline mr-2" />
-                                          {component.properties?.text
-                                            .substring(0, 50)
-                                            .replace(/(<([^>]+)>)/gi, '')}
-                                        </div>
-                                      );
-                                    default:
-                                      return (
-                                        <>
-                                          <QuestionMarkCircleIcon className="w-3 h-3 inline mr-2" />
-                                          {component.type}
-                                        </>
-                                      );
-                                  }
-                                })()}
-                              </Hyperlink>
-                            )}
-                          </div>
-                          <div className="shrink">
-                            {editMode ? (
-                              <MenuIcon className="cursor-move w-3 h-3 m-1 mr-2" />
-                            ) : null}
-                          </div>
+                              })()}
+                            </Hyperlink>
+                          )}
                         </div>
                       </SortableItem>
                     );
@@ -721,7 +738,7 @@ export default function BibleStudy() {
         </section>
       </aside>
       {canEdit ? (
-        <div className="fixed bottom-0 left-0 right-0 flex p-4 flex-row justify-end space-x-2 bg-gradient-to-t from-white dark:from-gray-800 to-transparent">
+        <div className="fixed bottom-0 left-0 right-0 flex p-4 flex-row justify-end space-x-2 bg-gradient-to-t from-white dark:from-zinc-900 to-transparent">
           {editMode ? (
             <div className="flex flex-row justify-between w-full">
               <button className="button-outline" onClick={cancel}>

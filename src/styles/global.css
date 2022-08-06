@@ -19,7 +19,7 @@
     @apply overflow-auto;
   }
   #app.dark {
-    background-color: #2F2A46;
+    background-color: #212026;
   }
   html, body, #app, .text-default {
     @apply text-slate-700;
@@ -31,7 +31,7 @@
     @apply bg-white;
   }
   .dark .bg-default {
-    background-color: #242136;
+    background-color: #19191c;
   }
 
   h1,

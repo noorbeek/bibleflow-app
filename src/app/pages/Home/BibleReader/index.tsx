@@ -16,6 +16,7 @@ import BibleVerses from 'app/components/bible/BibleVerses';
 import Api from 'services/Api';
 import Header from 'app/components/Header';
 import Hyperlink from 'app/components/Hyperlink';
+import Content from 'app/components/Content';
 
 export default function BibleReader(props) {
   const currentTranslation = useAppStore(state => state.currentTranslation);
@@ -86,7 +87,7 @@ export default function BibleReader(props) {
           }
         />
 
-        <div className="flex flex-col sm:flex-row my-4 pb-5 border-b border-gray-200 dark:border-white/10">
+        <div className="flex flex-col sm:flex-row space-x-0 sm:space-x-2 my-4 pb-5 border-b border-gray-200 dark:border-white/10">
           <div className="flex-none">
             <Selectbox
               label="Vertaling"
@@ -136,9 +137,11 @@ export default function BibleReader(props) {
             />
           </div>
         </div>
-        <div className="my-4">
-          <BibleVerses>{bibleVerses?.data?.response}</BibleVerses>
-        </div>
+        <Content>
+          <div className="my-4">
+            <BibleVerses>{bibleVerses?.data?.response}</BibleVerses>
+          </div>
+        </Content>
         <nav className="border-t border-black/5 dark:border-white/10 mt-8 pt-4 flex flex-row items-start justify-between sm:px-0">
           <div className="grow">
             <Hyperlink
