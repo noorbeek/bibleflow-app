@@ -113,7 +113,7 @@ export default function BibleReader(props) {
                 return {
                   id: book.id,
                   text: book.name,
-                  description: book.abbreviations.join(', '),
+                  //description: book.abbreviations.join(', '),
                   active: book.id === currentBook,
                   selected: book.id === currentBook,
                 };
@@ -129,7 +129,7 @@ export default function BibleReader(props) {
                 return {
                   id: chapter.chapter,
                   text: chapter.chapter,
-                  description: '',
+                  //description: '',
                   active: chapter.chapter === currentChapter,
                   selected: chapter.chapter === currentChapter,
                 };
