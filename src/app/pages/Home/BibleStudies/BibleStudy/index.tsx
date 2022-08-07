@@ -422,7 +422,7 @@ export default function BibleStudy() {
             study?.description
           )}
         </div>
-        <Content className="max-w-2xl">
+        <Content>
           {editMode ? (
             <Header
               className="border-none"
@@ -684,7 +684,7 @@ export default function BibleStudy() {
                               className={
                                 'block opacity-75 hover:opacity-100 text-xs truncate ' +
                                 (isInView
-                                  ? ' font-bold text-primary dark:text-primary hover:text-primary-400 hover:dark:text-primary-400'
+                                  ? ' text-primary dark:text-primary hover:text-primary-400 hover:dark:text-primary-400'
                                   : '')
                               }
                               style={{
@@ -750,8 +750,8 @@ export default function BibleStudy() {
         </section>
       </aside>
       {canEdit ? (
-        <div className="fixed bottom-0 left-0 right-0 flex p-4 flex-row justify-end space-x-2 bg-gradient-to-t from-white dark:from-zinc-900 to-transparent">
-          <div className="flex flex-row justify-between w-full">
+        <div className="fixed bottom-0 left-0 right-0 flex p-4 flex-row justify-center space-x-2 bg-gradient-to-t from-white dark:from-zinc-900 to-transparent">
+          <div className="flex flex-row justify-between w-full max-w-screen-2xl">
             {editMode ? (
               <button className="button-outline" onClick={cancel}>
                 <XIcon className="h-5 w-5" />

@@ -80,7 +80,7 @@ export function Home() {
       >
         {({ open }) => (
           <>
-            <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="relative flex justify-between xl:grid xl:grid-cols-12 lg:gap-8">
                 <div className="flex md:absolute md:left-0 md:inset-y-0 lg:static xl:col-span-2">
                   <a
@@ -295,7 +295,7 @@ export function Home() {
       </Popover>
 
       <div className="py-10">
-        <div className="w-full mx-auto sm:px-6 lg:px-8 lg:grid lg:grid-cols-12 lg:gap-8">
+        <div className="w-full max-w-screen-2xl mx-auto sm:px-6 lg:px-8 lg:grid lg:grid-cols-12 lg:gap-8">
           <div className="hidden lg:block lg:col-span-2">
             <nav
               aria-label="Sidebar"
