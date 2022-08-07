@@ -87,7 +87,7 @@ export default function BibleReader(props) {
             bibleVerses?.data?.response?.length
           }
         />
-        <div className="sticky top-0 sm:relative flex flex-row space-x-2 mb-4 p-4 sm:p-0 dark:p-4 bg-white sm:bg-transparent dark:bg-zinc-900 rounded-none sm:rounded-lg shadow sm:shadow-none">
+        <div className="sticky top-0 z-10 sm:relative flex flex-row space-x-2 mb-4 p-4 sm:p-0 dark:p-4 bg-white sm:bg-transparent dark:bg-zinc-900 rounded-none sm:rounded-lg shadow sm:shadow-none">
           <div className="flex-none">
             <Selectbox
               label="Vertaling"
