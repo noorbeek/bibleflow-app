@@ -422,7 +422,7 @@ export default function BibleStudy() {
             study?.description
           )}
         </div>
-        <Content className="">
+        <Content className="max-w-2xl">
           {editMode ? (
             <Header
               className="border-none"
@@ -550,7 +550,7 @@ export default function BibleStudy() {
                         </div>
                       ) : (
                         <div
-                          className="pb-4"
+                          className="pb-4 text-justify"
                           dangerouslySetInnerHTML={{
                             __html: component.properties?.text,
                           }}
@@ -622,8 +622,8 @@ export default function BibleStudy() {
       </main>
       <aside
         ref={indexRef}
-        className="sticky p-4 sm:pl-8 sm:py-4 top-0 h-screen overflow-y-auto"
-        // style={{ scrollBehavior: 'smooth' }}
+        className="sticky p-4 sm:pl-8 sm:py-4 top-0 h-screen overflow-y-auto overflow-x-hidden"
+        style={{ scrollBehavior: 'smooth' }}
       >
         <section className="pb-5 mb-5 border-b border-gray-200 dark:border-white/10">
           <div>
