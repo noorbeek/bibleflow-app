@@ -75,7 +75,7 @@ export default function BibleReader(props) {
     <>
       <main className="col-span-10 max-w-2xl">
         <Header
-          className="px-4 sm:px-0"
+          className="px-4 sm:px-0 mb-0 border-none"
           title={
             bibleTranslation?.name + ' (' + bibleTranslation?.abbreviation + ')'
           }
@@ -87,8 +87,7 @@ export default function BibleReader(props) {
             bibleVerses?.data?.response?.length
           }
         />
-
-        <div className="px-4 sm:px-0 flex flex-col sm:flex-row space-x-0 sm:space-x-2 my-4 pb-5 border-b border-gray-200 dark:border-white/10">
+        <div className="sticky top-0 sm:relative flex flex-row space-x-2 mb-4 p-4 sm:p-0 dark:p-4 bg-white sm:bg-transparent dark:bg-zinc-900 rounded-none sm:rounded-lg shadow sm:shadow-none">
           <div className="flex-none">
             <Selectbox
               label="Vertaling"
@@ -97,8 +96,8 @@ export default function BibleReader(props) {
               options={bibleTranslations?.map(translation => {
                 return {
                   id: translation.id,
-                  text: translation.name,
-                  description: translation.abbreviation,
+                  text: translation.abbreviation,
+                  description: translation.name,
                   active: translation.id === currentTranslation,
                   selected: translation.id === currentTranslation,
                 };

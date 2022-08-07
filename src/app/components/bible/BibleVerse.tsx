@@ -49,7 +49,7 @@ export default function BibleVerse(props) {
       }
       onClick={() => toggle(verse)}
     >
-      <sup onClick={share} className="text-primary dark:text-primary-200">
+      <sup onClick={share} className="text-primary dark:text-primary-200 z-0">
         {verse.verse}
       </sup>{' '}
       <span

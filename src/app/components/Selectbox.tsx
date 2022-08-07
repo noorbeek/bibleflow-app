@@ -35,7 +35,7 @@ export default function Selectbox(props) {
               <span className="w-full inline-flex truncate">
                 <span className="truncate">{selected?.text}</span>
                 {selected?.description ? (
-                  <span className="ml-2 truncate mute">
+                  <span className="ml-2 truncate sm:mute hidden sm:inline">
                     {selected?.description}
                   </span>
                 ) : (
