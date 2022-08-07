@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import BibleVerse from './BibleVerse';
 import { useBibleBooks, useBibleTranslation } from 'services/Bibles';
 import Pagination from '../Pagination';
+import { RefreshIcon } from '@heroicons/react/outline';
 
 export default function BibleQuery(props) {
   const bibleBooks = useBibleBooks();
@@ -46,6 +47,11 @@ export default function BibleQuery(props) {
 
   return (
     <>
+      {bibleQuery.isLoading ? (
+        <div className="w-full flex justify-center bg-default">
+          <RefreshIcon className="animate-spin w-5 h-5 m-5 text-default" />
+        </div>
+      ) : null}
       {bibleQuery?.data?.response?.map((verse, index) => {
         // Remember book and chapter and write if they change
         let setBook = verse.book !== currentBook;
