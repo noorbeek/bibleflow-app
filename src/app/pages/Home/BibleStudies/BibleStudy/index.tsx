@@ -662,10 +662,10 @@ export default function BibleStudy() {
                             <Hyperlink
                               onClick={() => scrollTo(component.id)}
                               className={
+                                'truncate ' +
                                 (component?.properties?.level === 1
                                   ? 'font-bold '
                                   : '') +
-                                (editMode ? ' cursor-move' : ' truncate') +
                                 (isInView
                                   ? ' font-bold text-primary dark:text-primary hover:text-primary-400 hover:dark:text-primary-400'
                                   : '')
@@ -682,8 +682,7 @@ export default function BibleStudy() {
                             <Hyperlink
                               onClick={() => scrollTo(component.id)}
                               className={
-                                'block opacity-75 hover:opacity-100 text-xs ' +
-                                (editMode ? ' cursor-move' : '') +
+                                'block opacity-75 hover:opacity-100 text-xs truncate ' +
                                 (isInView
                                   ? ' font-bold text-primary dark:text-primary hover:text-primary-400 hover:dark:text-primary-400'
                                   : '')
