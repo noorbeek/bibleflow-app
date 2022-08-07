@@ -116,13 +116,13 @@ export default function BibleStudy() {
       });
     } else if (id === 'top') {
       document?.querySelector('#app')?.scrollTo({
-        top: topRef.current.offsetTop - 10,
+        top: 0,
         behavior: 'smooth',
       });
     } else {
-      refs[id].current.scrollIntoView({
+      document?.querySelector('#app')?.scrollTo({
+        top: refs[id].current.offsetTop,
         behavior: 'smooth',
-        block: 'start',
       });
     }
   };
@@ -622,8 +622,8 @@ export default function BibleStudy() {
       </main>
       <aside
         ref={indexRef}
-        className="sticky pl-8 py-4 top-0 h-screen overflow-y-auto"
-        style={{ scrollBehavior: 'smooth' }}
+        className="sticky p-4 sm:pl-8 sm:py-4 top-0 h-screen overflow-y-auto"
+        // style={{ scrollBehavior: 'smooth' }}
       >
         <section className="pb-5 mb-5 border-b border-gray-200 dark:border-white/10">
           <div>
@@ -649,7 +649,7 @@ export default function BibleStudy() {
                         id={component.id}
                         disabled={!editMode}
                         className={
-                          'truncate leading-6 ' +
+                          'truncate leading-4 ' +
                           (component.type === 'header'
                             ? component?.properties?.level === 1
                               ? 'pt-2 '
@@ -766,13 +766,13 @@ export default function BibleStudy() {
             )}
             <div className="grow flex justify-center space-x-2">
               <button
-                className="button-outline"
+                className="button-transparent"
                 onClick={() => scrollTo('top')}
               >
                 <ArrowUpIcon className="h-5 w-5" />
               </button>
               <button
-                className="button-outline block sm:hidden"
+                className="button-transparent block sm:hidden"
                 onClick={() => scrollTo('bottom')}
               >
                 <ArrowDownIcon className="h-5 w-5" />

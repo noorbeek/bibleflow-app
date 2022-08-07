@@ -204,7 +204,7 @@ export function Home() {
                                 }
                                 className={classNames(
                                   active ? 'bg-gray-100 dark:bg-white/10' : '',
-                                  'block py-2 px-4 text-sm text-gray-700 mute dark:hover:text-white',
+                                  'block py-2 px-4 text-sm text-default mute dark:hover:text-white/10',
                                 )}
                               >
                                 {item.name}

@@ -144,9 +144,14 @@
     @apply dark:border-red-600;
     @apply dark:text-red-600;
   }
-  button.button-outline:hover {
+  button.button-danger:hover {
     @apply border-red-500;
     @apply text-red-500;
+  }
+
+  button.button-transparent {
+    @apply bg-transparent;
+    @apply border-none;
   }
 
   input[type="text"],
