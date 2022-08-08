@@ -51,6 +51,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { useDialogStore } from 'store/dialog';
 import BibleStudyComponentAdd from './BibleStudyComponentAdd';
 import Content from 'app/components/Content';
+import usePrompt from 'hooks/Prompt';
 
 export default function BibleStudy() {
   const { id } = useParams();
@@ -60,6 +61,10 @@ export default function BibleStudy() {
   const [forceUpdate, triggerForceUpdate] = useState(0);
   const [editMode, editModeState] = useState(false);
   const [canEdit, canEditState] = useState(false);
+  const promptOnLeave = usePrompt(
+    'Weet u zeker dat u de pagina wilt verlaten? Eventuele wijzigingen worden niet bewaard.',
+    editMode,
+  );
   const [study, studyState] = useState<StudyModel>({} as StudyModel);
   const [studyComponents, studyComponentsState] = useState<
     StudyComponentModel[]

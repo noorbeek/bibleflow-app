@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment } from 'react';
 import { Dialog as HeadlessDialog, Transition } from '@headlessui/react';
 import React from 'react';
 import { useDialogStore } from 'store/dialog';
