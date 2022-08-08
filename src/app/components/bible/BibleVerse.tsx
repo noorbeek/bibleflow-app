@@ -41,7 +41,7 @@ export default function BibleVerse(props) {
   return (
     <span
       className={
-        'bible-verse inline-block indent-4 leading-7 sm:indent-0 cursor-pointer ' +
+        'indent-4 sm:indent-0 cursor-pointer ' +
         (find(verse)
           ? 'underline decoration-dotted dark:text-primary-100 text-primary-700 '
           : '') +

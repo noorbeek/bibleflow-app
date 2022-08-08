@@ -138,7 +138,7 @@ export default function BibleReader(props) {
           </div>
         </div>
         <Content>
-          <div className="my-4">
+          <div className="my-4 leading-7">
             <BibleVerses>{bibleVerses?.data?.response}</BibleVerses>
           </div>
         </Content>

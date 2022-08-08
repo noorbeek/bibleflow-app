@@ -517,12 +517,14 @@ export default function BibleStudy() {
                         </div>
                       ) : (
                         <Header
-                          className="border-none"
+                          className="border-none mb-0 pb-0"
                           title={component.properties?.text}
                           subtitle={
-                            editMode
-                              ? ''
-                              : 'Sectie ' + component.properties?.levelName
+                            <span className="text-xs">
+                              {editMode
+                                ? ''
+                                : 'Sectie ' + component.properties?.levelName}
+                            </span>
                           }
                           level={
                             component.properties?.level
@@ -577,7 +579,7 @@ export default function BibleStudy() {
                               />
                             ) : null}
                           </div>
-                          <div className="bg-slate-50 dark:bg-primary/5 p-4 mb-8">
+                          <div className="bg-slate-50 dark:bg-white/5 p-4 sm:p-6 mb-8">
                             <BibleQuery
                               limit={editMode ? 3 : 10}
                               className="text-sm"

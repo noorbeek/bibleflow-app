@@ -6,7 +6,7 @@ export default function BibleVerses(props) {
     <div>
       {props?.children?.map(verse => (
         <span key={verse.id}>
-          <BibleVerse>{verse}</BibleVerse>
+          <BibleVerse className="inline-block">{verse}</BibleVerse>
         </span>
       ))}
     </div>

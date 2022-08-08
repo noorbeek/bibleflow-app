@@ -48,7 +48,7 @@ export default function BibleQuery(props) {
   return (
     <>
       {bibleQuery.isLoading ? (
-        <div className="w-full flex justify-center bg-default">
+        <div className="w-full flex justify-center bg-black/10 dark:bg-white/10">
           <RefreshIcon className="animate-spin w-5 h-5 m-5 text-default" />
         </div>
       ) : null}
@@ -56,7 +56,7 @@ export default function BibleQuery(props) {
         // Remember book and chapter and write if they change
         let setBook = verse.book !== currentBook;
         let setChapter = verse.chapter !== currentChapter;
-        let setVerse = verse.verse !== currentVerse + 1;
+        let setVerse = parseInt(verse.verse) !== currentVerse + 1;
 
         currentBook = verse.book;
         currentChapter = verse.chapter;
@@ -67,14 +67,11 @@ export default function BibleQuery(props) {
             key={verse.id}
             className={props?.className ? props?.className : ''}
           >
-            {setBook ? (
-              <div className={'font-bold ' + (index ? 'pt-4' : '')}>
-                {bibleBooks.find(book => book.id === verse.book)?.name}
-              </div>
-            ) : null}
-            {setChapter ? (
-              <div className={'mute text-sm ' + (setBook ? 'pb-4' : 'py-4')}>
-                Hoofdstuk {verse.chapter}
+            {setBook || setChapter ? (
+              <div className={'font-bold text-xs ' + (index ? 'py-2' : 'pb-2')}>
+                {bibleBooks.find(book => book.id === verse.book)?.name +
+                  ' ' +
+                  verse.chapter}
               </div>
             ) : null}
             {setVerse && !setChapter && !setBook ? <br /> : null}
