@@ -152,6 +152,15 @@
   button.button-transparent {
     @apply bg-transparent;
     @apply border-none;
+    @apply hover:border;
+    @apply border-primary;
+    @apply dark:border-white;
+    @apply text-primary;
+    @apply dark:text-white;
+  }
+  button.button-transparent svg {
+    @apply stroke-primary;
+    @apply dark:stroke-white;
   }
 
   input[type="text"],
