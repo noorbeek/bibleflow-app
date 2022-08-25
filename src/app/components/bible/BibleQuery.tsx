@@ -18,7 +18,7 @@ export default function BibleQuery(props) {
 
   // Bible query service
   const bibleQuery = useQuery(
-    [`bibleQuery${props.children}`, pagination?.page],
+    [`bibleQuery${props.children}`, pagination],
     async () =>
       await Api.get(
         `/search/${
@@ -30,7 +30,10 @@ export default function BibleQuery(props) {
           order: 'book,chapter,verse',
           join: 'createdBy',
           limit: props.limit ? props.limit : 10,
-          page: pagination?.page ? pagination?.page : 1,
+          page:
+            pagination?.page && pagination?.page <= pagination?.pages
+              ? pagination?.page
+              : 1,
         },
       ),
     {
