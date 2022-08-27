@@ -77,14 +77,17 @@ export default function BibleReader(props) {
         <Header
           className="px-4 sm:px-0 mb-0 border-none"
           title={
-            bibleTranslation?.name + ' (' + bibleTranslation?.abbreviation + ')'
+            (bibleTranslation?.name || 'Bijbel') +
+            ' (' +
+            (bibleTranslation?.abbreviation || 'BBL') +
+            ')'
           }
           subtitle={
-            bibleBook?.name +
+            (bibleBook?.name || 'Genesis') +
             ' ' +
             currentChapter +
             ':1-' +
-            bibleVerses?.data?.response?.length
+            (bibleVerses?.data?.response?.length || 50)
           }
         />
         <div className="sticky top-0 z-10 sm:relative flex flex-row space-x-2 mb-4 p-4 sm:p-0 dark:p-4 bg-white sm:bg-transparent dark:bg-zinc-900 rounded-none sm:rounded-lg shadow sm:shadow-none">
