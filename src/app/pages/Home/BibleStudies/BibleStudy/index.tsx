@@ -384,7 +384,7 @@ export default function BibleStudy() {
 
   return (
     <div className="flex flex-col sm:flex-row col-span-10">
-      <main className="basis-3/4">
+      <main className="basis-3/5">
         <Header
           className="px-4 sm:px-0"
           title={<div ref={topRef}>{study?.name}</div>}
@@ -629,7 +629,7 @@ export default function BibleStudy() {
       </main>
       <aside
         ref={indexRef}
-        className="sticky p-4 sm:pl-8 sm:py-4 top-0 h-screen overflow-y-auto overflow-x-hidden"
+        className="basis-2/5 sticky p-4 sm:pl-8 sm:py-4 top-0 h-screen overflow-y-auto overflow-x-hidden"
         style={{ scrollBehavior: 'smooth' }}
       >
         <section className="pb-5 mb-5 border-b border-gray-200 dark:border-white/10">
