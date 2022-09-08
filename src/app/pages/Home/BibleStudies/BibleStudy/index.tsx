@@ -298,14 +298,14 @@ export default function BibleStudy() {
   function setInView(component, isInView) {
     if (isInView) {
       scrollTo(component.id + '-index');
+      studyComponentsState(
+        studyComponents.map(item => {
+          return item.id === component.id
+            ? Object.assign(item, { isInView: isInView })
+            : Object.assign(item, { isInView: !isInView });
+        }),
+      );
     }
-    studyComponentsState(
-      studyComponents.map(item => {
-        return item.id === component.id
-          ? Object.assign(item, { isInView: isInView })
-          : item;
-      }),
-    );
   }
 
   function save() {
