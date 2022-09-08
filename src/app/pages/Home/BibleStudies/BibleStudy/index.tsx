@@ -673,7 +673,7 @@ export default function BibleStudy() {
                               onClick={() => scrollTo(component.id)}
                               className={
                                 'truncate ' +
-                                (component?.properties?.level === 1
+                                (component?.properties?.level === 1 || editMode
                                   ? 'font-bold '
                                   : '') +
                                 (isInView
