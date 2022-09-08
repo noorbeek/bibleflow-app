@@ -112,7 +112,7 @@ export default function BibleReader(props) {
               label="Boek"
               selected={currentBook}
               onChange={setBook}
-              options={bibleBooks.map(book => {
+              options={bibleBooks?.map(book => {
                 return {
                   id: book.id,
                   text: book.name,

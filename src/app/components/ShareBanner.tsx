@@ -59,7 +59,6 @@ export default function ShareBanner() {
       share(event, {
         text: text.replace(/\n{1,}/g, '\n'),
       });
-      console.warn(text.replace(/\n{1,}/g, '\n'));
     }
   };
 

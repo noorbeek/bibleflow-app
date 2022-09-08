@@ -349,7 +349,7 @@ export function Home() {
                   className="mt-3 space-y-2"
                   aria-labelledby="bibletranslations-headline"
                 >
-                  {bibleTranslations.map(bibleTranslation => (
+                  {bibleTranslations?.map(bibleTranslation => (
                     <Hyperlink
                       key={bibleTranslation?.name}
                       href="#"

@@ -37,7 +37,7 @@ export default function BibleQuery(props) {
         },
       ),
     {
-      cacheTime: 300000,
+      staleTime: 5 * 60 * 1000,
       onSuccess: data => {
         setPagination(data?.metadata?.pagination);
       },
@@ -73,7 +73,7 @@ export default function BibleQuery(props) {
           >
             {setBook || setChapter ? (
               <div className={'font-bold text-xs ' + (index ? 'py-2' : 'pb-2')}>
-                {bibleBooks.find(book => book.id === verse.book)?.name +
+                {bibleBooks?.find(book => book.id === verse.book)?.name +
                   ' ' +
                   verse.chapter}
               </div>
