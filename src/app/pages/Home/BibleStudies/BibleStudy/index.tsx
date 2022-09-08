@@ -595,9 +595,18 @@ export default function BibleStudy() {
                         </div>
                       );
                     }
-                    // return editMode ? (
-                    //   <div>{componentContent}</div>
-                    // ) : (
+                    return editMode || component.type === 'header' ? (
+                      <InView
+                        as="div"
+                        onChange={isInView => setInView(component, isInView)}
+                      >
+                        {componentContent}
+                      </InView>
+                    ) : (
+                      <div>{componentContent}</div>
+                    );
+
+                    // return (
                     //   <InView
                     //     as="div"
                     //     onChange={isInView => setInView(component, isInView)}
@@ -605,15 +614,6 @@ export default function BibleStudy() {
                     //     {componentContent}
                     //   </InView>
                     // );
-
-                    return (
-                      <InView
-                        as="div"
-                        onChange={isInView => setInView(component, isInView)}
-                      >
-                        {componentContent}
-                      </InView>
-                    );
                   })()}
                   {editMode ? (
                     <BibleStudyComponentAdd
@@ -657,10 +657,13 @@ export default function BibleStudy() {
                         disabled={!editMode}
                         className={
                           'truncate leading-4 ' +
+                          (component.type !== 'header' && !editMode
+                            ? 'hidden '
+                            : '') +
                           (component.type === 'header'
                             ? component?.properties?.level === 1
                               ? 'pt-2 '
-                              : 'pt-1 '
+                              : 'pt-1 text-xs '
                             : '')
                         }
                       >
@@ -681,9 +684,7 @@ export default function BibleStudy() {
                                 paddingLeft: currentPadding + 'em',
                               }}
                             >
-                              {component.properties?.levelName +
-                                ') ' +
-                                component.properties?.text}
+                              {component.properties?.text}
                             </Hyperlink>
                           ) : (
                             <Hyperlink

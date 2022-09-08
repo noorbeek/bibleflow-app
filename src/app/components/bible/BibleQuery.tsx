@@ -37,6 +37,7 @@ export default function BibleQuery(props) {
         },
       ),
     {
+      cacheTime: 300000,
       onSuccess: data => {
         setPagination(data?.metadata?.pagination);
       },

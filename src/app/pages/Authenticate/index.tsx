@@ -6,8 +6,10 @@ import { useMutation } from '@tanstack/react-query';
 import Api from 'services/Api';
 import { ApiResponseModel } from 'models/Api';
 import Hyperlink from 'app/components/Hyperlink';
+import { XCircleIcon } from '@heroicons/react/outline';
 
 export function Authenticate() {
+  const [errors, setErrors]: Array<any> = useState([]);
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -24,6 +26,14 @@ export function Authenticate() {
       onSuccess: (data: ApiResponseModel) => {
         if (data?.response?.authorization) {
           useAppStore.getState().login(data?.response?.authorization);
+        }
+        if (data?.response?.errors?.length) {
+          setErrors(data?.errors);
+        }
+      },
+      onError: (data: ApiResponseModel) => {
+        if (data?.response?.data?.errors?.length) {
+          setErrors(data?.response?.data?.errors);
         }
       },
     },
@@ -56,6 +66,30 @@ export function Authenticate() {
             }}
           >
             <input type="hidden" name="remember" defaultValue="true" />
+            {errors.length ? (
+              <div className="rounded-md bg-red-50 dark:bg-red-900 p-4">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <XCircleIcon
+                      className="h-5 w-5 text-red-400 dark:text-red-200"
+                      aria-hidden="true"
+                    />
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-sm font-medium text-red-800 dark:text-red-300">
+                      U kunt niet worden ingelogd
+                    </h3>
+                    <div className="mt-2 text-sm text-red-700 dark:text-red-300">
+                      <ul role="list" className="list-disc space-y-1 pl-5">
+                        {errors.map(error => (
+                          <li>{error.description}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : null}
             <div className="rounded-md shadow-sm -space-y-px">
               <div>
                 <label htmlFor="username" className="sr-only">

@@ -10014,10 +10014,10 @@ react-dom@18.1.0:
     loose-envify "^1.1.0"
     scheduler "^0.22.0"
 
-react-draggable-list@4.0.4:
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/react-draggable-list/-/react-draggable-list-4.0.4.tgz#74634c6864195f04e0f77b87b527a7e2d1493888"
-  integrity sha512-l5fOX+q7JHeocIyQAdyjXmGxrcQ+fuHwj/BcP2Iu/8ncadt/XS9NDwVp654GlqVsFlk2p6+Kx13ef8rAwwiJuA==
+react-draggable-list@4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/react-draggable-list/-/react-draggable-list-4.1.0.tgz#ed9b6224b53c94df1626e1cd9b4046d3304abc41"
+  integrity sha512-WzfKhiMuziru+J3wFxeF8ibE39wgw0o1kWyFV6bLzVkC2DHi7GJY9cRM2VgK4xUlcvulcrUgClahwWHA0lQruA==
   dependencies:
     "@babel/runtime" "^7.0.0"
     "@types/prop-types" "^15.7.3"
