@@ -5,24 +5,25 @@ import { useQuery } from '@tanstack/react-query';
 
 export const useBibleBooks = (): Array<BibleBookModel> => {
   const [data, setData] = useState([]);
-  //   useEffect(() => {
-  //     (async () => {
-  //       const data = await Api.get(`/bibleBooks`, {
-  //         limit: 999,
-  //       });
-  //       setData(data?.response);
-  //     })();
-  //   }, []);
-  useQuery(
-    [`bibleBooks`],
-    async () => await Api.get(`/bibleBooks`, { limit: 999 }),
-    {
-      cacheTime: 300000,
-      onSuccess: data => {
-        setData(data?.response);
-      },
-    },
-  );
+  useEffect(() => {
+    (async () => {
+      const data = await Api.get(`/bibleBooks`, {
+        limit: 999,
+      });
+      setData(data?.response);
+    })();
+  }, []);
+
+  //   useQuery(
+  //     [`bibleBooks`],
+  //     async () => await Api.get(`/bibleBooks`, { limit: 999 }),
+  //     {
+  //       cacheTime: 300000,
+  //       onSuccess: data => {
+  //         setData(data?.response);
+  //       },
+  //     },
+  //   )
   return data;
 };
 
