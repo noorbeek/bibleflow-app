@@ -9,7 +9,9 @@ function classNames(...classes) {
 
 export default function Selectbox(props) {
   const [selected, setSelected] = useState(
-    props?.options?.find(option => option.id === props?.selected),
+    props?.options?.find(
+      option => parseInt(option.id) === parseInt(props?.selected),
+    ),
   );
 
   function changeSelected(option) {
@@ -18,7 +20,11 @@ export default function Selectbox(props) {
   }
 
   useEffect(() => {
-    setSelected(props?.options?.find(option => option.id === props?.selected));
+    setSelected(
+      props?.options?.find(
+        option => parseInt(option.id) === parseInt(props?.selected),
+      ),
+    );
   }, [props.options, props.selected]);
 
   return (
@@ -72,7 +78,7 @@ export default function Selectbox(props) {
                           <span
                             className={classNames(
                               selected ? 'font-semibold' : 'font-normal',
-                              'truncate',
+                              '',
                             )}
                           >
                             {option.text}

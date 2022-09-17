@@ -6,11 +6,15 @@ import BibleVerse from './BibleVerse';
 import { useBibleBooks, useBibleTranslation } from 'services/Bibles';
 import Pagination from '../Pagination';
 import { RefreshIcon } from '@heroicons/react/outline';
+import { useParams } from 'react-router';
 
 export default function BibleQuery(props) {
   const bibleBooks = useBibleBooks();
   const bibleTranslation = useBibleTranslation();
   const [pagination, setPagination]: any = useState(null);
+
+  let { q } = useParams();
+  let query = props.children ? props.children : q;
 
   let currentBook = 0;
   let currentChapter = 0;
@@ -18,14 +22,14 @@ export default function BibleQuery(props) {
 
   // Bible query service
   const bibleQuery = useQuery(
-    [`bibleQuery${props.children}`, pagination],
+    [`bibleQuery${query}`, pagination],
     async () =>
       await Api.get(
         `/search/${
           bibleTranslation?.abbreviation
             ? bibleTranslation?.abbreviation
             : 'hsv'
-        }?q=${props.children}`,
+        }?q=${query}`,
         {
           order: 'book,chapter,verse',
           join: 'createdBy',
@@ -73,9 +77,19 @@ export default function BibleQuery(props) {
           >
             {setBook || setChapter ? (
               <div className={'font-bold text-xs ' + (index ? 'py-2' : 'pb-2')}>
-                {bibleBooks?.find(book => book.id === verse.book)?.name +
-                  ' ' +
-                  verse.chapter}
+                <a
+                  href={`/bible/${
+                    bibleTranslation?.abbreviation
+                      ? bibleTranslation?.abbreviation.toLowerCase()
+                      : 'hsv'
+                  }/${bibleBooks
+                    ?.find(book => book.id === verse.book)
+                    ?.abbreviations[0]?.toLowerCase()}/${verse.chapter}`}
+                >
+                  {bibleBooks?.find(book => book.id === verse.book)?.name +
+                    ' ' +
+                    verse.chapter}
+                </a>
               </div>
             ) : null}
             {setVerse && !setChapter && !setBook ? <br /> : null}
@@ -89,7 +103,7 @@ export default function BibleQuery(props) {
         );
       })}
       <Pagination
-        title={`"${props.children}" (${bibleTranslation?.abbreviation})`}
+        title={`"${query}" (${bibleTranslation?.abbreviation})`}
         callback={setPage}
       >
         {pagination}

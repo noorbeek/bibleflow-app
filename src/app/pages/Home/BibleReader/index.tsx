@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppStore } from 'store/global';
 import { useQuery } from '@tanstack/react-query';
 import Selectbox from 'app/components/Selectbox';
@@ -17,12 +17,15 @@ import Api from 'services/Api';
 import Header from 'app/components/Header';
 import Hyperlink from 'app/components/Hyperlink';
 import Content from 'app/components/Content';
+import { useParams } from 'react-router-dom';
 
 export default function BibleReader(props) {
-  const currentTranslation = useAppStore(state => state.currentTranslation);
-  const currentBook = useAppStore(state => state.currentBook);
-  const currentChapter = useAppStore(state => state.currentChapter);
-  const currentVerse = useAppStore(state => state.currentVerse);
+  const { translation, book, chapter } = useParams();
+
+  let currentTranslation = useAppStore(state => state.currentTranslation);
+  let currentBook = useAppStore(state => state.currentBook);
+  let currentChapter = useAppStore(state => state.currentChapter);
+  let currentVerse = useAppStore(state => state.currentVerse);
 
   const bibleTranslations = useBibleTranslations();
   const bibleTranslation = useBibleTranslation(currentTranslation);
@@ -50,26 +53,57 @@ export default function BibleReader(props) {
       }),
   );
 
-  function setTranslation(translation) {
+  function setAll(translation, book, chapter) {
     useAppStore.setState({
       currentTranslation: translation.id,
-      currentBook: 1,
-      currentChapter: 1,
+      currentBook: book.id,
+      currentChapter: chapter,
     });
+  }
+
+  function setTranslation(translation) {
+    window.location.href = `/bible/${translation.abbreviation.toLowerCase()}/${bibleBook?.abbreviations[0].toLowerCase()}/${currentChapter}`;
   }
 
   function setBook(book) {
-    useAppStore.setState({
-      currentBook: book.id,
-      currentChapter: 1,
-    });
+    window.location.href = `/bible/${bibleTranslation?.abbreviation.toLowerCase()}/${book.abbreviation.toLowerCase()}/${currentChapter}`;
   }
 
   function setChapter(chapter) {
-    useAppStore.setState({
-      currentChapter: chapter.id,
-    });
+    window.location.href = `/bible/${bibleTranslation?.abbreviation.toLowerCase()}/${bibleBook?.abbreviations[0].toLowerCase()}/${
+      chapter.id
+    }`;
   }
+
+  /** Update state on URI change */
+
+  useEffect(() => {
+    if (translation && book && chapter) {
+      let translationFound = bibleTranslations?.find(
+        item => item.abbreviation.toLowerCase() === translation.toLowerCase(),
+      );
+      if (!translationFound) {
+        return;
+      }
+      let bookFound = bibleBooks?.find(item => {
+        return item.abbreviations
+          .join(',')
+          .toLowerCase()
+          .match(book.toLowerCase());
+      });
+
+      if (!bookFound) {
+        return;
+      }
+      if (
+        translationFound.id !== currentTranslation ||
+        bookFound.id !== currentBook ||
+        chapter !== currentChapter
+      ) {
+        setAll(translationFound, bookFound, chapter);
+      }
+    }
+  });
 
   return (
     <>
@@ -100,6 +134,7 @@ export default function BibleReader(props) {
                 return {
                   id: translation.id,
                   text: translation.abbreviation,
+                  abbreviation: translation.abbreviation.toLowerCase(),
                   description: translation.name,
                   active: translation.id === currentTranslation,
                   selected: translation.id === currentTranslation,
@@ -116,7 +151,8 @@ export default function BibleReader(props) {
                 return {
                   id: book.id,
                   text: book.name,
-                  //description: book.abbreviations.join(', '),
+                  abbreviation: book.abbreviations[0].toLowerCase(),
+                  description: book.abbreviations[0],
                   active: book.id === currentBook,
                   selected: book.id === currentBook,
                 };
@@ -125,14 +161,13 @@ export default function BibleReader(props) {
           </div>
           <div className="flex-none">
             <Selectbox
-              label="Hoofdstuk"
+              label="Hoofdstuk "
               selected={currentChapter}
               onChange={setChapter}
               options={bibleChapters?.data?.response?.map(chapter => {
                 return {
                   id: chapter.chapter,
                   text: chapter.chapter,
-                  //description: '',
                   active: chapter.chapter === currentChapter,
                   selected: chapter.chapter === currentChapter,
                 };

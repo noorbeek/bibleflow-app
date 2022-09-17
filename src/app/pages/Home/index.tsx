@@ -54,7 +54,6 @@ export function Home() {
   const bibleTranslations = useBibleTranslations();
   const bibleTimelines = useAppStore().bibleTimelines;
   const location = useLocation();
-  const navigate = useNavigate();
 
   let [q, setQuery] = useState(localStorage['q'] ? localStorage['q'] : '');
 
@@ -62,7 +61,7 @@ export function Home() {
     event.preventDefault();
     localStorage['q'] = q;
     if (q) {
-      navigate('/search?q=' + encodeURIComponent(q));
+      window.location.href = '/search?q=' + encodeURIComponent(q);
     }
   }
 
@@ -393,6 +392,10 @@ export function Home() {
             <Route path="/timeline" element={<BibleTimeline />} />
             <Route path="/studies" element={<BibleStudies />} />
             <Route path="/studies/:id" element={<BibleStudy />} />
+            <Route
+              path="/bible/:translation/:book/:chapter"
+              element={<BibleReader />}
+            />
             <Route path="/" element={<BibleReader />} />
             <Route path="*" element={<BibleReader />} />
           </Routes>
